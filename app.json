@@ -4,11 +4,12 @@
     "slug": "artesanos-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo-icch.png",
+    "icon": "./src/assets/images/logo-icch.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "scheme": "gestionaArtesanos",
     "splash": {
-      "image": "./assets/logo-icch.png",
+      "image": "./src/assets/images/logo-icch.png",
       "resizeMode": "contain",
       "backgroundColor": "#8A9A46"
     },
@@ -17,12 +18,15 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./src/assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "favicon": "./src/assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }
