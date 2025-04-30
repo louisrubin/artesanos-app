@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Pressable, StyleSheet, Text, Image } from "react-native";
 
 // https://dev.to/9bytes/crafting-a-custom-button-component-in-react-native-2inj
 
@@ -26,20 +26,34 @@ export default function ButtonX(props) {
             <Text style={[styles.text, props.textStyles]}>
                 {props.children || "Pulsar"}
             </Text>
+            
+            {   props.iconParam 
+                ? <Image source={props.iconParam} 
+                    style={{ height: 22, width: 22, marginLeft: 5 }} />
+                : null
+            }
         </Pressable >
     );
 };
     
 const styles = StyleSheet.create({
     container: {
-        padding: 15,
+        flexDirection: "row",
+        justifyContent: "center",
         alignItems: "center",
+        padding: 15,
         borderRadius: 8,
-        // width: "100%",
+
+        shadowColor: '#000',        // Color de la sombra
+        shadowOffset: { width: 0, height: 4 }, // Desplazamiento
+        shadowOpacity: 0.4,         // Opacidad de la sombra
+        shadowRadius: 4,            // Difuminado
+        elevation: 6,               // (solo Android)
     },
     text: { 
         color: "black",
         fontSize: 16,
+        fontWeight: 'bold',
     },
 });
     

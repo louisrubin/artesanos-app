@@ -7,6 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import logoGobChaco from './assets/logo-gobierno-chaco.png';
 import logoICCH from './assets/logo-icch.png';
+import iconLogin from './assets/Login.png';
 
 export default function App() {
     return (
@@ -33,9 +34,11 @@ export default function App() {
               <InputX placeholder="Ingrese Contraseña" secureTextEntry={true} />
   
               <ButtonX 
-                buttonStyles={{ width: '80%', marginTop: 40 }}
+                buttonStyles={{ width: '80%', marginTop: 40, borderWidth: 1,
+                    borderColor: '#000', }}
                 textStyles={{ color: 'fff', fontSize: 22 }}
                 bgColorPressed="#0a7ea4"
+                iconParam={iconLogin}
               >
                 Iniciar Sesión
               </ButtonX>
