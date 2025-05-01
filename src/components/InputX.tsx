@@ -4,11 +4,11 @@ import { Colors } from '../constants/colors';
 
 type Props = {
     // nombreParam: string;
-    tipoTeclado: 'email-address' | 'number-pad' | 'default'  //| 'numeric';
+    tipoTeclado?: 'email-address' | 'number-pad' | 'default'  //| 'numeric';
     placeholder: string;
-    value: string;
+    value?: string;
     secureTextEntry?: boolean;
-    onChangeText: (text: string) => void;
+    onChangeText?: (text: string) => void;  // metodo que queremos que se ejecute al cambiar el texto
 }
 
 

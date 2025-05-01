@@ -6,6 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import InputX from '../../components/InputX';
 import ButtonX from '../../components/ButtonX';
 import imagePath from '../../constants/imagePath';
+import { moderateScale, moderateVerticalScale } from 'react-native-size-matters';
 
 export default function LoginScreen() {
     return (
@@ -25,6 +26,7 @@ export default function LoginScreen() {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           >
             <View style={styles.body}>
+              <Text style={styles.labelTitulo}>Ingresar a su cuenta</Text>
               <Text style={styles.label}>Correo Electrónico</Text>
               <InputX placeholder="Ingrese Correo Electrónico" tipoTeclado='email-address' />
   
@@ -32,24 +34,38 @@ export default function LoginScreen() {
               <InputX placeholder="Ingrese Contraseña" secureTextEntry={true} />
   
               <ButtonX 
-                buttonStyles={{ width: '80%', marginTop: 40, borderWidth: 1,
-                    borderColor: '#000', }}
-                textStyles={{ color: 'fff', fontSize: 22 }}
-                bgColorPressed="#0a7ea4"
+                buttonStyles={{ width: moderateScale(200), 
+                    marginTop: moderateScale(30), borderWidth: 1,
+                    borderColor: '#000', padding: moderateScale(12),}}
+                textStyles={{ fontWeight: 'bold' }}
+                color="#E0F393"
+                bgColorPressed="#BCB850"
+                fontSize={moderateScale(20)}
                 iconParam={imagePath.iconLogin}
               >
                 Iniciar Sesión
               </ButtonX>
   
-              <Text style={styles.labelRegistrarse}>o Registrarse</Text>
+              {/* <Text style={styles.labelRegistrarse}>o Registrarse</Text> */}
+              <ButtonX      
+                buttonStyles={{ width: moderateScale(120), 
+                  marginTop: moderateScale(18), paddingVertical: moderateScale(6)}}           
+                color="#A0AE6A"
+                bgColorPressed="#BCB850"
+                textStyles={styles.btnRegistrarse}
+                fontSize={moderateScale(15)}
+                iconParam={imagePath.iconRegister}
+                >
+                  o Registrarse
+              </ButtonX>
             </View>
           </KeyboardAvoidingView>
   
           {/* FOOTER */}
           <View style={styles.footer}>
             <Image source={imagePath.logoICCH} style={styles.imageFooter} />
-            <Text>TUP-2025</Text>
-            <Text>@Rubin-Zamora</Text>
+            <Text>UTN FRRe</Text>
+            <Text>Rubin-Zamora</Text>
           </View>
   
           <StatusBar style="auto" />
@@ -62,12 +78,12 @@ export default function LoginScreen() {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      paddingTop: 40,
-      paddingBottom: 20,
+      paddingTop: moderateVerticalScale(20),
+      paddingBottom: moderateVerticalScale(20),
     },
     header: {
       alignItems: 'center',
-      marginBottom: 10,
+      marginBottom: moderateScale(12),
     },
     flexBody: {
       flex: 1,
@@ -83,23 +99,31 @@ export default function LoginScreen() {
       marginTop: 10,
     },
     imageHeader: {
-        marginTop: -120,
-        height: 400,
-        width: 400,
+        marginTop: moderateVerticalScale(-110),
+        height: moderateScale(350),
+        width: moderateScale(350),
         resizeMode: "contain",
     },
     imageFooter: {
-      height: 170,
-      width: 170,
+      height: moderateScale(150),
+      width: moderateScale(150),
+      // width: 170,
       resizeMode: "contain",
     },
-    label: {
-      textAlign: 'left',
-      width: '100%',
-      fontSize: 20,
+    labelTitulo:{
+      // width: '100%',
+      fontVariant: ['small-caps'],
+      fontSize: moderateScale(25),
       fontWeight: 'bold',
+      marginBottom: moderateVerticalScale(20),
+      marginTop: 5,
+    },
+    label: {
+      width: '100%',
+      fontSize: moderateScale(18),
+      // fontWeight: 'bold',
       marginBottom: 8,
-      marginTop: 20,
+      marginTop: moderateScale(14),
     },
     labelRegistrarse: {
       paddingVertical: 5,
@@ -108,8 +132,12 @@ export default function LoginScreen() {
       fontSize: 20, 
       marginTop: 26, 
       textDecorationLine: 'underline',
-      backgroundColor: '#C8D29C',
-    }
+      backgroundColor: '#B7C484',
+    },
+    btnRegistrarse: {
+      // padding: 0,
+    },
+
   });
 
   
