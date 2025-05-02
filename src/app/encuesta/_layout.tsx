@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 
-const MainLayout = () => {
+const Encuesta = () => {
   return (
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -8,4 +8,4 @@ const MainLayout = () => {
     </Stack>
   );
 };
-export default MainLayout;
+export default Encuesta;
