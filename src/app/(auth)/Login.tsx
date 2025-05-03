@@ -44,6 +44,7 @@ export default function LoginScreen() {
               bgColorPressed="#BCB850"
               fontSize={moderateScale(20)}
               iconParam={imagePath.iconLogin}
+              iconPosition="right"
               onPress={() => router.push('/(main)')} // Cambiar a router.push('/main/pantallaPrincipal')
             >
               Iniciar Sesión
@@ -57,6 +58,7 @@ export default function LoginScreen() {
               textStyles={styles.btnRegistrarse}
               fontSize={moderateScale(15)}
               iconParam={imagePath.iconRegister}
+              iconPosition="right"
             >
               o Registrarse
             </ButtonX>
