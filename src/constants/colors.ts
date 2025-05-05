@@ -14,8 +14,8 @@ export const COLORS = {
 const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
 
-const VerdeNaturaleza = "#8A9A46"
-const VerdeAgricultura = "#C8D29C"
+export const VerdeNaturaleza = "#8A9A46"
+export const VerdeAgricultura = "#C8D29C"
 
 export const Colors = {
   light: {
