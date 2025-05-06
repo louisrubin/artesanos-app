@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Alert, Image, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router'; // Cambiar a useRouter
 import { LinearGradient } from 'expo-linear-gradient';
 import InputX from '../../components/InputX';
@@ -8,6 +8,9 @@ import { moderateScale, moderateVerticalScale } from 'react-native-size-matters'
 import { z } from 'zod';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import app from '../../../credenciales';
+
 
 // ESQUEMA DE ZOD PARA RESTRICCIONES DE LOS CAMPOS
 const esquema = z.object({
@@ -19,6 +22,7 @@ type FormData = z.infer<typeof esquema>;    // Definición del tipo de datos del
 
 export default function LoginScreen() {
   const router = useRouter(); // Cambiar a useRouter
+  const auth = getAuth(app);
 
   // desestructurar metodos del hook useForm 
   const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
@@ -31,8 +35,21 @@ export default function LoginScreen() {
   });
 
   function onSubmitLogin(data: FormData){
-    // function al enviar el formulario Login
-    router.push('/(main)');
+    const { email, password } = data;
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Inicio de sesión exitoso
+        const user = userCredential.user;
+        Alert.alert('Inicio de sesión exitoso', `Bienvenido, ${user.email}`);
+        router.push('/(main)'); // Redirige a la pantalla principal
+      })
+      .catch((error) => {
+        // Manejo de errores
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        Alert.alert('Error al iniciar sesión', errorMessage);
+      });
   }
 
   return (
