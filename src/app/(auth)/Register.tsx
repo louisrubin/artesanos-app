@@ -5,19 +5,9 @@ import { moderateScale, moderateVerticalScale } from "react-native-size-matters"
 import InputX from "../../components/InputX";
 import imagePath from "../../constants/imagePath";
 import { z } from "zod";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
-
-// function LabelStatusPassword(props){
-//     let status = props.status;
-//     let colorStatus = status ? 'green' : 'red';
-//     let message = status ? 'Las contraseñas coinciden ✅' : 'Las contraseñas no coinciden ❌';
-//     return(
-//         <Text style={[styles.labelInputMini, {color: colorStatus, fontWeight: 'bold'}]}>
-//             {message}
-//         </Text>
-//     )
-// }
+import { useEffect } from "react";
 
 const minLengthPassword = 6; // Longitud máxima de la contraseña
 
@@ -26,16 +16,30 @@ const esquema = z.object({
     apellido: z.string().min(1, { message: "Campo requerido" }),
     dni: z.string().length(8, { message: "El DNI debe tener 8 dígitos" }),
     email: z.string().email({ message: "Correo no válido" }),
-    password: z.string().min(minLengthPassword, { message: `Mínimo ${minLengthPassword} caracteres` }),
-    password2: z.string().min(minLengthPassword, { message: `Mínimo ${minLengthPassword} caracteres` })
+    password: z.string().min(minLengthPassword, { message: `Mínimo ${minLengthPassword} carácteres` }),
+    password2: z.string().min(minLengthPassword, { message: `Mínimo ${minLengthPassword} carácteres` })
+}).superRefine((data, ctx) => {
+    if (data.password !== data.password2 ) {
+        // Si las contraseñas no coinciden, agregar un error a ambos campos
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Las contraseñas NO coinciden ❌",
+            path: ["password"],
+        });
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Las contraseñas NO coinciden ❌",
+            path: ["password2"],
+        });
+    }
 });
 
 type FormData = z.infer<typeof esquema>; // Inferir el tipo de datos del esquema
 
-const RegisterScreen = () => {
+export default function RegisterScreen(){
     const router = useRouter(); // Cambiar a useRouter
 
-    const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
+    const { control, handleSubmit, trigger, formState: { errors, touchedFields } } = useForm<FormData>({
         resolver: zodResolver(esquema),
         defaultValues: {    // Valores por defecto para el formulario
             nombre: '',
@@ -45,7 +49,18 @@ const RegisterScreen = () => {
             password: '',
             password2: ''
         },
+        // mode: "onBlur", // Modo de validación: al perder el foco
     });
+
+    const password = useWatch({ control, name: "password" }); // Obtenemos el valor del campo password
+    const password2 = useWatch({ control, name: "password2" }); // Obtenemos el valor del campo password2
+
+    // Este efecto se dispara cada vez que cambian las contraseñas
+    useEffect(() => {
+        if(touchedFields.password || touchedFields.password2) {
+            trigger(["password", "password2"]); // fuerza la validación en tiempo real
+        }
+    }, [password, password2]);
 
     const onSubmit = (data: FormData) => {
         router.push('/(auth)/Login'); // Cambiar a router.push('/main/pantallaPrincipal')
@@ -80,8 +95,8 @@ const RegisterScreen = () => {
                             )}
                         />
                         {   errors.nombre && 
-                            <Text style={styles.labelErrorInput}>
-                            {errors.nombre.message}
+                            <Text style={[styles.labelInputValidation, {color: 'red'}]}>
+                                {errors.nombre.message}
                             </Text>
                         }
                     </View>
@@ -102,8 +117,8 @@ const RegisterScreen = () => {
                             )}
                         />
                         {   errors.apellido && 
-                            <Text style={styles.labelErrorInput}>
-                            {errors.apellido.message}
+                            <Text style={[styles.labelInputValidation, {color: 'red'}]}>
+                                {errors.apellido.message}
                             </Text>
                         }
                     </View>
@@ -120,12 +135,13 @@ const RegisterScreen = () => {
                                     value={value} 
                                     onChangeText={onChange} // Actualiza el valor del campo
                                     onBlur={onBlur} // Marca el campo como "tocado"
+                                    maxLength={8}
                                 />
                             )}
                         />
                         {   errors.dni && 
-                            <Text style={styles.labelErrorInput}>
-                            {errors.dni.message}
+                            <Text style={[styles.labelInputValidation, {color: 'red'}]}>
+                                {errors.dni.message}
                             </Text>
                         }
                     </View>
@@ -147,11 +163,10 @@ const RegisterScreen = () => {
                         />
                         <Text style={styles.labelInputMini}>Este correo se usará para ingresar a su cuenta.</Text>
                         {   errors.email && 
-                            <Text style={[styles.labelErrorInput, {marginTop: moderateScale(1)}]}>
-                            {errors.email.message}
+                            <Text style={[styles.labelInputValidation, {color: 'red', marginTop: moderateScale(1)}]}>
+                                {errors.email.message}
                             </Text>
                         }
-                        
                     </View>
 
                     <View style={styles.viewInput}>
@@ -171,10 +186,12 @@ const RegisterScreen = () => {
                             )}
                         />
                         {   errors.password && 
-                            <Text style={styles.labelErrorInput}>
-                            {errors.password.message}
+                            <Text style={[styles.labelInputValidation, {color: 'red'}]}>
+                                {errors.password.message}
                             </Text>
                         }
+
+
                     </View>
                     
                     <View style={styles.viewInput}>
@@ -194,10 +211,12 @@ const RegisterScreen = () => {
                             )}
                         />
                         {   errors.password2 && 
-                            <Text style={styles.labelErrorInput}>
-                            {errors.password2.message}
+                            <Text style={[styles.labelInputValidation, {color: 'red'}]}>
+                                {errors.password2.message}
                             </Text>
                         }
+
+                        
                     </View>
 
                     <View style={{ alignItems: 'center' }}>
@@ -229,103 +248,11 @@ const RegisterScreen = () => {
     )
 }
 
-export default RegisterScreen;
-
-
-
-// function RegisterScreennnnnnnnnnn() {   
-//     const router = useRouter(); // Cambiar a useRouter
-    
-//     // const [form, setForm] = useState({
-//     //     nombre: '',
-//     //     apellido: '',
-//     //     dni: '',
-//     //     email: '',
-//     //     password: '',
-//     //     password2: ''
-//     // }); // Estado para el formulario
-
-
-//     return(
-//         <View style={styles.container}>
-
-//             {/* HEADER */}
-//             <View style={styles.header}>
-//                 <Text style={styles.titleHeader}>Formulario de Registro</Text>
-                
-//             </View>
-
-//             {/* BODY */}
-//             <View style={styles.body}>
-//                 <ScrollView>
-                    
-//                     <View style={styles.viewInput}>
-//                         <Text style={styles.labelInput}>Nombres</Text>
-//                         <InputX placeholder="Ingrese Nombres" tipoTeclado="default" value={null} />
-//                     </View>
-
-//                     <View style={styles.viewInput}>
-//                         <Text style={styles.labelInput}>Apellidos</Text>
-//                         <InputX placeholder="Ingrese Apellidos" tipoTeclado="default" value={null} />
-//                     </View>
-
-//                     <View style={styles.viewInput}>
-//                         <Text style={styles.labelInput}>DNI</Text>
-//                         <InputX placeholder="Ingrese DNI" tipoTeclado='number-pad' maxLength={8} value={null} />
-//                     </View>
-
-//                     <View style={styles.viewInput}>
-//                         <Text style={styles.labelInput}>Correo Electrónico</Text>
-//                         <InputX placeholder="Ingrese Correo Electrónico" tipoTeclado='email-address' value={null} />
-//                         <Text style={styles.labelInputMini}>Este correo se usará para ingresar a su cuenta.</Text>
-//                     </View>
-
-//                     <View style={styles.viewInput}>
-//                         <Text style={styles.labelInput}>Contraseña</Text>
-//                         <InputX placeholder="Ingrese Contraseña" tipoTeclado='default' value={password} onChangeText={setPassword} secureTextEntry />
-//                         <LabelStatusPassword status={statusPass} />
-//                     </View>
-                    
-//                     <View style={styles.viewInput}>
-//                         <Text style={styles.labelInput}>Repetir Contraseña</Text>
-//                         <InputX placeholder="Repetir Contraseña" tipoTeclado='default' value={password2} onChangeText={setPassword2} secureTextEntry />
-//                         <LabelStatusPassword status={statusPass} />
-//                     </View>
-
-//                     <View style={{ alignItems: 'center' }}>
-//                         <ButtonX
-//                             buttonStyles={{ width: moderateScale(220), marginTop: 20, borderWidth: 1, borderColor: '#000', padding: 10 }}
-//                             textStyles={{ fontWeight: 'bold' }}
-//                             color="#E0F393"
-//                             bgColorPressed="#BCB850"
-//                             fontSize={moderateScale(22)}
-//                             onPress={handleRegister}>
-//                                 Confirmar Registro
-//                         </ButtonX>
-//                     </View>
-
-//                     {/* FOOTER */}
-//                     <View style={styles.footer}>
-                        
-//                         <Image source={imagePath.logoICCH} style={styles.imageFooter} />
-//                         {/* <Text style={{fontSize: moderateScale(14)}}>UTN FRRe</Text>
-//                         <Text style={{fontSize: moderateScale(14)}}>Rubín-Zamora</Text> */}
-//                     </View>
-
-//                 </ScrollView>
-
-//             </View>
-
-//         </View>
-//     )
-// }
-
 const styles = StyleSheet.create({
     container: { 
         flex: 1, 
         justifyContent: 'center', 
         alignItems: 'center', 
-        // backgroundColor: VerdeAgricultura,
     },
     header:{
         marginTop: moderateVerticalScale(50),
@@ -335,8 +262,6 @@ const styles = StyleSheet.create({
     },
     body:{
         flexGrow: 1,
-        // paddingRight: moderateScale(10),
-        // paddingLeft: moderateScale(40),
         marginTop: moderateVerticalScale(95),
         marginBottom: moderateVerticalScale(30),
         width: '100%',
@@ -355,7 +280,6 @@ const styles = StyleSheet.create({
         fontSize: moderateScale(25), 
         marginTop: moderateScale(15),
         marginBottom: 2,
-
     },
     labelInputMini:{
         fontSize: moderateScale(15), 
@@ -363,21 +287,39 @@ const styles = StyleSheet.create({
         paddingLeft: moderateScale(10),
         opacity: 0.7,
     },
-    labelErrorInput: {
+    labelInputValidation:{
         fontSize: moderateScale(15), 
         marginTop: moderateScale(-10),
         paddingLeft: moderateScale(10),
         fontWeight: 'bold',
-        color: 'red',
+    },
+    // labelInputValidation: {
+    //     color: 'red',
+    // },
+    viewInput:{
+        paddingHorizontal: moderateScale(40),
+    },
+    containerPasswClear:{
+        // // paddingTop: moderateScale(8),
+        // paddingBottom: moderateScale(12),
+        // paddingHorizontal: moderateScale(10),
+
+        // marginHorizontal: moderateScale(30),
+        // marginTop: moderateScale(8),
+
+        // borderRadius: 16,
+        // borderWidth: 1,
+        // borderColor: COLORES.backgroundBlanco,
+    },
+    containerPasswError: {
+        borderColor: 'red',
+        backgroundColor: '#FFF3F3', 
     },
     imageFooter: {
       height: moderateScale(100),
       width: moderateScale(100),
       marginBottom: moderateScale(-40),
       resizeMode: "contain",
-    },
-    viewInput:{
-        paddingHorizontal: moderateScale(40),
     },
 
 })
