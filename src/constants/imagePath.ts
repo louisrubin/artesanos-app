@@ -6,5 +6,6 @@ export default {
     iconUser: require('../assets/images/usuario.png'),
     iconStadistics: require('../assets/images/estadisticas.png'),
     iconRegistros: require('../assets/images/base-de-datos.png'),
+    logoUTN: require('../assets/images/utn-logo.png'),
     // iconLogout: require('../assets/images/Logout.png'),
 }

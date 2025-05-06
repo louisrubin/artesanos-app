@@ -9,10 +9,12 @@ type Props = {
     value?: string;
     secureTextEntry?: boolean;
     onChangeText?: (text: string) => void;  // metodo que queremos que se ejecute al cambiar el texto
+    maxLength?: number;
+    onBlur?: () => void; // metodo que queremos que se ejecute al perder el foco
 }
 
 
-export default function InputX( {tipoTeclado, placeholder, value, onChangeText, secureTextEntry = false} : Props ) {
+export default function InputX( {tipoTeclado, placeholder, value, onChangeText, secureTextEntry = false, maxLength, onBlur} : Props ) {
   const colorScheme = useColorScheme() ?? 'light'; // default 'light'
     
   return(
@@ -32,6 +34,8 @@ export default function InputX( {tipoTeclado, placeholder, value, onChangeText, 
         value={value}
         onChangeText={onChangeText}
         keyboardType={ tipoTeclado }
+        maxLength={maxLength}
+        onBlur={onBlur}
     />
     );
 }
