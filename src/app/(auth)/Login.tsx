@@ -34,32 +34,37 @@ export default function LoginScreen() {
           <Text style={[styles.label, {marginTop: moderateScale(16)}]}>Contraseña</Text>
           <InputX placeholder="Ingrese Contraseña" secureTextEntry={true} />
 
-          <ButtonX 
-            buttonStyles={{ width: moderateScale(200), 
-                marginTop: moderateScale(30), borderWidth: 1,
-                borderColor: '#000', padding: moderateScale(12),}}
-            textStyles={{ fontWeight: 'bold' }}
-            color="#E0F393"
-            bgColorPressed="#BCB850"
-            fontSize={moderateScale(20)}
-            iconParam={imagePath.iconLogin}
-            onPress={() => router.push('/(main)')} // Cambiar a router.push('/main/pantallaPrincipal')
-          >
-            Iniciar Sesión
-          </ButtonX>
+            <ButtonX 
+              buttonStyles={{ width: moderateScale(200), 
+                  marginTop: moderateScale(30), borderWidth: 1,
+                  borderColor: '#000', padding: moderateScale(12),}}
+              textStyles={{ fontWeight: 'bold' }}
+              color="#E0F393"
+              bgColorPressed="#BCB850"
+              fontSize={moderateScale(20)}
+              iconParam={imagePath.iconLogin}
+              iconPosition="right"
+              onPress={() => router.push('/(main)')} // Cambiar a router.push('/main/pantallaPrincipal')
+            >
+              Iniciar Sesión
+            </ButtonX>
 
-          <ButtonX      
-            buttonStyles={{ width: moderateScale(120), 
-              marginTop: moderateScale(18), paddingVertical: moderateScale(6)}}           
-            color="#A0AE6A"
-            bgColorPressed="#BCB850"
-            fontSize={moderateScale(15)}
-            iconParam={imagePath.iconRegister}
-            onPress={() => router.push('/(auth)/Register')} // Cambiar a router.push('/auth/Register')
-          >
-            o Registrarse
-          </ButtonX>
-        </View>
+            <ButtonX      
+              buttonStyles={{ width: moderateScale(120), 
+                marginTop: moderateScale(18), paddingVertical: moderateScale(6)}}           
+              color="#A0AE6A"
+              bgColorPressed="#BCB850"
+              textStyles={styles.btnRegistrarse}
+              fontSize={moderateScale(15)}
+              iconParam={imagePath.iconRegister}
+              iconPosition="right"
+              onPress={() => router.push('/(auth)/Register')} 
+            >
+              o Registrarse
+            </ButtonX>
+          </View>
+        </KeyboardAvoidingView>
+
 
         {/* FOOTER */}
         <View style={styles.footer}>
