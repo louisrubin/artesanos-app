@@ -1,9 +1,23 @@
+import React from "react";
 import { Pressable, StyleSheet, Text, Image } from "react-native";
 
 // https://dev.to/9bytes/crafting-a-custom-button-component-in-react-native-2inj
 
-export default function ButtonX(props) {
-    const fontSizeParam = props.fontSize;
+type PropsType = {
+    // definicion de los tipos para cada Param y si es opcional '?'
+    iconPosition?: 'right' | 'left'
+    fontSize?: number;
+    disabled?: boolean;
+    bgColorPressed?: string;
+    color?: string;
+    buttonStyles?: any;
+    onPress: () => void;
+    iconParam?: any;
+    textStyles?: any;
+    children?: React.ReactNode;
+}
+
+export default function ButtonX(props: PropsType) {
 
     return (
         <Pressable
@@ -22,27 +36,27 @@ export default function ButtonX(props) {
             onPress={props.onPress}
         >
             {/* Renderizar ícono antes o después del texto según iconPosition */}
-            {props.iconParam && props.iconPosition === "left" ? (
+            { props.iconParam && props.iconPosition === 'left' ? (
                 <Image
                     source={props.iconParam}
                     style={{
-                        height: fontSizeParam,
-                        width: fontSizeParam,
+                        height: props.fontSize,
+                        width: props.fontSize,
                         marginRight: 5, // Espacio entre ícono y texto
                     }}
                 />
             ) : null}
 
-            <Text style={[styles.text, props.textStyles, { fontSize: fontSizeParam }]}>
+            <Text style={[styles.text, props.textStyles, { fontSize: props.fontSize }]}>
                 {props.children || "Pulsar"}
             </Text>
 
-            {props.iconParam && props.iconPosition === "right" ? (
+            { props.iconParam && props.iconPosition === 'right' ? (
                 <Image
                     source={props.iconParam}
                     style={{
-                        height: fontSizeParam,
-                        width: fontSizeParam,
+                        height: props.fontSize,
+                        width: props.fontSize,
                         marginLeft: 5, // Espacio entre texto e ícono
                     }}
                 />
