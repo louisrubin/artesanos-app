@@ -1,4 +1,4 @@
-import { Alert, Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router'; // Cambiar a useRouter
 import { LinearGradient } from 'expo-linear-gradient';
 import InputX from '../../components/InputX';
@@ -10,7 +10,8 @@ import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import app from '../../../credenciales';
-
+import { useState } from 'react';
+import ModalX from '../../components/Modal';
 
 // ESQUEMA DE ZOD PARA RESTRICCIONES DE LOS CAMPOS
 const esquema = z.object({
@@ -24,6 +25,11 @@ export default function LoginScreen() {
   const router = useRouter(); // Cambiar a useRouter
   const auth = getAuth(app);
 
+  const [isVisibleModal, setIsVisibleModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [isLoadingActivity, setIsLoadingActivity] = useState(true);
+  const [iconButtonModal, setIconButtonModal] = useState(null)
+
   // desestructurar metodos del hook useForm 
   const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(esquema),
@@ -34,21 +40,41 @@ export default function LoginScreen() {
 
   });
 
+  const toggleVisibleModal = () => {
+    setIsVisibleModal(!isVisibleModal)
+  }
+
+  const setLoadingParams = (message) => {
+    // metodo para reutilizar cuando algo está cargando
+    setModalMessage(message);
+    setIsLoadingActivity(true); // SETEA EL ACTIVITY INDICATOR
+    setIsVisibleModal(true);  // MUESTRA EL MODAL
+
+  }
+
+  // ENVIO DE FORMULARIO LOGIN
   function onSubmitLogin(data: FormData){
     const { email, password } = data;
 
+    // verificar conexion internet antes de enviar el formulario
+
+    setLoadingParams("Iniciando");   // setea todo para el loading
+
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Inicio de sesión exitoso
-        const user = userCredential.user;
-        Alert.alert('Inicio de sesión exitoso', `Bienvenido, ${user.email}`);
+        // const user = userCredential.user;
+        setIsVisibleModal(false); // QUITA EL MODAL
         router.push('/(main)'); // Redirige a la pantalla principal
       })
       .catch((error) => {
-        // Manejo de errores
         const errorCode = error.code;
         const errorMessage = error.message;
-        Alert.alert('Error al iniciar sesión', errorMessage);
+        setIsLoadingActivity(false);
+
+        if(errorCode === "auth/invalid-credential"){
+          setModalMessage("Credenciales incorrectas.");
+          setIconButtonModal(imagePath.navigateBeforeLogo);
+        }
       });
   }
 
@@ -57,6 +83,30 @@ export default function LoginScreen() {
     colors={["#C8D29C", "#8A9A46", "#8A9A46"]}
     style={styles.container}
     >
+
+      {/* MODAL DE INICIO DE SESIÓN */}
+      <ModalX
+      isModalVisible={isVisibleModal}
+      title={modalMessage}
+      iconHeader={imagePath.keyLogo}
+      isLoading={isLoadingActivity}
+      onBackdropPress={toggleVisibleModal}
+      >
+        <ButtonX
+          buttonStyles={{ width: moderateScale(150),
+          marginTop: moderateScale(20), paddingVertical: moderateScale(10),
+          }}
+          fontSize={moderateScale(20)}
+          iconParam={iconButtonModal}
+          iconPosition="left"
+          onPress={toggleVisibleModal}
+          >
+            Volver
+        </ButtonX>
+
+      </ModalX>      
+
+
         {/* HEADER */}
         <View style={styles.header}>
           <Image source={imagePath.logoGobChaco} style={styles.imageHeader} />
@@ -78,11 +128,12 @@ export default function LoginScreen() {
                         onChangeText={onChange} />
                 )}
             />
-            {
+            { /*
                 errors.email &&
                 <Text style={[styles.labelInputValidation, {color: 'red'}]}>
                     {errors.email.message}
                 </Text>
+                */
             }
 
             <Text style={[styles.label, {marginTop: moderateScale(16)}]}>Contraseña</Text>
@@ -96,12 +147,15 @@ export default function LoginScreen() {
                 )}
             />
 
-            {
+            { /*
                 errors.password && 
                 <Text style={[styles.labelInputValidation, {color: 'red'}]}>
                     {errors.password.message}
                 </Text>
+                */
             }
+            
+            
 
             {/* BOTONES INCIAR Y REGISTER */}
             <View style={{alignItems: 'center'}}>

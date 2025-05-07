@@ -1,23 +1,25 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, Image } from "react-native";
+import { VerdeNaturaleza } from "../constants/colors";
 
 // https://dev.to/9bytes/crafting-a-custom-button-component-in-react-native-2inj
 
 type PropsType = {
     // definicion de los tipos para cada Param y si es opcional '?'
+    iconParam?: any;
     iconPosition?: 'right' | 'left'
     fontSize?: number;
     disabled?: boolean;
     bgColorPressed?: string;
     color?: string;
     buttonStyles?: any;
-    onPress: () => void;
-    iconParam?: any;
+    onPress?: () => void;
     textStyles?: any;
     children?: React.ReactNode;
 }
 
 export default function ButtonX(props: PropsType) {
+    const {bgColorPressed = VerdeNaturaleza} = props;   // por defecto o sino agarra de props
 
     return (
         <Pressable
@@ -26,7 +28,7 @@ export default function ButtonX(props: PropsType) {
                     backgroundColor: props.disabled
                         ? "#ccc"
                         : pressed
-                        ? props.bgColorPressed
+                        ? bgColorPressed
                         : props.color || "#BCB850",
                 },
                 styles.container,
@@ -70,7 +72,8 @@ const styles = StyleSheet.create({
         flexDirection: "row", // Asegura que el contenido esté en fila
         justifyContent: "center",
         alignItems: "center",
-        borderRadius: 8,
+        borderRadius: 16,
+        
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.4,
