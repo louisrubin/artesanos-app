@@ -7,7 +7,8 @@ import imagePath from "../../constants/imagePath";
 import { z } from "zod";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import ModalX from "../../components/Modal";
 
 const minLengthPassword = 6; // Longitud máxima de la contraseña
 
@@ -62,12 +63,48 @@ export default function RegisterScreen(){
         }
     }, [password, password2]);
 
+    
+
+    // MODAL
+    const [isVisibleModal, setIsVisibleModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+    const [isLoadingActivity, setIsLoadingActivity] = useState(true);
+    const [iconButtonModal, setIconButtonModal] = useState(null);
+
+    // simulacion de registrando
     const onSubmit = (data: FormData) => {
-        router.push('/(auth)/Login'); // Cambiar a router.push('/main/pantallaPrincipal')
+        setModalMessage("Registrando");
+        setIsLoadingActivity(true);
+        setIsVisibleModal(true);
+        setIconButtonModal(imagePath.arrowRightLogo);
+        const timer = setTimeout( () => {
+            setModalMessage("Registro exitoso");
+            setIsLoadingActivity(false);
+        }, 2000)
+        // router.push('/(auth)/Login'); // Cambiar a router.push('/main/pantallaPrincipal')
     }
 
     return(
         <View style={styles.container}>
+
+            <ModalX 
+            isModalVisible={isVisibleModal}
+            title={modalMessage}
+            isLoading={isLoadingActivity}
+            iconHeader={imagePath.checkCircleLogo}
+            onBackdropPress={() => {setIsVisibleModal(!isVisibleModal)}}>
+                <ButtonX
+                    buttonStyles={{ width: moderateScale(150),
+                    marginTop: moderateScale(20), paddingVertical: moderateScale(10),
+                    }}
+                    fontSize={moderateScale(20)}
+                    iconParam={iconButtonModal}
+                    iconPosition="left"
+                    onPress={ () => {setIsVisibleModal(!isVisibleModal)}  }
+                    >
+                    Iniciar Sesión
+                </ButtonX>
+            </ModalX>
 
             {/* HEADER */}
             <View style={styles.header}>

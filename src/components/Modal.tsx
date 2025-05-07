@@ -12,10 +12,11 @@ type PropsParam = {
 }
 
 export default function ModalX(props: PropsParam) {
+    let onBackButtonPress = props.isLoading ? null : props.onBackdropPress;     // si está cargando no puede cerrar el modal
 
     return(
-        <Modal isVisible={props.isModalVisible} onBackdropPress={props.onBackdropPress} 
-            onBackButtonPress={props.onBackdropPress}
+        <Modal isVisible={props.isModalVisible} onBackdropPress={onBackButtonPress} 
+            onBackButtonPress={onBackButtonPress}
             animationIn={"fadeIn"}
             >
             <View style={styles.modalView}>
@@ -31,7 +32,10 @@ export default function ModalX(props: PropsParam) {
                 </Text>
 
                 { /* botones o lo que se quiera agregar por children */}
-                { props.children }
+                {  !props.isLoading && (
+                        props.children
+                    ) 
+                }
 
             </View>
         </Modal>
