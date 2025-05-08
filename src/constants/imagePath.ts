@@ -22,6 +22,8 @@ export default {
     arrowRightLogo: require('../assets/images/Arrow_right.png'),
     cameraLogo: require('../assets/images/Camera.png'),
     galleryLogo: require('../assets/images/Gallery.png'),
+    eyeOpenLogo: require('../assets/images/Eye.png'),
+    eyeOffLogo: require('../assets/images/Eye_off.png'),
 
     
 }
