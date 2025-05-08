@@ -24,6 +24,10 @@ export default {
     galleryLogo: require('../assets/images/Gallery.png'),
     eyeOpenLogo: require('../assets/images/Eye.png'),
     eyeOffLogo: require('../assets/images/Eye_off.png'),
+    accuntCircleLogo: require('../assets/images/account_circle.png'),
+    settingsCircleLogo: require('../assets/images/Settings.png'),
+    userLogo: require('../assets/images/User.png'),
+
 
     
 }

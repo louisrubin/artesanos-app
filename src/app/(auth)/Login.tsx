@@ -64,7 +64,7 @@ export default function LoginScreen() {
       .then((userCredential) => {
         // const user = userCredential.user;
         setIsVisibleModal(false); // QUITA EL MODAL
-        router.push('/(main)'); // Redirige a la pantalla principal
+        router.replace('/(main)'); // Reemplaza con la pantalla principal (no puede volver atras)
       })
       .catch((error) => {
         const errorCode = error.code;
