@@ -10,6 +10,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import app from '../../../credenciales';
+ // Ensure this file exists or update the path
 
 
 // ESQUEMA DE ZOD PARA RESTRICCIONES DE LOS CAMPOS
