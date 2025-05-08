@@ -100,7 +100,7 @@ export default function RegisterScreen(){
             console.error("Error al registrar el usuario:", error);
             Alert.alert("Error", "No se pudo registrar el usuario. Inténtalo de nuevo.");
           }
-
+}
     return(
         <View style={styles.container}>
 
