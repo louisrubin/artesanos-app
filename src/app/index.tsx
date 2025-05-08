@@ -11,12 +11,11 @@ export default function Index() {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            router.push('/(auth)/Login'); // Cambiar a ('/auth/Login')
+            router.replace('/(auth)/Login'); // Cambiar a ('/auth/Login')
         }, 2000); // 2 segundos de espera
 
         return () => clearTimeout(timer); // Limpiar el temporizador al desmontar el componente
     }
-    
     , [])
 
     return (
@@ -35,7 +34,7 @@ export default function Index() {
             {/* BODY  */}
             <View style={styles.body}>
                 <ActivityIndicator size="large" color="#000" />
-                <Text style={styles.labelIniciando}>Iniciando</Text>                
+                {/* <Text style={styles.labelIniciando}>Ingresando</Text> */}
             </View>
 
             {/* FOOTER */}

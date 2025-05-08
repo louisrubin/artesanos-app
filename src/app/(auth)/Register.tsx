@@ -7,11 +7,13 @@ import imagePath from "../../constants/imagePath";
 import { z } from "zod";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from "react";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { addDoc, collection, getFirestore } from "firebase/firestore";
 import  app  from "../../../credenciales"; // Asegúrate de exportar `db` desde credenciales.js
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { useEffect, useState } from "react";
+import ModalX from "../../components/Modal";
+
 
 const minLengthPassword = 6; // Longitud máxima de la contraseña
 const db = getFirestore(app); // Inicializa Firestore con la app de Firebase
@@ -67,7 +69,16 @@ export default function RegisterScreen(){
         }
     }, [password, password2]);
 
+    const [isVisibleModal, setIsVisibleModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+    const [isLoadingActivity, setIsLoadingActivity] = useState(true);
+    const [iconButtonModal, setIconButtonModal] = useState(null);
+        
     const onSubmit =  async (data: FormData) => {
+        setModalMessage("Registrando");
+        setIsLoadingActivity(true);
+        setIsVisibleModal(true);
+        setIconButtonModal(imagePath.arrowRightLogo);
         try {
             // Registrar al usuario en Firebase Authentication
             const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
@@ -89,10 +100,28 @@ export default function RegisterScreen(){
             console.error("Error al registrar el usuario:", error);
             Alert.alert("Error", "No se pudo registrar el usuario. Inténtalo de nuevo.");
           }
-    }
 
     return(
         <View style={styles.container}>
+
+            <ModalX 
+            isModalVisible={isVisibleModal}
+            title={modalMessage}
+            isLoading={isLoadingActivity}
+            iconHeader={imagePath.checkCircleLogo}
+            onBackdropPress={() => {setIsVisibleModal(!isVisibleModal)}}>
+                <ButtonX
+                    buttonStyles={{ width: moderateScale(150),
+                    marginTop: moderateScale(20), paddingVertical: moderateScale(10),
+                    }}
+                    fontSize={moderateScale(20)}
+                    iconParam={iconButtonModal}
+                    iconPosition="left"
+                    onPress={ () => {setIsVisibleModal(!isVisibleModal)}  }
+                    >
+                    Iniciar Sesión
+                </ButtonX>
+            </ModalX>
 
             {/* HEADER */}
             <View style={styles.header}>
@@ -206,7 +235,7 @@ export default function RegisterScreen(){
                                     value={value} 
                                     onChangeText={onChange} // Actualiza el valor del campo
                                     onBlur={onBlur} // Marca el campo como "tocado"
-                                    secureTextEntry={true} // Campo de contraseña
+                                    passwordInput // Campo de contraseña
                                 />
                             )}
                         />
@@ -231,7 +260,7 @@ export default function RegisterScreen(){
                                     value={value} 
                                     onChangeText={onChange} // Actualiza el valor del campo
                                     onBlur={onBlur} // Marca el campo como "tocado"
-                                    secureTextEntry={true} // Campo de contraseña
+                                    passwordInput // Campo de contraseña
                                 />
                             )}
                         />
@@ -308,37 +337,16 @@ const styles = StyleSheet.create({
     },
     labelInputMini:{
         fontSize: moderateScale(15), 
-        marginTop: moderateScale(-10),
         paddingLeft: moderateScale(10),
         opacity: 0.7,
     },
     labelInputValidation:{
         fontSize: moderateScale(15), 
-        marginTop: moderateScale(-10),
         paddingLeft: moderateScale(10),
         fontWeight: 'bold',
     },
-    // labelInputValidation: {
-    //     color: 'red',
-    // },
     viewInput:{
         paddingHorizontal: moderateScale(40),
-    },
-    containerPasswClear:{
-        // // paddingTop: moderateScale(8),
-        // paddingBottom: moderateScale(12),
-        // paddingHorizontal: moderateScale(10),
-
-        // marginHorizontal: moderateScale(30),
-        // marginTop: moderateScale(8),
-
-        // borderRadius: 16,
-        // borderWidth: 1,
-        // borderColor: COLORES.backgroundBlanco,
-    },
-    containerPasswError: {
-        borderColor: 'red',
-        backgroundColor: '#FFF3F3', 
     },
     imageFooter: {
       height: moderateScale(100),
