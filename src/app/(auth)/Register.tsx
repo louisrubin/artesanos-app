@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import ButtonX from "../../components/ButtonX";
 import { moderateScale, moderateVerticalScale } from "react-native-size-matters";
 import InputX from "../../components/InputX";
@@ -7,11 +7,16 @@ import imagePath from "../../constants/imagePath";
 import { z } from "zod";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { addDoc, collection, getFirestore } from "firebase/firestore";
+import  app  from "../../../credenciales"; // Asegúrate de exportar `db` desde credenciales.js
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { useEffect, useState } from "react";
 import ModalX from "../../components/Modal";
 
-const minLengthPassword = 6; // Longitud máxima de la contraseña
 
+const minLengthPassword = 6; // Longitud máxima de la contraseña
+const db = getFirestore(app); // Inicializa Firestore con la app de Firebase
 const esquema = z.object({
     nombre: z.string().min(1, { message: "Campo requerido" }),
     apellido: z.string().min(1, { message: "Campo requerido" }),
@@ -39,6 +44,7 @@ type FormData = z.infer<typeof esquema>; // Inferir el tipo de datos del esquema
 
 export default function RegisterScreen(){
     const router = useRouter(); // Cambiar a useRouter
+    const auth = getAuth();
 
     const { control, handleSubmit, trigger, formState: { errors, touchedFields } } = useForm<FormData>({
         resolver: zodResolver(esquema),
@@ -63,26 +69,37 @@ export default function RegisterScreen(){
         }
     }, [password, password2]);
 
-    
-
-    // MODAL
     const [isVisibleModal, setIsVisibleModal] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [isLoadingActivity, setIsLoadingActivity] = useState(true);
     const [iconButtonModal, setIconButtonModal] = useState(null);
-
-    // simulacion de registrando
-    const onSubmit = (data: FormData) => {
+        
+    const onSubmit =  async (data: FormData) => {
         setModalMessage("Registrando");
         setIsLoadingActivity(true);
         setIsVisibleModal(true);
         setIconButtonModal(imagePath.arrowRightLogo);
-        const timer = setTimeout( () => {
-            setModalMessage("Registro exitoso");
-            setIsLoadingActivity(false);
-        }, 2000)
-        // router.push('/(auth)/Login'); // Cambiar a router.push('/main/pantallaPrincipal')
-    }
+        try {
+            // Registrar al usuario en Firebase Authentication
+            const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
+            const user = userCredential.user;
+      
+            // Guardar datos adicionales en Firestore
+            await addDoc(collection(db, "registros"), {
+              uid: user.uid, // ID único del usuario
+              nombre: data.nombre,
+              apellido: data.apellido,
+              dni: data.dni,
+              email: data.email,
+              fechaRegistro: new Date().toISOString(),
+            });
+      
+            Alert.alert("Registro exitoso", "El usuario ha sido registrado correctamente.");
+            router.push("/(auth)/Login"); // Redirigir al login
+          } catch (error) {
+            console.error("Error al registrar el usuario:", error);
+            Alert.alert("Error", "No se pudo registrar el usuario. Inténtalo de nuevo.");
+          }
 
     return(
         <View style={styles.container}>
