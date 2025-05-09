@@ -109,7 +109,7 @@ export default function LoginScreen() {
 
         {/* HEADER */}
         <View style={styles.header}>
-          <Image source={imagePath.logoGobChaco} style={styles.imageHeader} />
+            <Image source={imagePath.logoGobChaco} style={styles.imageHeader} />
         </View>
 
         <View style={{ marginTop: moderateVerticalScale(-65), alignItems: 'center' }}>
@@ -153,9 +153,7 @@ export default function LoginScreen() {
                     {errors.password.message}
                 </Text>
                 */
-            }
-            
-            
+            }            
 
             {/* BOTONES INCIAR Y REGISTER */}
             <View style={{alignItems: 'center'}}>
@@ -164,7 +162,7 @@ export default function LoginScreen() {
                     marginTop: moderateScale(30), padding: moderateScale(12),
                     }}
                     textStyles={{ fontWeight: 'bold' }}
-                    color="#E0F393"
+                    bgColor="#E0F393"
                     bgColorPressed="#BCB850"
                     fontSize={moderateScale(20)}
                     iconParam={imagePath.iconLogin}
@@ -178,7 +176,7 @@ export default function LoginScreen() {
                     buttonStyles={{ width: moderateScale(120), 
                     marginTop: moderateScale(18), paddingVertical: moderateScale(6)
                     }}           
-                    color="#A0AE6A"
+                    bgColor="#A0AE6A"
                     bgColorPressed="#BCB850"
                     textStyles={null}
                     fontSize={moderateScale(15)}
@@ -195,9 +193,9 @@ export default function LoginScreen() {
 
         {/* FOOTER */}
         <View style={styles.footer}>
-          <Image source={imagePath.logoICCH} style={styles.imageFooter} />
-          <Text style={styles.labelCreditos}>UTN FRRe</Text>
-          <Text style={styles.labelCreditos}>Rubín-Zamora</Text>
+            <Image source={imagePath.logoICCH} style={styles.imageFooter} />
+            <Text style={styles.labelCreditos}>UTN FRRe</Text>
+            <Text style={styles.labelCreditos}>Rubín-Zamora</Text>
         </View>
 
     </LinearGradient>    

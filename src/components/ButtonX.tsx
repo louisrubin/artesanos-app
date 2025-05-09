@@ -11,7 +11,7 @@ type PropsType = {
     fontSize?: number;
     disabled?: boolean;
     bgColorPressed?: string;
-    color?: string;
+    bgColor?: string;
     buttonStyles?: any;
     onPress?: () => void;
     textStyles?: any;
@@ -29,7 +29,7 @@ export default function ButtonX(props: PropsType) {
                         ? "#D9D9D9"
                         : pressed
                         ? bgColorPressed
-                        : props.color || "#BCB850",
+                        : props.bgColor || "#BCB850",
                 },
                 styles.container,
                 props.disabled ? {opacity: 0.5, borderColor: "#B3B3B3"} : null,

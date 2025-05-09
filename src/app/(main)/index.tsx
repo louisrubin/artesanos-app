@@ -26,7 +26,7 @@ export default function PantallaPrincipal() {
                         onPress={() => router.push('/UserSettings')}>
                         <Image source={imagePath.settingsCircleLogo} style={styles.settingsIcon} />
                     </Pressable>
-                    
+
                 <Image source={imagePath.logoICCH} style={styles.imageHeader} />
             </View>
 
@@ -37,8 +37,8 @@ export default function PantallaPrincipal() {
                         marginTop: moderateScale(30),
                         padding: moderateScale(12),}}
                 textStyles={{ fontWeight: 'bold',marginLeft: moderateScale(10) }}
-                color="#E0F393"
-                bgColorPressed="#BCB850"
+                bgColor="#E0F393"
+                bgColorPressed="#BBCE70"
                 fontSize={moderateScale(20)}
                 iconParam={imagePath.iconUser}
                 iconPosition="left"
@@ -50,7 +50,7 @@ export default function PantallaPrincipal() {
                         marginTop: moderateScale(30),
                         padding: moderateScale(12),}}
                     textStyles={{ fontWeight: 'bold',marginLeft: moderateScale(10) }}
-                    color="#E0F393"
+                    bgColor="#E0F393"
                     bgColorPressed="#BCB850"
                     fontSize={moderateScale(20)}
                     iconParam={imagePath.iconRegistros}
@@ -64,7 +64,7 @@ export default function PantallaPrincipal() {
                         marginTop: moderateScale(30), 
                         padding: moderateScale(12),}}
                     textStyles={{ fontWeight: 'bold',marginLeft: moderateScale(10) }}
-                    color="#E0F393"
+                    bgColor="#E0F393"
                     bgColorPressed="#BCB850"
                     fontSize={moderateScale(20)}
                     iconParam={imagePath.iconStadistics}
