@@ -76,35 +76,35 @@ export default function LoginScreen() {
           setIconButtonModal(imagePath.navigateBeforeLogo);
         }
       });
-  }
+    }
 
-  return (
-    <LinearGradient 
-    colors={["#C8D29C", "#8A9A46", "#8A9A46"]}
-    style={styles.container}
-    >
+    return (
+        <LinearGradient 
+        colors={["#C8D29C", "#8A9A46", "#8A9A46"]}
+        style={styles.container}
+        >
 
-      {/* MODAL DE INICIO DE SESIÓN */}
-      <ModalX
-      isModalVisible={isVisibleModal}
-      title={modalMessage}
-      iconHeader={imagePath.keyLogo}
-      isLoading={isLoadingActivity}
-      onBackdropPress={toggleVisibleModal}
-      >
-        <ButtonX
-          buttonStyles={{ width: moderateScale(150),
-          marginTop: moderateScale(20), paddingVertical: moderateScale(10),
-          }}
-          fontSize={moderateScale(20)}
-          iconParam={iconButtonModal}
-          iconPosition="left"
-          onPress={toggleVisibleModal}
-          >
-            Volver
-        </ButtonX>
+            {/* MODAL DE INICIO DE SESIÓN */}
+            <ModalX
+            isModalVisible={isVisibleModal}
+            title={modalMessage}
+            iconHeader={imagePath.keyLogo}
+            isLoading={isLoadingActivity}
+            onBackdropPress={toggleVisibleModal}
+            >
+                <ButtonX
+                buttonStyles={{ width: moderateScale(150),
+                marginTop: moderateScale(20), paddingVertical: moderateScale(10),
+                }}
+                fontSize={moderateScale(20)}
+                iconParam={iconButtonModal}
+                iconPosition="left"
+                onPress={toggleVisibleModal}
+                >
+                    Volver
+                </ButtonX>
 
-      </ModalX>      
+        </ModalX>      
 
 
         {/* HEADER */}
@@ -161,8 +161,7 @@ export default function LoginScreen() {
             <View style={{alignItems: 'center'}}>
                 <ButtonX 
                     buttonStyles={{ width: moderateScale(200), 
-                    marginTop: moderateScale(30), borderWidth: 1,
-                    borderColor: '#000', padding: moderateScale(12),
+                    marginTop: moderateScale(30), padding: moderateScale(12),
                     }}
                     textStyles={{ fontWeight: 'bold' }}
                     color="#E0F393"

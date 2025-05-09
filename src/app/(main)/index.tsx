@@ -5,6 +5,7 @@ import ButtonX from '../../components/ButtonX';
 import { LinearGradient } from 'expo-linear-gradient';
 import { moderateScale, moderateVerticalScale } from 'react-native-size-matters';
 import imagePath from '../../constants/imagePath';
+import { VerdeAgricultura } from '../../constants/colors';
 
 export default function PantallaPrincipal() {
       const router = useRouter(); // Cambiar a useRouter
@@ -16,11 +17,16 @@ export default function PantallaPrincipal() {
         >
             {/* HEADER */}
             <View style={styles.header}>
-                <View style={styles.userIconContainer}>
-                    <Pressable onPress={() => router.push('/UserSettings')}>
+                    <Pressable style={ ({pressed}) => [
+                        styles.userIconContainer,
+                        {
+                            backgroundColor: pressed ? VerdeAgricultura : "#ffb",
+                        }
+                    ]} 
+                        onPress={() => router.push('/UserSettings')}>
                         <Image source={imagePath.settingsCircleLogo} style={styles.settingsIcon} />
                     </Pressable>
-                </View>
+                    
                 <Image source={imagePath.logoICCH} style={styles.imageHeader} />
             </View>
 
@@ -28,8 +34,8 @@ export default function PantallaPrincipal() {
             <View style={styles.body}>
                 <ButtonX
                 buttonStyles={{ width: moderateScale(300), 
-                        marginTop: moderateScale(30), borderWidth: 1,
-                        borderColor: '#000', padding: moderateScale(12),}}
+                        marginTop: moderateScale(30),
+                        padding: moderateScale(12),}}
                 textStyles={{ fontWeight: 'bold',marginLeft: moderateScale(10) }}
                 color="#E0F393"
                 bgColorPressed="#BCB850"
@@ -40,29 +46,31 @@ export default function PantallaPrincipal() {
                 </ButtonX>
 
                 <ButtonX
-                buttonStyles={{ width: moderateScale(300), 
-                        marginTop: moderateScale(30), borderWidth: 1,
-                        borderColor: '#000', padding: moderateScale(12),}}
-                textStyles={{ fontWeight: 'bold',marginLeft: moderateScale(10) }}
+                    buttonStyles={{ width: moderateScale(300), 
+                        marginTop: moderateScale(30),
+                        padding: moderateScale(12),}}
+                    textStyles={{ fontWeight: 'bold',marginLeft: moderateScale(10) }}
                     color="#E0F393"
                     bgColorPressed="#BCB850"
                     fontSize={moderateScale(20)}
                     iconParam={imagePath.iconRegistros}
                     iconPosition="left"
-                onPress={() => router.push('/encuesta')} >Registros 
+                    disabled
+                    onPress={() => router.push('/encuesta')} >Registros 
                 </ButtonX>
 
                 <ButtonX
-                buttonStyles={{ width: moderateScale(300), 
-                        marginTop: moderateScale(30), borderWidth: 1,
-                        borderColor: '#000', padding: moderateScale(12),}}
+                    buttonStyles={{ width: moderateScale(300), 
+                        marginTop: moderateScale(30), 
+                        padding: moderateScale(12),}}
                     textStyles={{ fontWeight: 'bold',marginLeft: moderateScale(10) }}
                     color="#E0F393"
                     bgColorPressed="#BCB850"
                     fontSize={moderateScale(20)}
                     iconParam={imagePath.iconStadistics}
                     iconPosition="left"
-                onPress={() => router.push('/encuesta')} >Estadísticas
+                    disabled
+                    onPress={() => router.push('/encuesta')} >Estadísticas
                 </ButtonX>
             </View>
 
@@ -111,7 +119,7 @@ const styles = StyleSheet.create({
         marginRight: moderateScale(20),
         borderWidth: 1,
         borderRadius: 60,
-        backgroundColor: "#ffb"
+        // backgroundColor: "#ffb"
     },
     settingsIcon: {
         resizeMode: "contain",

@@ -26,12 +26,13 @@ export default function ButtonX(props: PropsType) {
             style={({ pressed }) => [
                 {
                     backgroundColor: props.disabled
-                        ? "#ccc"
+                        ? "#D9D9D9"
                         : pressed
                         ? bgColorPressed
                         : props.color || "#BCB850",
                 },
                 styles.container,
+                props.disabled ? {opacity: 0.5, borderColor: "#B3B3B3"} : null,
                 props.buttonStyles,
             ]}
             disabled={props.disabled}
@@ -41,26 +42,32 @@ export default function ButtonX(props: PropsType) {
             { props.iconParam && props.iconPosition === 'left' ? (
                 <Image
                     source={props.iconParam}
-                    style={{
+                    style={[{
                         height: props.fontSize,
                         width: props.fontSize,
                         marginRight: 5, // Espacio entre ícono y texto
-                    }}
+                    },
+                    props.disabled ? {opacity:0.7} : null
+                ]}
                 />
             ) : null}
 
-            <Text style={[styles.text, props.textStyles, { fontSize: props.fontSize }]}>
+            <Text style={[styles.text, props.textStyles, { fontSize: props.fontSize },
+                props.disabled ? {opacity:0.7} : null
+            ]}>
                 {props.children || "Pulsar"}
             </Text>
 
             { props.iconParam && props.iconPosition === 'right' ? (
                 <Image
                     source={props.iconParam}
-                    style={{
+                    style={[{
                         height: props.fontSize,
                         width: props.fontSize,
                         marginLeft: 5, // Espacio entre texto e ícono
-                    }}
+                    },
+                    props.disabled ? {opacity:0.7} : null
+                ]}
                 />
             ) : null}
         </Pressable>
@@ -73,6 +80,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 16,
+        borderWidth: 1,
         
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 4 },
@@ -82,6 +90,6 @@ const styles = StyleSheet.create({
     },
     text: {
         color: "#000",
-        fontWeight: "bold",
+        borderColor: '#000', 
     },
 });
