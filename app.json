@@ -11,7 +11,7 @@
     "splash": {
       "image": "./src/assets/images/logo-icch.png",
       "resizeMode": "contain",
-      "backgroundColor": "#8A9A46"
+      "backgroundColor": "#B6CD59"
     },
     "ios": {
       "supportsTablet": true

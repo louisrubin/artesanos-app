@@ -23,7 +23,7 @@ export default function Index() {
 
         <>
         <LinearGradient 
-            colors={["#C8D29C", "#8A9A46", "#8A9A46"]}
+            colors={["#c85",  "#da7"]}
             style={styles.container}
         >
             {/* HEADER */}
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   imageHeader: {
-    // marginTop: moderateScale(-110),
+    marginTop: moderateScale(-50),
     height: moderateScale(350),
     width: moderateScale(350),
     resizeMode: "contain",

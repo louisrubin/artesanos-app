@@ -80,7 +80,7 @@ export default function LoginScreen() {
 
     return (
         <LinearGradient 
-        colors={["#C8D29C", "#8A9A46", "#8A9A46"]}
+        colors={["#c85", "#da7"]}
         style={styles.container}
         >
 
@@ -162,8 +162,8 @@ export default function LoginScreen() {
                     marginTop: moderateScale(30), padding: moderateScale(12),
                     }}
                     textStyles={{ fontWeight: 'bold' }}
-                    bgColor="#E0F393"
-                    bgColorPressed="#BCB850"
+                    bgColor="#E0F393" //E0F393
+                    bgColorPressed="#BCB85d"
                     fontSize={moderateScale(20)}
                     iconParam={imagePath.iconLogin}
                     iconPosition="right"
@@ -173,11 +173,11 @@ export default function LoginScreen() {
                 </ButtonX>
 
                 <ButtonX      
-                    buttonStyles={{ width: moderateScale(120), 
-                    marginTop: moderateScale(18), paddingVertical: moderateScale(6)
+                    buttonStyles={{ width: moderateScale(140), 
+                    marginTop: moderateScale(18), paddingVertical: moderateScale(6),
                     }}           
-                    bgColor="#A0AE6A"
-                    bgColorPressed="#BCB850"
+                    // bgColor="#A0AE6A"
+                    bgColorPressed="#f86"
                     textStyles={null}
                     fontSize={moderateScale(15)}
                     iconParam={imagePath.iconRegister}
@@ -205,7 +205,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: moderateVerticalScale(20),
+    paddingVertical: moderateVerticalScale(30),
     paddingHorizontal: moderateScale(40),
   },
   header: {
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
   imageFooter: {
     height: moderateScale(150),
     width: moderateScale(150),
-    marginBottom: moderateVerticalScale(-20),
+    marginBottom: moderateVerticalScale(-10),
     resizeMode: "contain",
   },
   labelTitulo: {
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     // marginTop: 5,
   },
   label: {
-        fontSize: moderateScale(25), 
+        fontSize: moderateScale(20), 
         marginTop: moderateScale(15),
         marginBottom: 2,
         alignSelf: 'flex-start',

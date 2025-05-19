@@ -16,6 +16,7 @@ type PropsType = {
     onPress?: () => void;
     textStyles?: any;
     children?: React.ReactNode;
+    transparent?: boolean;
 }
 
 export default function ButtonX(props: PropsType) {
@@ -29,11 +30,12 @@ export default function ButtonX(props: PropsType) {
                         ? "#D9D9D9"
                         : pressed
                         ? bgColorPressed
-                        : props.bgColor || "#BCB850",
+                        : props.bgColor 
                 },
                 styles.container,
                 props.disabled ? {opacity: 0.5, borderColor: "#B3B3B3"} : null,
                 props.buttonStyles,
+                props.bgColor ? styles.shadowButton : null,
             ]}
             disabled={props.disabled}
             onPress={props.onPress}
@@ -81,15 +83,16 @@ const styles = StyleSheet.create({
         alignItems: "center",
         borderRadius: 16,
         borderWidth: 1,
-        
+    },
+    text: {
+        color: "#000",
+        borderColor: '#000', 
+    },
+    shadowButton: {
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.4,
         shadowRadius: 4,
         elevation: 12,
-    },
-    text: {
-        color: "#000",
-        borderColor: '#000', 
     },
 });
