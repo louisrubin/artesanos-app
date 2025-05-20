@@ -13,6 +13,8 @@ import ModalX from '../../components/Modal';
 import InputX from '../../components/InputX';
 import ButtonX from '../../components/ButtonX';
 import imagePath from '../../constants/imagePath';
+import { getUserInfoFirebase, saveLocalUserData } from '../../hooks/firebaseHooks';
+
 
 // ESQUEMA DE ZOD PARA RESTRICCIONES DE LOS CAMPOS
 const esquema = z.object({
@@ -62,14 +64,16 @@ export default function LoginScreen() {
     setLoadingParams("Iniciando");   // setea todo para el loading
 
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // const user = userCredential.user;
-        // saveUserData(user); // Guardar datos del usuario en AsyncStorage
-        
+      .then( 
+          async (userCredential) => {
+            const user = userCredential.user;   // el propio usuario 
+            const userData = await getUserInfoFirebase(user.uid) // sus datos de firebase
 
-        setIsVisibleModal(false); // QUITA EL MODAL
-        router.replace('/(main)'); // Reemplaza con la pantalla principal (no puede volver atras)
-      })
+            await saveLocalUserData(userData); // Guardar datos del usuario en AsyncStorage            
+
+            setIsVisibleModal(false); // QUITA EL MODAL
+            router.replace('/(main)'); // Reemplaza con la pantalla principal (no puede volver atras)
+        })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;

@@ -6,9 +6,8 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../credenciales";
-import { getUserInfo } from "../hooks/firebaseHooks";
+import { getUserInfoFirebase, saveLocalUserData } from "../hooks/firebaseHooks";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { format } from "date-fns";
 
 export default function Index() {
     const [checkingAuth, setCheckingAuth] = useState(true);
@@ -22,22 +21,17 @@ export default function Index() {
                 if(dataStoraged === null){
                     // Si no hay datos del usuario en AsyncStorage, los obtiene de Firebase
                     try{
-                        const userData = await getUserInfo(user.uid); // hook personalizado
+                        const userData = await getUserInfoFirebase(user.uid); // hook personalizado
                         if (userData) {
                         
-                            const fechaFormateada = format(userData.fechaRegistro, 'dd-MM-yyyy HH:mm'); // Convierte la fecha a formato dd/MM/yyyy
-                            userData.fechaRegistro = fechaFormateada; // asigna la fecha a la data
-                            
-                            await AsyncStorage.setItem('userData', JSON.stringify(userData)); // Guardar datos del usuario en AsyncStorage
+                            await saveLocalUserData(userData); // Guarda los datos del usuario en AsyncStorage
                         }
                     }catch (error) {
                         console.error('Error al obtener los datos del usuario:', error);
                     }
                 }
-
                 router.replace('/(main)');  // Usuario logueado, redirige al home o main
-            } 
-            
+            }
             else {
                 // No hay sesión activa
                 await AsyncStorage.removeItem('userData');
