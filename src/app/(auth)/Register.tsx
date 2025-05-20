@@ -1,22 +1,21 @@
 import { useRouter } from "expo-router";
 import { Alert, Image, ScrollView, StyleSheet, Text, View } from "react-native";
-import ButtonX from "../../components/ButtonX";
 import { moderateScale, moderateVerticalScale } from "react-native-size-matters";
-import InputX from "../../components/InputX";
 import imagePath from "../../constants/imagePath";
 import { z } from "zod";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import { addDoc, collection, getFirestore } from "firebase/firestore";
-import  app  from "../../../credenciales"; // Asegúrate de exportar `db` desde credenciales.js
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { doc, setDoc } from "firebase/firestore";
+import { database } from "../../../credenciales"; // Asegúrate de exportar `db` desde credenciales.js
 import { useEffect, useState } from "react";
+
 import ModalX from "../../components/Modal";
+import InputX from "../../components/InputX";
+import ButtonX from "../../components/ButtonX";
 
 
 const minLengthPassword = 6; // Longitud máxima de la contraseña
-const db = getFirestore(app); // Inicializa Firestore con la app de Firebase
 const esquema = z.object({
     nombre: z.string().min(1, { message: "Campo requerido" }),
     apellido: z.string().min(1, { message: "Campo requerido" }),
@@ -85,8 +84,7 @@ export default function RegisterScreen(){
             const user = userCredential.user;
       
             // Guardar datos adicionales en Firestore
-            await addDoc(collection(db, "registros"), {
-              uid: user.uid, // ID único del usuario
+            await setDoc(doc(database, "registros", user.uid), {
               nombre: data.nombre,
               apellido: data.apellido,
               dni: data.dni,
@@ -277,7 +275,7 @@ export default function RegisterScreen(){
                         <ButtonX
                             buttonStyles={{ width: moderateScale(220), marginTop: 20, borderWidth: 1, borderColor: '#000', padding: 10 }}
                             textStyles={{ fontWeight: 'bold' }}
-                            color="#E0F393"
+                            bgColor="#E0F393"
                             bgColorPressed="#BCB850"
                             fontSize={moderateScale(22)}
                             onPress={handleSubmit(onSubmit)} // Cambiar a handleSubmit(onSubmit)

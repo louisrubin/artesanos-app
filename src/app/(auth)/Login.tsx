@@ -1,17 +1,18 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router'; // Cambiar a useRouter
 import { LinearGradient } from 'expo-linear-gradient';
-import InputX from '../../components/InputX';
-import ButtonX from '../../components/ButtonX';
-import imagePath from '../../constants/imagePath';
 import { moderateScale, moderateVerticalScale } from 'react-native-size-matters';
 import { z } from 'zod';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import app from '../../../credenciales';
+import { app } from '../../../credenciales';
 import { useState } from 'react';
+
 import ModalX from '../../components/Modal';
+import InputX from '../../components/InputX';
+import ButtonX from '../../components/ButtonX';
+import imagePath from '../../constants/imagePath';
 
 // ESQUEMA DE ZOD PARA RESTRICCIONES DE LOS CAMPOS
 const esquema = z.object({
@@ -63,6 +64,9 @@ export default function LoginScreen() {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // const user = userCredential.user;
+        // saveUserData(user); // Guardar datos del usuario en AsyncStorage
+        
+
         setIsVisibleModal(false); // QUITA EL MODAL
         router.replace('/(main)'); // Reemplaza con la pantalla principal (no puede volver atras)
       })
