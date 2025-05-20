@@ -11,6 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Index() {
     const [checkingAuth, setCheckingAuth] = useState(true);
+    const [messageLoading, setMessageLoading] = useState('');
     const router = useRouter(); // Cambiar a useRouter
 
     useEffect(() => {
@@ -21,9 +22,10 @@ export default function Index() {
                 if(dataStoraged === null){
                     // Si no hay datos del usuario en AsyncStorage, los obtiene de Firebase
                     try{
+                        setMessageLoading('Cargando datos de Firebase...');
                         const userData = await getUserInfoFirebase(user.uid); // hook personalizado
                         if (userData) {
-                        
+                            setMessageLoading('Guardando datos...');
                             await saveLocalUserData(userData); // Guarda los datos del usuario en AsyncStorage
                         }
                     }catch (error) {
@@ -59,7 +61,7 @@ export default function Index() {
                 {/* BODY  */}
                 <View style={styles.body}>
                     <ActivityIndicator size="large" color="#000" />
-                    {/* <Text style={styles.labelIniciando}>Ingresando</Text> */}
+                    <Text style={styles.labelIniciando}>{messageLoading}</Text>
                 </View>
 
                 {/* FOOTER */}

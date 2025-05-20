@@ -29,7 +29,8 @@ export default function LoginScreen() {
   const auth = getAuth(app);
 
   const [isVisibleModal, setIsVisibleModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalMessage, setModalMessage] = useState('Autenticando...');
   const [isLoadingActivity, setIsLoadingActivity] = useState(true);
   const [iconButtonModal, setIconButtonModal] = useState(null)
 
@@ -49,7 +50,7 @@ export default function LoginScreen() {
 
   const setLoadingParams = (message) => {
     // metodo para reutilizar cuando algo está cargando
-    setModalMessage(message);
+    setModalTitle(message);
     setIsLoadingActivity(true); // SETEA EL ACTIVITY INDICATOR
     setIsVisibleModal(true);  // MUESTRA EL MODAL
 
@@ -67,8 +68,10 @@ export default function LoginScreen() {
       .then( 
           async (userCredential) => {
             const user = userCredential.user;   // el propio usuario 
+            setModalMessage("Cargando datos de Firebase..."); // mensaje de carga
             const userData = await getUserInfoFirebase(user.uid) // sus datos de firebase
 
+            setModalMessage("Guardando datos..."); // mensaje de carga
             await saveLocalUserData(userData); // Guardar datos del usuario en AsyncStorage            
 
             setIsVisibleModal(false); // QUITA EL MODAL
@@ -80,7 +83,7 @@ export default function LoginScreen() {
         setIsLoadingActivity(false);
 
         if(errorCode === "auth/invalid-credential"){
-          setModalMessage("Credenciales incorrectas.");
+          setModalTitle("Credenciales incorrectas.");
           setIconButtonModal(imagePath.navigateBeforeLogo);
         }
       });
@@ -95,10 +98,11 @@ export default function LoginScreen() {
             {/* MODAL DE INICIO DE SESIÓN */}
             <ModalX
             isModalVisible={isVisibleModal}
-            title={modalMessage}
+            title={modalTitle}
             iconHeader={imagePath.keyLogo}
             isLoading={isLoadingActivity}
             onBackdropPress={toggleVisibleModal}
+            messageLoading={modalMessage}
             >
                 <ButtonX
                 buttonStyles={{ width: moderateScale(150),
