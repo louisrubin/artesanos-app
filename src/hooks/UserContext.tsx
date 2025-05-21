@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { auth, database } from "../../credenciales"; // Ajustá según tu ruta
 import { doc, getDoc } from "firebase/firestore";
-import { format, set } from "date-fns";
+import { format } from "date-fns";
 import { onAuthStateChanged } from "firebase/auth";
 
 const UserContext = createContext(null);    // Crear el contexto del usuario --> valor default null

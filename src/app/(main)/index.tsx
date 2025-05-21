@@ -5,25 +5,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { moderateScale, moderateVerticalScale } from 'react-native-size-matters';
 import imagePath from '../../constants/imagePath';
 import { VerdeAgricultura } from '../../constants/colors';
-// import { useEffect, useState } from 'react';
-// import { auth } from '../../../credenciales';
-// import { getStoredUserData } from '../../hooks/firebaseHooks';
 import { useUser } from '../../hooks/UserContext';
 
 export default function PantallaPrincipal() {
     const router = useRouter(); // Cambiar a useRouter
     const { userData } = useUser(); // Obtener el contexto del usuario
-    // const [userData, setUserData] = useState(null);
-
-    // useEffect(() => {
-    //     const fetchUserData = async () => {
-    //         if(auth.currentUser){
-    //             const storedData = await getStoredUserData();   // obtiene los datos del usuario
-    //             setUserData(storedData);
-    //         }
-    //     }
-    //     fetchUserData();
-    // }, []);
     
     return (
         <LinearGradient

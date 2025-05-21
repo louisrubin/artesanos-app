@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react'
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import ButtonX from '../../components/ButtonX'
@@ -7,23 +6,12 @@ import imagePath from '../../constants/imagePath';
 import { moderateScale, moderateVerticalScale } from 'react-native-size-matters';
 import InputAndLabelX from '../../components/InputAndLabel';
 import { auth } from '../../../credenciales';
-// import { getStoredUserData } from '../../hooks/firebaseHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUser } from '../../hooks/UserContext';
 
 export default function UserSettings() {
     const router = useRouter();
     const { userData, setUserData } = useUser(); // Obtener el contexto del usuario
-
-    // useEffect(() => {
-    //     const fetchUserData = async () => {
-    //         if(auth.currentUser){
-    //             const storedData = await getStoredUserData();   // obtiene los datos del usuario
-    //             setUserData(storedData);
-    //         }
-    //     }
-    //     fetchUserData();
-    // }, []);
 
     const handleLogOut = async () => {
         // lógica para cerrar sesión

@@ -3,33 +3,24 @@ import { View, Image, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { moderateScale, moderateVerticalScale } from "react-native-size-matters";
 import imagePath from "../constants/imagePath";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
-// import { onAuthStateChanged } from "firebase/auth";
-// import { auth } from "../../credenciales";
-// import { getUserInfoFirebase, saveLocalUserData } from "../hooks/firebaseHooks";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect } from "react";
 import { useUser } from "../hooks/UserContext";
 
 export default function Index() {
     const { isLoggedIn, loading } = useUser(); // Obtener el contexto del usuario
-
-    // const [checkingAuth, setCheckingAuth] = useState(true);
-    const [messageLoading, setMessageLoading] = useState('');
     const router = useRouter(); // Cambiar a useRouter
 
-    useEffect(() => {
+    useEffect( () => {
         if(!loading){
             // verifica login desde el Context
             if (isLoggedIn) {
                     // Usuario logueado
                     router.replace('/(main)');  // Usuario logueado, redirige al home o main
-                }
-            else {
+            }else {
                 // No hay sesión activa
                 router.replace('/Login');
             }
-        }
-        
+        }        
     }, [loading]);  // isLoggedIn
 
     return (
@@ -45,7 +36,6 @@ export default function Index() {
             {/* BODY  */}
             <View style={styles.body}>
                 <ActivityIndicator size="large" color="#000" />
-                <Text style={styles.labelIniciando}>{messageLoading}</Text>
             </View>
 
             {/* FOOTER */}
