@@ -7,21 +7,18 @@ import { useEffect } from "react";
 import { useUser } from "../hooks/UserContext";
 
 export default function Index() {
-    const { isLoggedIn, loading } = useUser(); // Obtener el contexto del usuario
+    const { userData, isLoggedIn, loading } = useUser(); // Obtener el contexto del usuario
     const router = useRouter(); // Cambiar a useRouter
 
     useEffect( () => {
-        if(!loading){
+        if( !loading && isLoggedIn && userData){
             // verifica login desde el Context
-            if (isLoggedIn) {
-                    // Usuario logueado
-                    router.replace('/(main)');  // Usuario logueado, redirige al home o main
-            }else {
-                // No hay sesión activa
-                router.replace('/Login');
-            }
+            router.replace('/(main)');  // Usuario logueado, redirige al home o main
+        } else if (!loading && !isLoggedIn){
+            // No hay sesión activa
+            router.replace('/Login');
         }        
-    }, [loading]);  // isLoggedIn
+    }, [loading, userData, isLoggedIn]); 
 
     return (
         <LinearGradient 

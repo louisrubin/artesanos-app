@@ -71,6 +71,15 @@ export default function UserSettings() {
                     bgColorInput={"#D9D9D9"}
                     colorTexto='#757575'
                     />
+                    
+                    <Text style={{fontSize: 18, color: "#D04A4A",
+                            marginTop: moderateVerticalScale(10), opacity: 0.8}}
+                        >
+                        { userData?.aprobado 
+                            ? null
+                            : "Su cuenta está pendiente de verificación por el administrador. Vuelve a iniciar sesión más tarde."
+                        }
+                    </Text>
 
                     <ButtonX 
                         iconParam={imagePath.arrowLeftLogo} 
