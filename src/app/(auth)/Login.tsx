@@ -64,7 +64,8 @@ export default function LoginScreen() {
 
     // verificar conexion internet antes de enviar el formulario
 
-    setLoadingParams("Iniciando");   // setea todo para el loading
+    setModalMessage("Autenticando..."); // mensaje de carga
+    setLoadingParams("Iniciando...");   // setea todo para el loading
 
     signInWithEmailAndPassword(auth, email, password)
       .then( 
@@ -74,7 +75,7 @@ export default function LoginScreen() {
             const userData = await getUserInfoFirebase(user.uid) // sus datos de firebase
 
             setModalMessage("Guardando datos..."); // mensaje de carga
-            await saveLocalUserData(userData); // Guardar datos del usuario en AsyncStorage 
+            await saveLocalUserData(userData); // Guardar datos del usuario en AsyncStorage
             setUserData(userData); // Guardar datos del usuario en el contexto global           
 
             setIsVisibleModal(false); // QUITA EL MODAL
@@ -87,6 +88,7 @@ export default function LoginScreen() {
 
         if(errorCode === "auth/invalid-credential"){
           setModalTitle("Credenciales incorrectas.");
+          setModalMessage("Verifique su correo y contraseña.");
           setIconButtonModal(imagePath.navigateBeforeLogo);
         }
       });
@@ -108,13 +110,15 @@ export default function LoginScreen() {
             messageLoading={modalMessage}
             >
                 <ButtonX
-                buttonStyles={{ width: moderateScale(150),
-                marginTop: moderateScale(20), paddingVertical: moderateScale(10),
-                }}
-                fontSize={moderateScale(20)}
-                iconParam={iconButtonModal}
-                iconPosition="left"
-                onPress={toggleVisibleModal}
+                    buttonStyles={{ width: moderateScale(150),
+                    marginTop: moderateScale(20), paddingVertical: moderateScale(10),
+                    }}
+                    fontSize={moderateScale(20)}
+                    iconParam={iconButtonModal}
+                    iconPosition="left"
+                    bgColor='#E0F393'
+                    bgColorPressed='#B1C464'
+                    onPress={toggleVisibleModal}
                 >
                     Volver
                 </ButtonX>
@@ -134,7 +138,6 @@ export default function LoginScreen() {
         {/* BODY  */}
         <View style={styles.body}>
             <Text style={styles.label}>Correo Electrónico</Text>
-
             <Controller control={control} name="email"
                 render={ ({field: {onChange, value}}) => (
                     <InputX placeholder="Ingrese Correo Electrónico" 
@@ -143,16 +146,8 @@ export default function LoginScreen() {
                         onChangeText={onChange} />
                 )}
             />
-            { /*
-                errors.email &&
-                <Text style={[styles.labelInputValidation, {color: 'red'}]}>
-                    {errors.email.message}
-                </Text>
-                */
-            }
 
             <Text style={[styles.label, {marginTop: moderateScale(16)}]}>Contraseña</Text>
-
             <Controller control={control} name='password' 
                 render={({field: {onChange, value}}) => (
                     <InputX placeholder="Ingrese Contraseña" 
@@ -160,15 +155,7 @@ export default function LoginScreen() {
                         onChangeText={onChange} 
                         value={value} />
                 )}
-            />
-
-            { /*
-                errors.password && 
-                <Text style={[styles.labelInputValidation, {color: 'red'}]}>
-                    {errors.password.message}
-                </Text>
-                */
-            }            
+            />       
 
             {/* BOTONES INCIAR Y REGISTER */}
             <View style={{alignItems: 'center'}}>
