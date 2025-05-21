@@ -4,78 +4,59 @@ import { moderateScale, moderateVerticalScale } from "react-native-size-matters"
 import imagePath from "../constants/imagePath";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../credenciales";
-import { getUserInfoFirebase, saveLocalUserData } from "../hooks/firebaseHooks";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// import { onAuthStateChanged } from "firebase/auth";
+// import { auth } from "../../credenciales";
+// import { getUserInfoFirebase, saveLocalUserData } from "../hooks/firebaseHooks";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useUser } from "../hooks/UserContext";
 
 export default function Index() {
-    const [checkingAuth, setCheckingAuth] = useState(true);
+    const { isLoggedIn, loading } = useUser(); // Obtener el contexto del usuario
+
+    // const [checkingAuth, setCheckingAuth] = useState(true);
     const [messageLoading, setMessageLoading] = useState('');
     const router = useRouter(); // Cambiar a useRouter
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                // Usuario logueado
-                const dataStoraged = await AsyncStorage.getItem('userData');
-                if(dataStoraged === null){
-                    // Si no hay datos del usuario en AsyncStorage, los obtiene de Firebase
-                    try{
-                        setMessageLoading('Cargando datos de Firebase...');
-                        const userData = await getUserInfoFirebase(user.uid); // hook personalizado
-                        if (userData) {
-                            setMessageLoading('Guardando datos...');
-                            await saveLocalUserData(userData); // Guarda los datos del usuario en AsyncStorage
-                        }
-                    }catch (error) {
-                        console.error('Error al obtener los datos del usuario:', error);
-                    }
+        if(!loading){
+            // verifica login desde el Context
+            if (isLoggedIn) {
+                    // Usuario logueado
+                    router.replace('/(main)');  // Usuario logueado, redirige al home o main
                 }
-                router.replace('/(main)');  // Usuario logueado, redirige al home o main
-            }
             else {
                 // No hay sesión activa
-                await AsyncStorage.removeItem('userData');
                 router.replace('/Login');
             }
-            setCheckingAuth(false);     // setea el estado de verificación si terminó
-        });
+        }
+        
+    }, [loading]);  // isLoggedIn
 
-        return unsubscribe; // limpieza al desmontar
-    }, [])
+    return (
+        <LinearGradient 
+            colors={["#c85",  "#da7"]}
+            style={styles.container}
+        >
+            {/* HEADER */}
+            <View style={styles.header}>
+                <Image source={imagePath.logoGobChaco} style={styles.imageHeader} />
+            </View>
 
-    // VERIFICANDO EL ESTADO DE AUTENTICACION
-    if (checkingAuth) {
-        // Si está verificando el estado de autenticación, muestra un ActivityIndicator
-        return (
-            <LinearGradient 
-                colors={["#c85",  "#da7"]}
-                style={styles.container}
-            >
-                {/* HEADER */}
-                <View style={styles.header}>
-                    <Image source={imagePath.logoGobChaco} style={styles.imageHeader} />
-                </View>
+            {/* BODY  */}
+            <View style={styles.body}>
+                <ActivityIndicator size="large" color="#000" />
+                <Text style={styles.labelIniciando}>{messageLoading}</Text>
+            </View>
 
-                {/* BODY  */}
-                <View style={styles.body}>
-                    <ActivityIndicator size="large" color="#000" />
-                    <Text style={styles.labelIniciando}>{messageLoading}</Text>
-                </View>
+            {/* FOOTER */}
+            <View style={styles.footer}>
+                <Image source={imagePath.logoUTN} style={styles.imageFooter} />
+                <Text style={styles.labelUTN}>Facultad Regional</Text>
+                <Text style={styles.labelUTN}>Resistencia</Text>
+            </View>
 
-                {/* FOOTER */}
-                <View style={styles.footer}>
-                    <Image source={imagePath.logoUTN} style={styles.imageFooter} />
-                    <Text style={styles.labelUTN}>Facultad Regional</Text>
-                    <Text style={styles.labelUTN}>Resistencia</Text>
-                </View>
-
-            </LinearGradient>
-        )
-    }
-    
-    return null; // O retorna null si no está verificando el estado de autenticación
+        </LinearGradient>
+    )
 }
 
 

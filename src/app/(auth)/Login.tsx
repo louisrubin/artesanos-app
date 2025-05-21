@@ -14,6 +14,7 @@ import InputX from '../../components/InputX';
 import ButtonX from '../../components/ButtonX';
 import imagePath from '../../constants/imagePath';
 import { getUserInfoFirebase, saveLocalUserData } from '../../hooks/firebaseHooks';
+import { useUser } from '../../hooks/UserContext';
 
 
 // ESQUEMA DE ZOD PARA RESTRICCIONES DE LOS CAMPOS
@@ -25,6 +26,7 @@ const esquema = z.object({
 type FormData = z.infer<typeof esquema>;    // Definición del tipo de datos del formulario
 
 export default function LoginScreen() {
+  const { userData, setUserData } = useUser(); // Obtener el contexto del usuario
   const router = useRouter(); // Cambiar a useRouter
   const auth = getAuth(app);
 
@@ -72,7 +74,8 @@ export default function LoginScreen() {
             const userData = await getUserInfoFirebase(user.uid) // sus datos de firebase
 
             setModalMessage("Guardando datos..."); // mensaje de carga
-            await saveLocalUserData(userData); // Guardar datos del usuario en AsyncStorage            
+            await saveLocalUserData(userData); // Guardar datos del usuario en AsyncStorage 
+            setUserData(userData); // Guardar datos del usuario en el contexto global           
 
             setIsVisibleModal(false); // QUITA EL MODAL
             router.replace('/(main)'); // Reemplaza con la pantalla principal (no puede volver atras)

@@ -1,14 +1,29 @@
 import { useRouter } from 'expo-router';
-import { View, Text, StyleSheet, Image, StatusBar, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 import ButtonX from '../../components/ButtonX';
-// import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { moderateScale, moderateVerticalScale } from 'react-native-size-matters';
 import imagePath from '../../constants/imagePath';
 import { VerdeAgricultura } from '../../constants/colors';
+// import { useEffect, useState } from 'react';
+// import { auth } from '../../../credenciales';
+// import { getStoredUserData } from '../../hooks/firebaseHooks';
+import { useUser } from '../../hooks/UserContext';
 
 export default function PantallaPrincipal() {
-      const router = useRouter(); // Cambiar a useRouter
+    const router = useRouter(); // Cambiar a useRouter
+    const { userData } = useUser(); // Obtener el contexto del usuario
+    // const [userData, setUserData] = useState(null);
+
+    // useEffect(() => {
+    //     const fetchUserData = async () => {
+    //         if(auth.currentUser){
+    //             const storedData = await getStoredUserData();   // obtiene los datos del usuario
+    //             setUserData(storedData);
+    //         }
+    //     }
+    //     fetchUserData();
+    // }, []);
     
     return (
         <LinearGradient
@@ -17,6 +32,7 @@ export default function PantallaPrincipal() {
         >
             {/* HEADER */}
             <View style={styles.header}>
+                <Text style={{color: "red", fontWeight:"bold"}}>Se Requiere aprobación</Text>
                     <Pressable style={ ({pressed}) => [
                         styles.userIconContainer,
                         {
@@ -33,16 +49,17 @@ export default function PantallaPrincipal() {
             {/* BODY */}
             <View style={styles.body}>
                 <ButtonX
-                buttonStyles={{ width: moderateScale(300), 
-                        marginTop: moderateScale(30),
-                        padding: moderateScale(12),}}
-                textStyles={{ fontWeight: 'bold',marginLeft: moderateScale(10) }}
-                bgColor="#E0F393"
-                bgColorPressed="#BBCE70"
-                fontSize={moderateScale(20)}
-                iconParam={imagePath.iconUser}
-                iconPosition="left"
-                onPress={() => router.push('/encuesta')} >Registrar Artesanos 
+                    buttonStyles={{ width: moderateScale(300), 
+                            marginTop: moderateScale(30),
+                            padding: moderateScale(12),}}
+                    textStyles={{ fontWeight: 'bold',marginLeft: moderateScale(10) }}
+                    bgColor="#E0F393"
+                    bgColorPressed="#BBCE70"
+                    fontSize={moderateScale(20)}
+                    iconParam={imagePath.iconUser}
+                    iconPosition="left"
+                    disabled={!userData?.aprobado}
+                    onPress={() => router.push('/encuesta')} >Registrar Artesanos 
                 </ButtonX>
 
                 <ButtonX
@@ -55,7 +72,7 @@ export default function PantallaPrincipal() {
                     fontSize={moderateScale(20)}
                     iconParam={imagePath.iconRegistros}
                     iconPosition="left"
-                    disabled
+                    disabled={!userData?.aprobado && true}
                     onPress={() => router.push('/encuesta')} >Registros 
                 </ButtonX>
 
@@ -69,7 +86,7 @@ export default function PantallaPrincipal() {
                     fontSize={moderateScale(20)}
                     iconParam={imagePath.iconStadistics}
                     iconPosition="left"
-                    disabled
+                    disabled={!userData?.aprobado && true}
                     onPress={() => router.push('/encuesta')} >Estadísticas
                 </ButtonX>
             </View>

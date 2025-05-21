@@ -7,29 +7,36 @@ import imagePath from '../../constants/imagePath';
 import { moderateScale, moderateVerticalScale } from 'react-native-size-matters';
 import InputAndLabelX from '../../components/InputAndLabel';
 import { auth } from '../../../credenciales';
-import { getStoredUserData } from '../../hooks/firebaseHooks';
+// import { getStoredUserData } from '../../hooks/firebaseHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useUser } from '../../hooks/UserContext';
 
 export default function UserSettings() {
     const router = useRouter();
-    const [userData, setUserData] = useState(null);
+    const { userData, setUserData } = useUser(); // Obtener el contexto del usuario
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            if(auth.currentUser){
-                const storedData = await getStoredUserData();   // obtiene los datos del usuario
-                setUserData(storedData);
-            }
-        }
-        fetchUserData();
-    }, []);
+    // useEffect(() => {
+    //     const fetchUserData = async () => {
+    //         if(auth.currentUser){
+    //             const storedData = await getStoredUserData();   // obtiene los datos del usuario
+    //             setUserData(storedData);
+    //         }
+    //     }
+    //     fetchUserData();
+    // }, []);
 
-    const handleLogOut = () => {
+    const handleLogOut = async () => {
         // lógica para cerrar sesión
-        AsyncStorage.removeItem('userData'); // Elimina los datos del usuario de AsyncStorage
-        auth.signOut();
-        router.replace('/(auth)/Login');
-    }
+        try{
+            await AsyncStorage.removeItem('userData'); // Elimina los datos del usuario de AsyncStorage
+            await auth.signOut();
+            setUserData(null); // Limpia el contexto del usuario
+            router.replace('/(auth)/Login');
+        } catch (error) {
+            console.error("Error al cerrar sesión", error);
+        }
+    };
+    
     return (
         <SafeAreaProvider style={styles.container}>
             <ScrollView>
@@ -72,7 +79,7 @@ export default function UserSettings() {
                     />
 
                     <InputAndLabelX titleLabel='Verificado' editable={false}
-                    styleLabel={{opacity: 0.4}} value={userData?.aprobado ? "Sí" : "No"}
+                    styleLabel={{opacity: 0.4}} value={userData?.aprobado ? "Verificado" : "No verificado"}
                     bgColorInput={"#D9D9D9"}
                     colorTexto='#757575'
                     />

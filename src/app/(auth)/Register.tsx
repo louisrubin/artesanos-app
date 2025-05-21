@@ -22,7 +22,7 @@ const esquema = z.object({
     dni: z.string().length(8, { message: "El DNI debe tener 8 dígitos" }),
     email: z.string().email({ message: "Correo no válido" }),
     password: z.string().min(minLengthPassword, { message: `Mínimo ${minLengthPassword} carácteres` }),
-    password2: z.string().min(minLengthPassword, { message: `Mínimo ${minLengthPassword} carácteres` })
+    password2: z.string().min(minLengthPassword, { message: `Mínimo ${minLengthPassword} carácteres` }),
 }).superRefine((data, ctx) => {
     if (data.password !== data.password2 ) {
         // Si las contraseñas no coinciden, agregar un error a ambos campos
@@ -53,7 +53,7 @@ export default function RegisterScreen(){
             dni: '',
             email: '',
             password: '',
-            password2: ''
+            password2: '',
         },
         // mode: "onBlur", // Modo de validación: al perder el foco
     });
@@ -90,6 +90,7 @@ export default function RegisterScreen(){
               dni: data.dni,
               email: data.email,
               fechaRegistro: new Date().toISOString(),
+              aprobado: false, // Cambia esto según tu lógica
             });
       
             Alert.alert("Registro exitoso", "El usuario ha sido registrado correctamente.");
