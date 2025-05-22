@@ -13,7 +13,7 @@ import ModalX from '../../components/Modal';
 import InputX from '../../components/InputX';
 import ButtonX from '../../components/ButtonX';
 import imagePath from '../../constants/imagePath';
-import { getUserInfoFirebase, saveLocalUserData } from '../../hooks/firebaseHooks';
+import { getFirebaseErrorMessage, getUserInfoFirebase, saveLocalUserData } from '../../hooks/firebaseHooks';
 import { useUser } from '../../hooks/UserContext';
 
 
@@ -34,7 +34,8 @@ export default function LoginScreen() {
   const [modalTitle, setModalTitle] = useState('');
   const [modalMessage, setModalMessage] = useState('Autenticando...');
   const [isLoadingActivity, setIsLoadingActivity] = useState(true);
-  const [iconButtonModal, setIconButtonModal] = useState(null)
+  const [iconButtonModal, setIconButtonModal] = useState(null);
+  const [iconHeaderModal, setIconHeaderModal] = useState(null);
 
   // desestructurar metodos del hook useForm 
   const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
@@ -74,7 +75,7 @@ export default function LoginScreen() {
             setModalMessage("Cargando datos de Firebase..."); // mensaje de carga
             const userData = await getUserInfoFirebase(user.uid) // sus datos de firebase
 
-            setModalMessage("Guardando datos..."); // mensaje de carga
+            setModalMessage("Sincronizando datos..."); // mensaje de carga
             await saveLocalUserData(userData); // Guardar datos del usuario en AsyncStorage
             setUserData(userData); // Guardar datos del usuario en el contexto global           
 
@@ -83,14 +84,19 @@ export default function LoginScreen() {
         })
       .catch((error) => {
         const errorCode = error.code;
-        const errorMessage = error.message;
+        // const errorMessage = error.message;
         setIsLoadingActivity(false);
 
         if(errorCode === "auth/invalid-credential"){
+          setIconHeaderModal(imagePath.keyLogo);  
           setModalTitle("Credenciales incorrectas.");
           setModalMessage("Verifique su correo y contraseña.");
-          setIconButtonModal(imagePath.navigateBeforeLogo);
+        } else {
+          setIconHeaderModal(imagePath.iconXcircle);
+          setModalTitle(getFirebaseErrorMessage(errorCode));
+          setModalMessage("");
         }
+        setIconButtonModal(imagePath.navigateBeforeLogo);
       });
     }
 
@@ -104,7 +110,7 @@ export default function LoginScreen() {
             <ModalX
             isModalVisible={isVisibleModal}
             title={modalTitle}
-            iconHeader={imagePath.keyLogo}
+            iconHeader={iconHeaderModal}
             isLoading={isLoadingActivity}
             onBackdropPress={toggleVisibleModal}
             messageLoading={modalMessage}

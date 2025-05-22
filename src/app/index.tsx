@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { useUser } from "../hooks/UserContext";
 
 export default function Index() {
-    const { userData, isLoggedIn, loading } = useUser(); // Obtener el contexto del usuario
+    const { userData, isLoggedIn, loading, messageStatus } = useUser(); // Obtener el contexto del usuario
     const router = useRouter(); // Cambiar a useRouter
 
     useEffect( () => {
@@ -33,6 +33,7 @@ export default function Index() {
             {/* BODY  */}
             <View style={styles.body}>
                 <ActivityIndicator size="large" color="#000" />
+                <Text style={styles.labelIniciando}>{ messageStatus }</Text>
             </View>
 
             {/* FOOTER */}
@@ -84,11 +85,11 @@ const styles = StyleSheet.create({
     marginBottom: moderateScale(5),
   },
   labelIniciando: {
-    fontVariant: ['small-caps'],
+    // fontVariant: ['small-caps'],
     fontSize: moderateScale(20),
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     // marginBottom: moderateVerticalScale(20),
-    marginTop: 5,
+    marginTop: 14,
   },
   labelUTN: {
     // width: '100%',
