@@ -277,7 +277,7 @@ export default function RegisterScreen(){
                         <ButtonX
                             buttonStyles={{ width: moderateScale(220), marginTop: 20, borderWidth: 1, borderColor: '#000', padding: 10 }}
                             textStyles={{ fontWeight: 'bold' }}
-                            color="#E0F393"
+                            bgColor="#E0F393"
                             bgColorPressed="#BCB850"
                             fontSize={moderateScale(22)}
                             onPress={handleSubmit(onSubmit)} // Cambiar a handleSubmit(onSubmit)

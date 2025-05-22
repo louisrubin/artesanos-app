@@ -12,6 +12,7 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import app from '../../../credenciales';
 import { useState } from 'react';
 import ModalX from '../../components/Modal';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // ESQUEMA DE ZOD PARA RESTRICCIONES DE LOS CAMPOS
 const esquema = z.object({
@@ -53,7 +54,7 @@ export default function LoginScreen() {
   }
 
   // ENVIO DE FORMULARIO LOGIN
-  function onSubmitLogin(data: FormData){
+  async function onSubmitLogin(data: FormData){
     const { email, password } = data;
 
     // verificar conexion internet antes de enviar el formulario
@@ -61,8 +62,9 @@ export default function LoginScreen() {
     setLoadingParams("Iniciando");   // setea todo para el loading
 
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         // const user = userCredential.user;
+        await AsyncStorage.setItem("userEmail", email);
         setIsVisibleModal(false); // QUITA EL MODAL
         router.replace('/(main)'); // Reemplaza con la pantalla principal (no puede volver atras)
       })

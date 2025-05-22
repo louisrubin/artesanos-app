@@ -6,10 +6,21 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { moderateScale, moderateVerticalScale } from 'react-native-size-matters';
 import imagePath from '../../constants/imagePath';
 import { VerdeAgricultura } from '../../constants/colors';
+import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function PantallaPrincipal() {
-      const router = useRouter(); // Cambiar a useRouter
-    
+    const router = useRouter(); // Cambiar a useRouter
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    useEffect(() => {
+        AsyncStorage.getItem("userEmail").then(email => {
+            if (email === "admin@tudominio.com") { // Cambia por el email real del admin
+                setIsAdmin(true);
+            }
+        });
+    }, []);
+
     return (
         <LinearGradient
         colors={["#fda", "#fda", "#ffc"]}
@@ -32,6 +43,22 @@ export default function PantallaPrincipal() {
 
             {/* BODY */}
             <View style={styles.body}>
+
+
+                <ButtonX
+                    buttonStyles={{ width: moderateScale(300), 
+                        marginTop: moderateScale(30), 
+                        padding: moderateScale(12),}}
+                    textStyles={{ fontWeight: 'bold',marginLeft: moderateScale(10) }}
+                    bgColor="#E0F393"
+                    bgColorPressed="#BCB850"
+                    fontSize={moderateScale(20)}
+                    iconParam={imagePath.iconStadistics}
+                    iconPosition="left"
+                    disabled={!isAdmin}
+                    onPress={() => router.push('/admin')} >Panel de administración
+                </ButtonX>
+
                 <ButtonX
                 buttonStyles={{ width: moderateScale(300), 
                         marginTop: moderateScale(30),
