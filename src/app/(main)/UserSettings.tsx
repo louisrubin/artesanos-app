@@ -77,7 +77,7 @@ export default function UserSettings() {
                         >
                         { userData?.aprobado 
                             ? null
-                            : "Su cuenta está pendiente de verificación por el administrador. Vuelve a iniciar sesión más tarde."
+                            : "Su cuenta está pendiente de verificación por un administrador."
                         }
                     </Text>
 

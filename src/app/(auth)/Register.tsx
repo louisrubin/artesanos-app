@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { Alert, Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { moderateScale, moderateVerticalScale } from "react-native-size-matters";
 import imagePath from "../../constants/imagePath";
 import { z } from "zod";
@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import ModalX from "../../components/Modal";
 import InputX from "../../components/InputX";
 import ButtonX from "../../components/ButtonX";
+import { getFirebaseErrorMessage } from "../../hooks/firebaseHooks";
 
 
 const minLengthPassword = 6; // Longitud máxima de la contraseña
@@ -68,16 +69,20 @@ export default function RegisterScreen(){
         }
     }, [password, password2]);
 
+    const [operationCode, setOperationCode] = useState(null); // Código de operación para el modal
     const [isVisibleModal, setIsVisibleModal] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [isLoadingActivity, setIsLoadingActivity] = useState(true);
     const [iconButtonModal, setIconButtonModal] = useState(null);
+    const [iconHeaderModal, setIconHeaderModal] = useState(null);
+    const [messageBtnModal, setMessageBtnModal] = useState('Iniciar Sesión');
         
     const onSubmit =  async (data: FormData) => {
+        setOperationCode(null); // Reiniciar el código de operación
         setModalMessage("Registrando");
         setIsLoadingActivity(true);
+        setIconButtonModal(imagePath.arrowLeftLogo);
         setIsVisibleModal(true);
-        setIconButtonModal(imagePath.arrowRightLogo);
         try {
             // Registrar al usuario en Firebase Authentication
             const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
@@ -90,16 +95,29 @@ export default function RegisterScreen(){
               dni: data.dni,
               email: data.email,
               fechaRegistro: new Date().toISOString(),
-              aprobado: false, // Cambia esto según tu lógica
+              aprobado: false,
             });
       
-            Alert.alert("Registro exitoso", "El usuario ha sido registrado correctamente.");
-            router.push("/(auth)/Login"); // Redirigir al login
-          } catch (error) {
-            console.error("Error al registrar el usuario:", error);
-            Alert.alert("Error", "No se pudo registrar el usuario. Inténtalo de nuevo.");
-          }
-}
+            setIconHeaderModal(imagePath.checkCircleLogo);
+            setModalMessage("Registro exitoso");
+            setOperationCode(200); // Código de operación para el modal
+            setMessageBtnModal("Ingresar");
+
+        } catch (error) {
+            setOperationCode(404);
+            setIconHeaderModal(
+                error.code === "auth/network-request-failed" 
+                ? imagePath.wifiOffLogo 
+                : imagePath.iconXcircle
+            )
+            setModalMessage(getFirebaseErrorMessage(error.code));   // Obtener el mensaje de error desde objeto
+            setMessageBtnModal("Volver");
+        } finally {
+            setIsLoadingActivity(false); // Ocultar el indicador de carga
+        }
+    }
+
+
     return(
         <View style={styles.container}>
 
@@ -107,19 +125,28 @@ export default function RegisterScreen(){
             isModalVisible={isVisibleModal}
             title={modalMessage}
             isLoading={isLoadingActivity}
-            iconHeader={imagePath.checkCircleLogo}
-            onBackdropPress={() => {setIsVisibleModal(!isVisibleModal)}}>
+            iconHeader={iconHeaderModal}
+            // onBackdropPress={() => {setIsVisibleModal(!isVisibleModal)}}     // funct al click fuera del modal
+            >
                 <ButtonX
-                    buttonStyles={{ width: moderateScale(150),
-                    marginTop: moderateScale(20), paddingVertical: moderateScale(10),
-                    }}
-                    fontSize={moderateScale(20)}
-                    iconParam={iconButtonModal}
-                    iconPosition="left"
-                    onPress={ () => {setIsVisibleModal(!isVisibleModal)}  }
-                    >
-                    Iniciar Sesión
-                </ButtonX>
+                buttonStyles={{ width: moderateScale(160),
+                marginTop: moderateScale(20), paddingVertical: moderateScale(10),
+                }}
+                fontSize={moderateScale(20)}
+                iconParam={iconButtonModal}
+                iconPosition="left"
+                bgColor="#E0F393"
+                bgColorPressed='#B1C464'
+                onPress={ () => { 
+                    setIsVisibleModal(false); // Ocultar el modal
+                    if(operationCode === 200) {
+                        router.replace("/(main)"); // Redirigir a la pantalla principal
+                    }
+                }}
+                >
+                    { messageBtnModal }
+            </ButtonX>
+                
             </ModalX>
 
             {/* HEADER */}
@@ -283,6 +310,17 @@ export default function RegisterScreen(){
                             >
                                 Confirmar Registro
                         </ButtonX>
+
+                        <ButtonX
+                            buttonStyles={{ width: moderateScale(120), marginTop: 20, borderWidth: 1, borderColor: '#000', padding: 5 }}
+                            // textStyles={{ fontWeight: 'bold' }}
+                            // bgColor="#E0F393"
+                            bgColorPressed="#B1C464"
+                            fontSize={moderateScale(16)}
+                            onPress={ () => { router.back() } } // Cambiar a router.back()
+                            >
+                                Volver atrás
+                        </ButtonX>
                     </View>
 
                     {/* FOOTER */}
@@ -316,12 +354,12 @@ const styles = StyleSheet.create({
     body:{
         flexGrow: 1,
         marginTop: moderateVerticalScale(95),
-        marginBottom: moderateVerticalScale(30),
+        // marginBottom: moderateVerticalScale(5),
         width: '100%',
     },
     footer:{
         alignItems: 'center', 
-        marginBottom: moderateVerticalScale(20),
+        marginBottom: moderateVerticalScale(30),
         marginTop: moderateVerticalScale(10),
         opacity: 0.7,
     },
