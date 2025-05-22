@@ -26,7 +26,7 @@ const esquema = z.object({
 type FormData = z.infer<typeof esquema>;    // Definición del tipo de datos del formulario
 
 export default function LoginScreen() {
-  const { userData, setUserData } = useUser(); // Obtener el contexto del usuario
+  const { setUserData } = useUser(); // Obtener el contexto del usuario
   const router = useRouter(); // Cambiar a useRouter
   const auth = getAuth(app);
 
@@ -35,7 +35,7 @@ export default function LoginScreen() {
   const [modalMessage, setModalMessage] = useState('Autenticando...');
   const [isLoadingActivity, setIsLoadingActivity] = useState(true);
   const [iconButtonModal, setIconButtonModal] = useState(null);
-  const [iconHeaderModal, setIconHeaderModal] = useState(null);
+  const [iconHeaderModal, setIconHeaderModal] = useState(null);  
 
   // desestructurar metodos del hook useForm 
   const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
@@ -88,13 +88,13 @@ export default function LoginScreen() {
         setIsLoadingActivity(false);
 
         if(errorCode === "auth/invalid-credential"){
-          setIconHeaderModal(imagePath.keyLogo);  
-          setModalTitle("Credenciales incorrectas.");
-          setModalMessage("Verifique su correo y contraseña.");
+            setIconHeaderModal(imagePath.keyLogo);  
+            setModalTitle("Credenciales incorrectas.");
+            setModalMessage("Verifique su correo y contraseña.");
         } else {
-          setIconHeaderModal(imagePath.iconXcircle);
-          setModalTitle(getFirebaseErrorMessage(errorCode));
-          setModalMessage("");
+            setIconHeaderModal(imagePath.iconXcircle);
+            setModalTitle(getFirebaseErrorMessage(errorCode));
+            setModalMessage("");
         }
         setIconButtonModal(imagePath.navigateBeforeLogo);
       });

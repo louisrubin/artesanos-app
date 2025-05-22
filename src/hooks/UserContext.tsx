@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { auth, database } from "../../credenciales"; // Ajustá según tu ruta
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
-import { format, set } from "date-fns";
+import { doc, onSnapshot } from "firebase/firestore";
+import { format } from "date-fns";
 import { onAuthStateChanged } from "firebase/auth";
 
 const UserContext = createContext(null);    // Crear el contexto del usuario --> valor default null
@@ -36,11 +36,12 @@ export const UserProviderContext = ({ children }) => {
                             
                             await AsyncStorage.setItem("userData", JSON.stringify(data));
                         } else {
-                            // algún error al cargar el documento 
-                            console.log("User Loggeado: No existe el documento del usuario");
+                            // algún error al cargar el documento
+                            console.log("User Loggeado: No existe el documento del usuario. Cerrado sesión.");
                             setUserData(null);
                             setIsLoggedIn(false);   // return
                             await AsyncStorage.removeItem("userData"); // Elimina los datos del usuario de AsyncStorage
+                            auth.signOut(); // Cerrar sesión
                         };
                         
                     });
@@ -49,7 +50,7 @@ export const UserProviderContext = ({ children }) => {
                 
                 } catch (e) {
                     console.error("Error cargando usuario", e);
-                } finally {                    
+                } finally {
                     setLoading(false);
                 }
             } else {
