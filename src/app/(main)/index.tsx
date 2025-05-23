@@ -45,19 +45,20 @@ export default function PantallaPrincipal() {
             <View style={styles.body}>
 
 
+            {isAdmin && (
                 <ButtonX
-                    buttonStyles={{ width: moderateScale(300), 
-                        marginTop: moderateScale(30), 
-                        padding: moderateScale(12),}}
-                    textStyles={{ fontWeight: 'bold',marginLeft: moderateScale(10) }}
-                    bgColor="#E0F393"
+                    buttonStyles={{ width: moderateScale(300), marginTop: moderateScale(30), padding: moderateScale(12) }}
+                    textStyles={{ fontWeight: 'bold', marginLeft: moderateScale(10) }}
+                    bgColor="#808080"
                     bgColorPressed="#BCB850"
                     fontSize={moderateScale(20)}
-                    iconParam={imagePath.iconStadistics}
+                    iconParam={imagePath.iconAdmin}
                     iconPosition="left"
-                    disabled={!isAdmin}
-                    onPress={() => router.push('/admin')} >Panel de administración
-                </ButtonX>
+                    onPress={() => router.push('/admin')}
+                >
+                    Panel de administración
+                                    </ButtonX>
+)}
 
                 <ButtonX
                 buttonStyles={{ width: moderateScale(300), 
