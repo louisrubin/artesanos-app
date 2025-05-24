@@ -1,18 +1,21 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router'; // Cambiar a useRouter
 import { LinearGradient } from 'expo-linear-gradient';
-import InputX from '../../components/InputX';
-import ButtonX from '../../components/ButtonX';
-import imagePath from '../../constants/imagePath';
 import { moderateScale, moderateVerticalScale } from 'react-native-size-matters';
 import { z } from 'zod';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import app from '../../../credenciales';
+import { app } from '../../../credenciales';
 import { useState } from 'react';
+
 import ModalX from '../../components/Modal';
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import InputX from '../../components/InputX';
+import ButtonX from '../../components/ButtonX';
+import imagePath from '../../constants/imagePath';
+import { getFirebaseErrorMessage, getUserInfoFirebase, saveLocalUserData } from '../../hooks/firebaseHooks';
+import { useUser } from '../../hooks/UserContext';
+
 
 // ESQUEMA DE ZOD PARA RESTRICCIONES DE LOS CAMPOS
 const esquema = z.object({
@@ -23,13 +26,16 @@ const esquema = z.object({
 type FormData = z.infer<typeof esquema>;    // Definición del tipo de datos del formulario
 
 export default function LoginScreen() {
+  const { setUserData } = useUser(); // Obtener el contexto del usuario
   const router = useRouter(); // Cambiar a useRouter
   const auth = getAuth(app);
 
   const [isVisibleModal, setIsVisibleModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalMessage, setModalMessage] = useState('Autenticando...');
   const [isLoadingActivity, setIsLoadingActivity] = useState(true);
-  const [iconButtonModal, setIconButtonModal] = useState(null)
+  const [iconButtonModal, setIconButtonModal] = useState(null);
+  const [iconHeaderModal, setIconHeaderModal] = useState(null);  
 
   // desestructurar metodos del hook useForm 
   const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
@@ -47,7 +53,7 @@ export default function LoginScreen() {
 
   const setLoadingParams = (message) => {
     // metodo para reutilizar cuando algo está cargando
-    setModalMessage(message);
+    setModalTitle(message);
     setIsLoadingActivity(true); // SETEA EL ACTIVITY INDICATOR
     setIsVisibleModal(true);  // MUESTRA EL MODAL
 
@@ -59,24 +65,38 @@ export default function LoginScreen() {
 
     // verificar conexion internet antes de enviar el formulario
 
-    setLoadingParams("Iniciando");   // setea todo para el loading
+    setModalMessage("Autenticando..."); // mensaje de carga
+    setLoadingParams("Iniciando...");   // setea todo para el loading
 
     signInWithEmailAndPassword(auth, email, password)
-      .then(async (userCredential) => {
-        // const user = userCredential.user;
-        await AsyncStorage.setItem("userEmail", email);
-        setIsVisibleModal(false); // QUITA EL MODAL
-        router.replace('/(main)'); // Reemplaza con la pantalla principal (no puede volver atras)
-      })
+      .then( 
+          async (userCredential) => {
+            const user = userCredential.user;   // el propio usuario 
+            setModalMessage("Cargando datos de Firebase..."); // mensaje de carga
+            const userData = await getUserInfoFirebase(user.uid) // sus datos de firebase
+
+            setModalMessage("Sincronizando datos..."); // mensaje de carga
+            await saveLocalUserData(userData); // Guardar datos del usuario en AsyncStorage
+            setUserData(userData); // Guardar datos del usuario en el contexto global           
+
+            setIsVisibleModal(false); // QUITA EL MODAL
+            router.replace('/(main)'); // Reemplaza con la pantalla principal (no puede volver atras)
+        })
       .catch((error) => {
         const errorCode = error.code;
-        const errorMessage = error.message;
+        // const errorMessage = error.message;
         setIsLoadingActivity(false);
 
         if(errorCode === "auth/invalid-credential"){
-          setModalMessage("Credenciales incorrectas.");
-          setIconButtonModal(imagePath.navigateBeforeLogo);
+            setIconHeaderModal(imagePath.keyLogo);  
+            setModalTitle("Credenciales incorrectas.");
+            setModalMessage("Verifique su correo y contraseña.");
+        } else {
+            setIconHeaderModal(imagePath.iconXcircle);
+            setModalTitle(getFirebaseErrorMessage(errorCode));
+            setModalMessage("");
         }
+        setIconButtonModal(imagePath.navigateBeforeLogo);
       });
     }
 
@@ -89,19 +109,22 @@ export default function LoginScreen() {
             {/* MODAL DE INICIO DE SESIÓN */}
             <ModalX
             isModalVisible={isVisibleModal}
-            title={modalMessage}
-            iconHeader={imagePath.keyLogo}
+            title={modalTitle}
+            iconHeader={iconHeaderModal}
             isLoading={isLoadingActivity}
             onBackdropPress={toggleVisibleModal}
+            messageLoading={modalMessage}
             >
                 <ButtonX
-                buttonStyles={{ width: moderateScale(150),
-                marginTop: moderateScale(20), paddingVertical: moderateScale(10),
-                }}
-                fontSize={moderateScale(20)}
-                iconParam={iconButtonModal}
-                iconPosition="left"
-                onPress={toggleVisibleModal}
+                    buttonStyles={{ width: moderateScale(150),
+                    marginTop: moderateScale(20), paddingVertical: moderateScale(10),
+                    }}
+                    fontSize={moderateScale(20)}
+                    iconParam={iconButtonModal}
+                    iconPosition="left"
+                    bgColor='#E0F393'
+                    bgColorPressed='#B1C464'
+                    onPress={toggleVisibleModal}
                 >
                     Volver
                 </ButtonX>
@@ -121,7 +144,6 @@ export default function LoginScreen() {
         {/* BODY  */}
         <View style={styles.body}>
             <Text style={styles.label}>Correo Electrónico</Text>
-
             <Controller control={control} name="email"
                 render={ ({field: {onChange, value}}) => (
                     <InputX placeholder="Ingrese Correo Electrónico" 
@@ -130,16 +152,8 @@ export default function LoginScreen() {
                         onChangeText={onChange} />
                 )}
             />
-            { /*
-                errors.email &&
-                <Text style={[styles.labelInputValidation, {color: 'red'}]}>
-                    {errors.email.message}
-                </Text>
-                */
-            }
 
             <Text style={[styles.label, {marginTop: moderateScale(16)}]}>Contraseña</Text>
-
             <Controller control={control} name='password' 
                 render={({field: {onChange, value}}) => (
                     <InputX placeholder="Ingrese Contraseña" 
@@ -147,15 +161,7 @@ export default function LoginScreen() {
                         onChangeText={onChange} 
                         value={value} />
                 )}
-            />
-
-            { /*
-                errors.password && 
-                <Text style={[styles.labelInputValidation, {color: 'red'}]}>
-                    {errors.password.message}
-                </Text>
-                */
-            }            
+            />       
 
             {/* BOTONES INCIAR Y REGISTER */}
             <View style={{alignItems: 'center'}}>

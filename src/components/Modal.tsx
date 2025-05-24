@@ -8,6 +8,7 @@ type PropsParam = {
     isModalVisible: boolean;
     isLoading?: boolean;
     iconHeader?: any;
+    messageLoading?: string;
     onBackdropPress?: () => void;
 }
 
@@ -29,6 +30,10 @@ export default function ModalX(props: PropsParam) {
                 }
                 <Text style={styles.label}>
                     { props.title }
+                </Text>
+
+                <Text>
+                    { props.messageLoading }
                 </Text>
 
                 { /* botones o lo que se quiera agregar por children */}

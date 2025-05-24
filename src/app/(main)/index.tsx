@@ -1,13 +1,34 @@
 import { useRouter } from 'expo-router';
-import { View, Text, StyleSheet, Image, StatusBar, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 import ButtonX from '../../components/ButtonX';
-// import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { moderateScale, moderateVerticalScale } from 'react-native-size-matters';
 import imagePath from '../../constants/imagePath';
 import { VerdeAgricultura } from '../../constants/colors';
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useUser } from '../../hooks/UserContext';
+
+const redNotifColor = "#D04A4A";
+
+const styles2= StyleSheet.create({
+    barraSuperior: {
+        flexDirection: 'row',
+        width: "100%",
+        justifyContent: "flex-end",
+        alignItems: "center"
+    },
+    notificacionRed: {
+        fontSize: moderateScale(16),
+        backgroundColor: redNotifColor,
+        color: "white",
+        padding: moderateScale(5),
+        paddingHorizontal: moderateScale(10),
+        marginRight: moderateScale(5),
+        borderRadius: 16,
+    },
+
+})
 
 export default function PantallaPrincipal() {
     const router = useRouter(); // Cambiar a useRouter
@@ -21,6 +42,9 @@ export default function PantallaPrincipal() {
         });
     }, []);
 
+    const router = useRouter(); // Cambiar a useRouter
+    const { userData } = useUser(); // Obtener el contexto del usuario
+    
     return (
         <LinearGradient
         colors={["#fda", "#fda", "#ffc"]}
@@ -28,6 +52,13 @@ export default function PantallaPrincipal() {
         >
             {/* HEADER */}
             <View style={styles.header}>
+                <View style={styles2.barraSuperior}>
+
+                    { userData?.aprobado 
+                        ? null 
+                        : <Text style={styles2.notificacionRed}>Cuenta pendiende de aprobación</Text>
+                    }
+                    
                     <Pressable style={ ({pressed}) => [
                         styles.userIconContainer,
                         {
@@ -37,6 +68,8 @@ export default function PantallaPrincipal() {
                         onPress={() => router.push('/UserSettings')}>
                         <Image source={imagePath.settingsCircleLogo} style={styles.settingsIcon} />
                     </Pressable>
+                </View>
+                    
 
                 <Image source={imagePath.logoICCH} style={styles.imageHeader} />
             </View>
@@ -61,16 +94,17 @@ export default function PantallaPrincipal() {
 )}
 
                 <ButtonX
-                buttonStyles={{ width: moderateScale(300), 
-                        marginTop: moderateScale(30),
-                        padding: moderateScale(12),}}
-                textStyles={{ fontWeight: 'bold',marginLeft: moderateScale(10) }}
-                bgColor="#E0F393"
-                bgColorPressed="#BBCE70"
-                fontSize={moderateScale(20)}
-                iconParam={imagePath.iconUser}
-                iconPosition="left"
-                onPress={() => router.push('/encuesta')} >Registrar Artesanos 
+                    buttonStyles={{ width: moderateScale(300), 
+                            marginTop: moderateScale(30),
+                            padding: moderateScale(12),}}
+                    textStyles={{ fontWeight: 'bold',marginLeft: moderateScale(10) }}
+                    bgColor="#E0F393"
+                    bgColorPressed="#BBCE70"
+                    fontSize={moderateScale(20)}
+                    iconParam={imagePath.iconUser}
+                    iconPosition="left"
+                    disabled={!userData?.aprobado}
+                    onPress={() => router.push('/encuesta')} >Registrar Artesanos 
                 </ButtonX>
 
                 <ButtonX
@@ -83,7 +117,7 @@ export default function PantallaPrincipal() {
                     fontSize={moderateScale(20)}
                     iconParam={imagePath.iconRegistros}
                     iconPosition="left"
-                    disabled
+                    disabled={true}
                     onPress={() => router.push('/encuesta')} >Registros 
                 </ButtonX>
 
@@ -97,7 +131,7 @@ export default function PantallaPrincipal() {
                     fontSize={moderateScale(20)}
                     iconParam={imagePath.iconStadistics}
                     iconPosition="left"
-                    disabled
+                    disabled={true}
                     onPress={() => router.push('/encuesta')} >Estadísticas
                 </ButtonX>
             </View>
@@ -141,21 +175,14 @@ const styles = StyleSheet.create({
         marginTop: moderateVerticalScale(-40),
     },
     userIconContainer: {
-        // width: "100%",
-        alignSelf: "flex-end",
         padding: 8,
         marginRight: moderateScale(20),
         borderWidth: 1,
         borderRadius: 60,
-        // backgroundColor: "#ffb"
     },
     settingsIcon: {
         resizeMode: "contain",
         width: 24,
         height: 24,
     },
-    // title: {
-    //     fontSize: 24,
-    //     fontWeight: 'bold',
-    // },
 });

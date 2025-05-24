@@ -4,24 +4,23 @@ import { moderateScale, moderateVerticalScale } from "react-native-size-matters"
 import imagePath from "../constants/imagePath";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
+import { useUser } from "../hooks/UserContext";
 
 export default function Index() {
-
+    const { userData, isLoggedIn, loading, messageStatus } = useUser(); // Obtener el contexto del usuario
     const router = useRouter(); // Cambiar a useRouter
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            router.replace('/(auth)/Login'); // Cambiar a ('/auth/Login')
-        }, 2000); // 2 segundos de espera
-
-        return () => clearTimeout(timer); // Limpiar el temporizador al desmontar el componente
-    }
-    , [])
+    useEffect( () => {
+        if( !loading && isLoggedIn && userData){
+            // verifica login desde el Context
+            router.replace('/(main)');  // Usuario logueado, redirige al home o main
+        } else if (!loading && !isLoggedIn){
+            // No hay sesión activa
+            router.replace('/Login');
+        }        
+    }, [loading, userData, isLoggedIn]); 
 
     return (
-        // <LoginScreen />
-
-        <>
         <LinearGradient 
             colors={["#c85",  "#da7"]}
             style={styles.container}
@@ -34,7 +33,7 @@ export default function Index() {
             {/* BODY  */}
             <View style={styles.body}>
                 <ActivityIndicator size="large" color="#000" />
-                {/* <Text style={styles.labelIniciando}>Ingresando</Text> */}
+                <Text style={styles.labelIniciando}>{ messageStatus }</Text>
             </View>
 
             {/* FOOTER */}
@@ -45,7 +44,6 @@ export default function Index() {
             </View>
 
         </LinearGradient>
-        </>
     )
 }
 
@@ -87,11 +85,11 @@ const styles = StyleSheet.create({
     marginBottom: moderateScale(5),
   },
   labelIniciando: {
-    fontVariant: ['small-caps'],
+    // fontVariant: ['small-caps'],
     fontSize: moderateScale(20),
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     // marginBottom: moderateVerticalScale(20),
-    marginTop: 5,
+    marginTop: 14,
   },
   labelUTN: {
     // width: '100%',

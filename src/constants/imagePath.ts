@@ -28,7 +28,7 @@ export default {
     accuntCircleLogo: require('../assets/images/account_circle.png'),
     settingsCircleLogo: require('../assets/images/Settings.png'),
     userLogo: require('../assets/images/User.png'),
-
+    iconXcircle: require('../assets/images/X-circle.png'),
 
     
 }
