@@ -32,6 +32,7 @@ const styles2= StyleSheet.create({
 
 export default function PantallaPrincipal() {
     const router = useRouter(); // Cambiar a useRouter
+    const { userData } = useUser(); // Obtener el contexto del usuario
     const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
@@ -41,9 +42,6 @@ export default function PantallaPrincipal() {
             }
         });
     }, []);
-
-    const router = useRouter(); // Cambiar a useRouter
-    const { userData } = useUser(); // Obtener el contexto del usuario
     
     return (
         <LinearGradient
