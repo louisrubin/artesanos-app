@@ -153,6 +153,10 @@ export default function LoginScreen() {
                 )}
             />
 
+            <Text style={styles.labelInputValidation}>
+                { errors.email ? errors.email.message : '' }
+            </Text>
+
             <Text style={[styles.label, {marginTop: moderateScale(16)}]}>Contraseña</Text>
             <Controller control={control} name='password' 
                 render={({field: {onChange, value}}) => (
@@ -162,6 +166,10 @@ export default function LoginScreen() {
                         value={value} />
                 )}
             />       
+
+            <Text style={styles.labelInputValidation}>
+                { errors.password ? errors.password.message : '' }
+            </Text>
 
             {/* BOTONES INCIAR Y REGISTER */}
             <View style={{alignItems: 'center'}}>
@@ -221,12 +229,12 @@ const styles = StyleSheet.create({
   },
   body: {
     flexGrow: 1,
-    // alignItems: 'center',
     width: '100%',
     paddingTop: moderateVerticalScale(40),
   },
   footer: {
     alignItems: 'center',
+    marginBottom: moderateVerticalScale(10),
   },
   imageHeader: {
     marginTop: moderateVerticalScale(-90),
@@ -245,12 +253,11 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(25),
     fontWeight: 'bold',
     marginBottom: moderateVerticalScale(20),
-    // marginTop: 5,
   },
   label: {
         fontSize: moderateScale(20), 
-        marginTop: moderateScale(15),
-        marginBottom: 2,
+        marginTop: moderateScale(10),
+        marginBottom: 3,
         alignSelf: 'flex-start',
   },
   labelCreditos: {
@@ -259,9 +266,9 @@ const styles = StyleSheet.create({
   },
   labelInputValidation:{
       fontSize: moderateScale(15), 
-      marginTop: moderateScale(-10),
-      paddingLeft: moderateScale(10),
-      fontWeight: 'bold',
+      marginTop: moderateScale(2),
+      fontWeight: "600",
+      color: 'red',
   },
 });
 

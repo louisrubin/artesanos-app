@@ -43,7 +43,7 @@ export default function PantallaPrincipal() {
 
                     { userData?.aprobado 
                         ? null 
-                        : <Text style={styles2.notificacionRed}>Cuenta pendiende de aprobación</Text>
+                        : <Text style={styles2.notificacionRed}>Cuenta pendiente de aprobación</Text>
                     }
                     
                     <Pressable style={ ({pressed}) => [
@@ -77,6 +77,10 @@ export default function PantallaPrincipal() {
                     onPress={() => router.push('/encuesta')} >Registrar Artesanos 
                 </ButtonX>
 
+                <Text style={{alignSelf: "flex-end", opacity: 0.6, marginTop: 3}}
+                    >Registros en espera de conexión: <Text style={{fontWeight: "600"}}>4</Text>
+                </Text>
+
                 <ButtonX
                     buttonStyles={{ width: moderateScale(300), 
                         marginTop: moderateScale(30),
@@ -90,6 +94,10 @@ export default function PantallaPrincipal() {
                     disabled={true}
                     onPress={() => router.push('/encuesta')} >Registros 
                 </ButtonX>
+                
+                <Text style={{alignSelf: "flex-end", opacity: 0.6, marginTop: 3}}
+                    >
+                </Text>
 
                 <ButtonX
                     buttonStyles={{ width: moderateScale(300), 
@@ -104,6 +112,10 @@ export default function PantallaPrincipal() {
                     disabled={true}
                     onPress={() => router.push('/encuesta')} >Estadísticas
                 </ButtonX>
+                
+                <Text style={{alignSelf: "flex-end", opacity: 0.6, marginTop: 3}}
+                    >
+                </Text>
             </View>
 
             {/* FOOTER */}
