@@ -4,6 +4,7 @@ import { auth, database } from "../../credenciales"; // Ajustá según tu ruta
 import { doc, onSnapshot } from "firebase/firestore";
 import { format } from "date-fns";
 import { onAuthStateChanged } from "firebase/auth";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 const UserContext = createContext(null);    // Crear el contexto del usuario --> valor default null
 
@@ -14,6 +15,7 @@ export const UserProviderContext = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [messageStatus, setMessageStatus] = useState(""); // almacenar el mensaje de error
+    const { isConnected } = useNetInfo(); // Hook para obtener el estado de Internet
 
     useEffect( () => {
         setMessageStatus("Obteniendo datos..."); // mensaje de carga
@@ -70,7 +72,7 @@ export const UserProviderContext = ({ children }) => {
     return (
         // Proveer el contexto Global del usuario a los componentes hijos
         // El valor del contexto incluye los datos del usuario, la función para actualizarlo
-        <UserContext.Provider value={{ userData, setUserData, isLoggedIn, loading, messageStatus }}>
+        <UserContext.Provider value={{ userData, setUserData, isLoggedIn, isConnected, loading, messageStatus }}>
             {children}
         </UserContext.Provider>
     );
