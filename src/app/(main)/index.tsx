@@ -4,9 +4,7 @@ import ButtonX from '../../components/ButtonX';
 import { LinearGradient } from 'expo-linear-gradient';
 import { moderateScale, moderateVerticalScale } from 'react-native-size-matters';
 import imagePath from '../../constants/imagePath';
-import { VerdeAgricultura } from '../../constants/colors';
 import { useEffect, useState } from "react";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useUser } from '../../hooks/UserContext';
 import ButtonSettings from '../../components/ButtonSettings';
 
@@ -19,7 +17,6 @@ const styles2= StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
         width: "100%",
-        // gap: moderateScale(5),
         paddingHorizontal: moderateScale(20),
     },
     notificacionRed: {
@@ -42,21 +39,14 @@ const styles2= StyleSheet.create({
 
 export default function PantallaPrincipal() {
     const router = useRouter(); // Cambiar a useRouter
-    const { userData, isConnected } = useUser(); // Obtener el contexto del usuario
+    const { userData, isInternetReachable } = useUser(); // Obtener el contexto del usuario
     const [funcionesON, setFuncionesON] = useState(false); // Estado para habilitar/deshabilitar botones
 
-    // const [isAdmin, setIsAdmin] = useState(true);
-
     useEffect(() => {
-        // AsyncStorage.getItem("userEmail").then(email => {
-        //     if (email === "admin@tudominio.com") { // Cambia por el email real del admin
-        //         setIsAdmin(true);
-        //     }
-        // });
         if (userData?.isAdmin || userData?.aprobado) setFuncionesON(true); // Habilita los botones si es admin o aprobado
         else setFuncionesON(false);
         
-    }, [userData]); // , funcionesON
+    }, [userData, isInternetReachable]); // , funcionesON
     
     return (
         <LinearGradient
@@ -69,7 +59,7 @@ export default function PantallaPrincipal() {
                 {/* BARRA SUPERIOR NOTIFICACIONES */}
                 <View style={styles2.barraSuperior}>
                     <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                        { !isConnected && (
+                        { !isInternetReachable && (
                                 <ButtonSettings 
                                     imgPath={imagePath.wifiOffLogo} 
                                     bgColor='#C9C9C9'

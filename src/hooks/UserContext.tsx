@@ -15,7 +15,7 @@ export const UserProviderContext = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [messageStatus, setMessageStatus] = useState(""); // almacenar el mensaje de error
-    const { isConnected } = useNetInfo(); // Hook para obtener el estado de Internet
+    const { isInternetReachable } = useNetInfo(); // Hook para obtener el estado de Internet
 
     useEffect( () => {
         setMessageStatus("Obteniendo datos..."); // mensaje de carga
@@ -72,7 +72,7 @@ export const UserProviderContext = ({ children }) => {
     return (
         // Proveer el contexto Global del usuario a los componentes hijos
         // El valor del contexto incluye los datos del usuario, la función para actualizarlo
-        <UserContext.Provider value={{ userData, setUserData, isLoggedIn, isConnected, loading, messageStatus }}>
+        <UserContext.Provider value={{ userData, setUserData, isLoggedIn, isInternetReachable, loading, messageStatus }}>
             {children}
         </UserContext.Provider>
     );
