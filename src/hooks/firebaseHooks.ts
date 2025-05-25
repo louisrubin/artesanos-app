@@ -1,5 +1,4 @@
 // // hooks de firebase
-
 import { doc, getDoc } from "firebase/firestore";
 import { database } from "../../credenciales";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -21,11 +20,11 @@ export const getUserInfoFirebase = async (userId, path = 'registros') => {
 }
 
 
-// // OBTENER DATOS DESDE ASYNCSTORAGE
-// export const getStoredUserData = async (pathStorage = 'userData') => {
-//     const userData = await AsyncStorage.getItem(pathStorage);    // obtiene los datos del usuario
-//     return userData ? JSON.parse(userData) : null; // si no hay datos retorna null
-// }
+// OBTENER DATOS DESDE ASYNCSTORAGE
+export const getStoredUserData = async (pathStorage = 'userData') => {
+    const userData = await AsyncStorage.getItem(pathStorage);    // obtiene los datos del usuario
+    return userData ? JSON.parse(userData) : null; // si no hay datos retorna null
+}
 
 
 // GUARDAR DATOS EN ASYNCSTORAGE
