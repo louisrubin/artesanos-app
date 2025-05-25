@@ -8,6 +8,7 @@ export default {
     iconRegistros: require('../assets/images/base-de-datos.png'),
     logoUTN: require('../assets/images/utn-logo.png'),
     iconLogout: require('../assets/images/Log_out.png'),
+    iconAdmin: require('../assets/images/admin.png'),
 
     keyLogo: require('../assets/images/Key.png'),
     loaderLogo: require('../assets/images/Loader.png'),

@@ -60,7 +60,7 @@ export default function LoginScreen() {
   }
 
   // ENVIO DE FORMULARIO LOGIN
-  function onSubmitLogin(data: FormData){
+  async function onSubmitLogin(data: FormData){
     const { email, password } = data;
 
     // verificar conexion internet antes de enviar el formulario

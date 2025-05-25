@@ -4,6 +4,9 @@ import ButtonX from '../../components/ButtonX';
 import { LinearGradient } from 'expo-linear-gradient';
 import { moderateScale, moderateVerticalScale } from 'react-native-size-matters';
 import imagePath from '../../constants/imagePath';
+import { VerdeAgricultura } from '../../constants/colors';
+import { useEffect, useState } from "react";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useUser } from '../../hooks/UserContext';
 import ButtonSettings from '../../components/ButtonSettings';
 
@@ -40,6 +43,20 @@ const styles2= StyleSheet.create({
 export default function PantallaPrincipal() {
     const router = useRouter(); // Cambiar a useRouter
     const { userData, isConnected } = useUser(); // Obtener el contexto del usuario
+    const [funcionesON, setFuncionesON] = useState(false); // Estado para habilitar/deshabilitar botones
+
+    // const [isAdmin, setIsAdmin] = useState(true);
+
+    useEffect(() => {
+        // AsyncStorage.getItem("userEmail").then(email => {
+        //     if (email === "admin@tudominio.com") { // Cambia por el email real del admin
+        //         setIsAdmin(true);
+        //     }
+        // });
+        if (userData?.isAdmin || userData?.aprobado) setFuncionesON(true); // Habilita los botones si es admin o aprobado
+        else setFuncionesON(false);
+        
+    }, [userData]); // , funcionesON
     
     return (
         <LinearGradient
@@ -62,7 +79,7 @@ export default function PantallaPrincipal() {
                     </View>
 
                     <View style={ styles2.centroNotificacion }>
-                        { !userData?.aprobado && (
+                        { !funcionesON && (
                             <Text style={styles2.notificacionRed}>Cuenta pendiente de aprobación</Text>
                         )}
                     </View>
@@ -83,6 +100,23 @@ export default function PantallaPrincipal() {
 
             {/* BODY */}
             <View style={styles.body}>
+
+
+            {userData?.isAdmin && (
+                <ButtonX
+                    buttonStyles={{ width: moderateScale(300), marginTop: moderateScale(30), padding: moderateScale(12) }}
+                    textStyles={{ fontWeight: 'bold', marginLeft: moderateScale(10) }}
+                    bgColor="#808090"
+                    bgColorPressed="#9696A2"
+                    fontSize={moderateScale(20)}
+                    iconParam={imagePath.iconAdmin}
+                    iconPosition="left"
+                    onPress={() => router.push('/admin')}
+                >
+                    Panel de administración
+                </ButtonX>
+            )}
+
                 <ButtonX
                     buttonStyles={{ width: moderateScale(300), 
                             marginTop: moderateScale(30),
@@ -93,7 +127,7 @@ export default function PantallaPrincipal() {
                     fontSize={moderateScale(20)}
                     iconParam={imagePath.iconUser}
                     iconPosition="left"
-                    disabled={!userData?.aprobado}
+                    disabled={ !funcionesON }
                     onPress={() => router.push('/encuesta')} >Registrar Artesanos 
                 </ButtonX>
 
@@ -111,7 +145,7 @@ export default function PantallaPrincipal() {
                     fontSize={moderateScale(20)}
                     iconParam={imagePath.iconRegistros}
                     iconPosition="left"
-                    disabled={true}
+                    disabled={ true }
                     onPress={() => router.push('/encuesta')} >Registros 
                 </ButtonX>
                 
@@ -129,7 +163,7 @@ export default function PantallaPrincipal() {
                     fontSize={moderateScale(20)}
                     iconParam={imagePath.iconStadistics}
                     iconPosition="left"
-                    disabled={true}
+                    disabled={ true }
                     onPress={() => router.push('/encuesta')} >Estadísticas
                 </ButtonX>
                 

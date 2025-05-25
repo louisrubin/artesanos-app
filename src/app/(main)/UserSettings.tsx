@@ -66,8 +66,11 @@ export default function UserSettings() {
                     colorTexto='#757575'
                     />
 
-                    <InputAndLabelX titleLabel='Verificado' editable={false}
-                    styleLabel={{opacity: 0.4}} value={userData?.aprobado ? "Verificado" : "No verificado"}
+                    <InputAndLabelX titleLabel='Estado' editable={false}
+                    styleLabel={{opacity: 0.4}} 
+                    value={ userData?.isAdmin ? "Administrador" :
+                            userData?.aprobado ? "Verificado" : "No verificado"
+                    }
                     bgColorInput={"#D9D9D9"}
                     colorTexto='#757575'
                     />
@@ -75,7 +78,7 @@ export default function UserSettings() {
                     <Text style={{fontSize: 18, color: "#D04A4A",
                             marginTop: moderateVerticalScale(10), opacity: 0.8}}
                         >
-                        { userData?.aprobado 
+                        { userData?.aprobado || userData?.isAdmin
                             ? null
                             : "Su cuenta está pendiente de verificación por un administrador."
                         }
