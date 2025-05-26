@@ -1,22 +1,255 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { useState } from "react";
+import { LinearGradient } from 'expo-linear-gradient';
+import { View, Text, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { Picker } from '@react-native-picker/picker'; // Instala si no lo tienes
+import ButtonX from '../../components/ButtonX';
+import InputX from '../../components/InputX';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { app } from "../../../credenciales"; // Ajusta la ruta a tu archivo de credenciales
 
-export default function PantallaPrincipal() {
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Encuesta 1</Text>
-        </View>
-    );
+const preguntas = [
+  // Información básica
+  { key: "nombres", label: "Nombres" },
+  { key: "apellidos", label: "Apellidos" },
+  { key: "dni", label: "DNI" },
+  { key: "cuil", label: "CUIT/CUIL" },
+  { key: "genero", label: "Género", type: "select", options: ["Masculino", "Femenino", "Otro"] },
+  { key: "fecha_nacimiento", label: "Fecha de nacimiento", type: "date" },
+
+  // Información de contacto
+  { key: "telefono", label: "Teléfono" },
+  { key: "email", label: "Correo Electrónico" },
+  { key: "domicilio", label: "Domicilio" },
+  { key: "localidad", label: "Localidad" },
+
+  // Información socioeconómica
+  { key: "estado_civil", label: "Estado civil", type: "select", options: ["Soltero/a", "Casado/a", "Divorciado/a", "Viudo/a", "Otro"] },
+  { key: "tiene_hijos", label: "¿Tiene hijos?", type: "select", options: ["Sí", "No"] },
+  { key: "cantidad_hijos", label: "Número de hijos" },
+  { key: "activ_artesan_ingreso_princ", label: "¿La actividad artesanal es el principal ingreso en su hogar?", type: "select", options: ["Sí", "No"] },
+  { key: "otro_ingreso", label: "Otro ingreso" },
+
+  // Práctica artesanal
+  { key: "rama_productiva", label: "Rama productiva (Rubro)" },
+  { key: "especialidad", label: "Oficio/Especialidad" },
+  { key: "descripcion_decorativa", label: "Descripción decorativa/Utilitaria" },
+
+  // Materiales y técnicas
+  { key: "materia_prima_prin", label: "Materia prima principal" },
+  { key: "materia_prima_secun", label: "Materia prima secundaria" },
+  { key: "tintes_que_usa", label: "Tintes que utiliza" },
+  { key: "tecnicas_artesanal", label: "Técnicas artesanales que utiliza" },
+  { key: "fusion_tecnicas", label: "Fusión de técnicas" },
+
+  // Conocimiento y experiencia
+  { key: "transmision_saberes", label: "¿De quién aprendió la técnica?" },
+  { key: "anios_trayectoria", label: "Años de trayectoria" },
+  { key: "dicta_talleres", label: "¿Dicta talleres o enseña la técnica?", type: "select", options: ["Sí", "No"] },
+  { key: "logros_trayectoria", label: "Logros en su trayectoria artesanal" },
+
+  // Educación y obra social
+  { key: "posee_estudios", label: "¿Posee estudios académicos?", type: "select", options: ["Sí", "No"] },
+  { key: "nivel_estudios", label: "Nivel de estudios alcanzados", type: "select", options: ["Primario", "Secundario", "Terciario", "Universitario", "Otro"] },
+  { key: "posee_obra_soc_pencion", label: "¿Posee obra social, asignaciones y/o pensiones?", type: "select", options: ["Sí", "No"] },
+  { key: "obra_social_pension", label: "Obra social, asignaciones y/o pensiones" },
+
+  // Comercialización
+  { key: "posee_punto_venta_cerca", label: "¿Posee algún punto de venta cercano?", type: "select", options: ["Sí", "No"] },
+  { key: "punto_venta_cercano", label: "Punto de venta cercano" },
+  { key: "como_comercializa", label: "¿Cómo y dónde comercializa los productos?" },
+  { key: "ferias_participadas", label: "Ferias o eventos donde ha participado" },
+  { key: "hizo_venta_mayorista", label: "¿Ha realizado venta mayorista?", type: "select", options: ["Sí", "No"] },
+
+  // Asociaciones y marcas
+  { key: "integra_asociac_artesan", label: "¿Integra alguna asociación o colectivo de personas artesanas?", type: "select", options: ["Sí", "No"] },
+  { key: "asociac_artesan", label: "Asociación o colectivo" },
+  { key: "tiene_marca", label: "¿Tiene marca o etiqueta individual o colectiva?", type: "select", options: ["Sí", "No"] },
+  { key: "marca", label: "Marca o etiqueta" },
+
+  // Materia prima y familia
+  { key: "lug_extrac_mat_prima", label: "¿Dónde realiza la extracción de la materia prima?" },
+  { key: "cant_artesan_flia", label: "¿Cuántas personas artesanas hay en su familia?" },
+
+  // Registro e identificación
+  { key: "pertenece_pueb_orig", label: "¿Pertenece a Pueblos Originarios?", type: "select", options: ["Sí", "No"] },
+  { key: "pueblo_originario", label: "¿Pueblo originario?" },
+  { key: "profesion_ocupac", label: "Profesión/Ocupación" },
+
+  // Información adicional
+  { key: "red_social", label: "Redes Sociales" },
+  { key: "posee_carnet_artesan", label: "¿Tiene carnet de artesano?", type: "select", options: ["Sí", "No"] },
+  { key: "utilidad_carnet", label: "Utilidad del carnet" },
+  { key: "inscripto_afip", label: "¿Está inscripto en AFIP?", type: "select", options: ["Sí", "No"] },
+  { key: "es_proveedor_estado", label: "¿Es proveedor del estado?", type: "select", options: ["Sí", "No"] },
+];
+const preguntasPorPagina = [6, 4, 3, 5, 4, 5, 3, 4, 4, 2, 3, 4]; // suma 50
+const titulosPorPagina = [
+  "Informacion Básica",//6
+  "Información de contacto", //4
+  "Practica Artesanal",//3
+  "Materiales y tecnicas",//5
+  "Conocimiento y experiencia",//4
+  "Información socio-económica",//3
+  "Educación y obras sociales",//4
+  "Comercialización",//4
+  "Asociaciones y marcas",//4
+  "Materia prima y familia",//2
+  "Registro e identificación",//3
+  "información adicional",//4
+
+  // ...agrega tantos títulos como páginas tengas
+];
+
+export default function Encuestas() {
+  const [pagina, setPagina] = useState(0);
+  const [respuestas, setRespuestas] = useState(
+    Object.fromEntries(preguntas.map(p => [p.key, ""]))
+  );
+  const [showDatePicker, setShowDatePicker] = useState<string | null>(null);
+  const db = getFirestore(app);
+
+  // Función para guardar en Firestore
+  const guardarEncuesta = async () => {
+    try {
+      await addDoc(collection(db, "encuestas"), {
+        respuestas,
+        fecha: new Date().toISOString(),
+      });
+      alert("¡Encuesta guardada correctamente!");
+      // Opcional: limpiar respuestas o navegar a otra pantalla
+    } catch (error) {
+      alert("Error al guardar la encuesta");
+      console.error(error);
+    }
+  };
+
+  const getPreguntasPagina = () => {
+    let start = 0;
+    for (let i = 0; i < pagina; i++) {
+      start += preguntasPorPagina[i];
+    }
+    const end = start + preguntasPorPagina[pagina];
+    return preguntas.slice(start, end);
+  };
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 24}
+      >
+        <LinearGradient colors={["#fff", "#fdf6e3", "#ffe"]} style={styles.container}>
+          <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center", alignItems: "center" }}>
+            <View style={styles.card}>
+              <Text style={styles.title}>
+                {titulosPorPagina[pagina] || "Encuesta"}
+              </Text>
+              {getPreguntasPagina().map((pregunta) => (
+                <View key={pregunta.key} style={{ marginBottom: 12 }}>
+                  <Text style={styles.label}>{pregunta.label}</Text>
+                  {pregunta.type === "select" ? (
+                    <Picker
+                      selectedValue={respuestas[pregunta.key]}
+                      onValueChange={value => setRespuestas({ ...respuestas, [pregunta.key]: value })}
+                      style={{ backgroundColor: "#fff" }}
+                    >
+                      <Picker.Item label="Seleccione..." value="" />
+                      {pregunta.options.map(opt => (
+                        <Picker.Item key={opt} label={opt} value={opt} />
+                      ))}
+                    </Picker>
+                  ) : pregunta.type === "date" ? (
+                    <>
+                      <ButtonX
+                        onPress={() => setShowDatePicker(pregunta.key)}
+                        buttonStyles={{ marginBottom: 8 }}
+                      >
+                        {respuestas[pregunta.key]
+                          ? respuestas[pregunta.key]
+                          : "Seleccionar fecha"}
+                      </ButtonX>
+                      {showDatePicker === pregunta.key && (
+                        <DateTimePicker
+                          value={
+                            respuestas[pregunta.key]
+                              ? new Date(
+                                  respuestas[pregunta.key].split("/").reverse().join("-")
+                              )
+                              : new Date(2000, 0, 1)
+                          }
+                          mode="date"
+                          display="default"
+                          maximumDate={new Date()}
+                          onChange={(event, date) => {
+                            setShowDatePicker(null);
+                            if (date) {
+                              const day = String(date.getDate()).padStart(2, "0");
+                              const month = String(date.getMonth() + 1).padStart(2, "0");
+                              const year = date.getFullYear();
+                              setRespuestas({
+                                ...respuestas,
+                                [pregunta.key]: `${day} / ${month} / ${year}`,
+                              });
+                            }
+                          }}
+                        />
+                      )}
+                    </>
+                  ) : (
+                    <InputX
+                      value={respuestas[pregunta.key]}
+                      onChangeText={text => setRespuestas({ ...respuestas, [pregunta.key]: text })}
+                      placeholder="Respuesta"
+                    />
+                  )}
+                </View>
+              ))}
+              <View style={styles.buttonRow}>
+                <ButtonX
+                  onPress={() => setPagina(pagina - 1)}
+                  disabled={pagina === 0}
+                  fontSize={18}
+                  buttonStyles={{ marginRight: 10, width: 120 }}
+                >
+                  Atrás
+                </ButtonX>
+                {pagina === preguntasPorPagina.length - 1 ? (
+                  <ButtonX
+                    onPress={guardarEncuesta}
+                    fontSize={18}
+                    buttonStyles={{ width: 120 }}
+                  >
+                    Finalizar
+                  </ButtonX>
+                ) : (
+                  <ButtonX
+                    onPress={() => setPagina(pagina + 1)}
+                    disabled={pagina === preguntasPorPagina.length - 1}
+                    fontSize={18}
+                    buttonStyles={{ width: 120 }}
+                  >
+                    Avanzar
+                  </ButtonX>
+                )}
+              </View>
+              <Text style={styles.paginador}>
+                Página {pagina + 1} / {preguntasPorPagina.length}
+              </Text>
+            </View>
+          </ScrollView>
+        </LinearGradient>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-    },
+  container: { flex: 1, justifyContent: "center", alignItems: "center" },
+  card: { backgroundColor: "#fff8", padding: 24, borderRadius: 16, width: "90%" },
+  title: { fontSize: 24, fontWeight: "bold", marginBottom: 16, marginTop: 16 },
+  label: { fontSize: 18, marginBottom: 6 },
+  buttonRow: { flexDirection: "row", justifyContent: "center", marginTop: 20 },
+  paginador: { marginTop: 16, fontSize: 16, color: "#888" },
 });
