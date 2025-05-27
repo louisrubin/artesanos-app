@@ -23,7 +23,8 @@ export const UserProviderContext = ({ children }) => {
 
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             // detecta si ya habia usuario logueado o no
-            if(!user) {
+            
+            if(!user) {                
                 setMessageStatus("Redirigiendo..."); // mensaje de carga
                 setIsLoggedIn(false);
                 setUserData(null);
@@ -32,20 +33,24 @@ export const UserProviderContext = ({ children }) => {
                 return;
             }
 
-            // hay usuario logueado pero no hay conexión a Internet
-            if (!isInternetReachable) {
-                setMessageStatus("Redirigiendo..."); // mensaje de carga
-                const storedUserData = await getStoredUserData(); // Obtener datos del usuario desde AsyncStorage
-                if (storedUserData) {
-                    setUserData(storedUserData); // Si hay datos, los establece en el estado
-                    setIsLoggedIn(true); // Usuario está logueado
-                }
-                setLoading(false); // Termina la carga
-                return; // Si no hay conexión, no se procede a verificar el usuario en Firebase
-            }
-
             try {
+                // sin conexión a Internet 
+                if(!isInternetReachable) {
+                    const storedUserData = await getStoredUserData(); // Obtener datos del usuario desde AsyncStorage
+                    if (storedUserData) {
+                        setUserData(storedUserData); // Si hay datos, los establece en el estado
+                        setIsLoggedIn(true); // Usuario está logueado
+                        setLoading(false); // Termina la carga
+                        return; 
+                    } else {
+                        console.log("No hay datos locales disponibles.");
+                        setLoading(false);
+                        return;
+                    }
+                }
+
                 const docRef = doc(database, "registros", auth.currentUser.uid); // Referencia al documento del usuario en Firestore
+                
                 // suscripción en tiempo real a los cambios en el documento
                 const unsubscribeSnapshot = onSnapshot(docRef, async (docSnapshot) => {
                     if (docSnapshot.exists()) {
@@ -58,6 +63,7 @@ export const UserProviderContext = ({ children }) => {
                         setUserData(data);
                         await AsyncStorage.setItem("userData", JSON.stringify(data));
                         setIsLoggedIn(true); // Usuario está logueado
+                        setLoading(false);
                     } else {
                         // algún error al cargar el documento
                         console.log("User Loggeado: No existe el documento del usuario. Cerrando sesión.");
@@ -65,6 +71,7 @@ export const UserProviderContext = ({ children }) => {
                         setIsLoggedIn(false);   // return
                         await AsyncStorage.removeItem("userData"); // Elimina los datos del usuario de AsyncStorage
                         auth.signOut(); // Cerrar sesión
+                        setLoading(false);
                     };
                 });
                 return () => unsubscribeSnapshot(); // Limpiar la suscripción al desmontar el componente
@@ -72,7 +79,7 @@ export const UserProviderContext = ({ children }) => {
             } catch (e) {
                 console.error("Error cargando usuario", e);
             } finally {
-                setLoading(false);
+                // setLoading(false);                
             }
         });
 
