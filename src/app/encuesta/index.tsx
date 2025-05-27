@@ -116,22 +116,31 @@ export default function Encuestas() {
     );
 
     // MODAL CONFIGURACION
-    const [showModal, setShowModal] = useState(false); // Para manejar el modal
-    const [isLoading, setLoading] = useState(true);
+    const [showModal, setModal] = useState(false); // Para manejar los modales
+    const [modalMode, setModalMode] = useState<"confirm" | "submit">("confirm");
+    const [isLoading, setLoading] = useState(false);
     const [titleModal, setTitleModal] = useState("");
     const [descripcionModal, setDescripcionModal] = useState("");
     const [iconHeaderModal, setIconModal] = useState(imagePath.databaseLogo);
     const [errorSubmit, setErrorSubmit] = useState(false);
 
-    const handleModal = () => {
-        setShowModal(false);
-        if (!errorSubmit) router.back();        
+    const handleModalButtonSubmit = () => {
+        // el botton del modal cuando se envió el formulario verifica si hubo error
+        setModal(false);
+        if (!errorSubmit) router.back();    // sin error redirige al main
+    }
+
+    const abrirConfimSubmitModal = () => {
+        setModal(true);
+        setModalMode("confirm");
+        setDescripcionModal("");
     }
 
     // Función para enviar a Firestore
-    const guardarEncuesta = async () => {
+    const submitEncuesta = async () => {
+        setModalMode("submit");
+        setLoading(true);
         setErrorSubmit(false);  // limpia el estado
-        setShowModal(true);
         setTitleModal("Registrando");
         setDescripcionModal("Guardando en la base de datos...");
         try {
@@ -172,7 +181,8 @@ export default function Encuestas() {
             <ButtonX
                 onPress={
                     pagina === preguntasPorPagina.length - 1
-                        ? guardarEncuesta
+                        ? () => { abrirConfimSubmitModal()
+                         }
                         : () => setPagina(pagina + 1)
                     }
                 fontSize={moderateScale(25)}
@@ -213,11 +223,27 @@ export default function Encuestas() {
         <>
         <ModalX isModalVisible={showModal} 
             isLoading={isLoading} 
-            iconHeader={iconHeaderModal}
-            title={titleModal}
+            iconHeader={modalMode === "confirm" ? imagePath.iconFileText : iconHeaderModal}
+            title={modalMode === "confirm" ? "¿Confirmar envío del formulario?" : titleModal}
             messageLoading={descripcionModal}
         >
-            { !isLoading && (
+            {/* CONFIRMAR ENVIO */}
+            { modalMode === "confirm" && (
+                <ButtonX 
+                buttonStyles={{ width: moderateScale(180),
+                marginTop: moderateScale(20), paddingVertical: moderateScale(10),
+                }}
+                fontSize={moderateScale(20)}
+                bgColor="#E0F393"
+                bgColorPressed='#B1C464'
+                onPress={ submitEncuesta }
+                >
+                    Confirmar Registro
+                </ButtonX>
+            )}
+
+            {/* ENVIANDO FORMULARIO */}
+            { modalMode === "submit" && !isLoading && (
                 <ButtonX 
                 buttonStyles={{ width: moderateScale(160),
                 marginTop: moderateScale(20), paddingVertical: moderateScale(10),
@@ -225,12 +251,14 @@ export default function Encuestas() {
                 fontSize={moderateScale(20)}
                 bgColor="#E0F393"
                 bgColorPressed='#B1C464'
-                onPress={ handleModal }
+                onPress={ handleModalButtonSubmit }
                 >
                     Volver al Inicio
                 </ButtonX>
             )}
         </ModalX>
+
+
 
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
 
