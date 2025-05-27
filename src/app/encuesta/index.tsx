@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { LinearGradient } from 'expo-linear-gradient';
-import { View, Text, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView, useWindowDimensions } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // Instala si no lo tienes
 import ButtonX from '../../components/ButtonX';
 import InputX from '../../components/InputX';
@@ -106,12 +106,21 @@ const titulosPorPagina = [
 export default function Encuestas() {
     // const { encuestaData, setEncuestaData } = useEncuesta(); // Accede al contexto de Encuesta
     const [showDatePicker, setShowDatePicker] = useState<string | null>(null);
+    const [scrollHabilitado, setScrollHabilitado] = useState(false);
+    const { height: alturaPantalla } = useWindowDimensions();
     const db = getFirestore(app);
+
+    const [alturaContenido, setAlturaContenido] = useState(0); // Ajusta la altura del contenido
 
     const [pagina, setPagina] = useState(0);
     const [respuestas, setRespuestas] = useState(
         Object.fromEntries(preguntas.map(p => [p.key, ""]))
     );
+
+    const handleContenidoSize = (widht: number, height: number) => {
+        setAlturaContenido(height);
+        setScrollHabilitado(height > alturaPantalla);
+    }
 
     // Función para guardar en Firestore
     const guardarEncuesta = async () => {
@@ -137,6 +146,48 @@ export default function Encuestas() {
         return preguntas.slice(start, end);
     };
 
+    const BotonesNavegacion = (
+        <View style={{ alignItems: "center", marginBottom: moderateVerticalScale(30),}}>
+            <ButtonX
+                onPress={
+                    pagina === preguntasPorPagina.length - 1
+                        ? guardarEncuesta
+                        : () => setPagina(pagina + 1)
+                    }
+                fontSize={moderateScale(25)}
+                iconParam={imagePath.arrowRightLogo}
+                iconPosition="right"
+                bgColor="#E0F393"
+                bgColorPressed="#BBCE70"
+                buttonStyles={{ 
+                    width: moderateScale(175), 
+                    paddingVertical: moderateVerticalScale(5),
+                    marginBottom: moderateVerticalScale(20),
+                    borderRadius: 30,
+                }}
+                disabled={pagina === preguntasPorPagina.length - 1}
+            >
+                {pagina === preguntasPorPagina.length - 1 ? "Finalizar" : "Siguiente"}
+            </ButtonX>
+
+            <ButtonX
+                onPress={() => setPagina(pagina - 1)}
+                disabled={pagina === 0}
+                fontSize={moderateScale(18)}
+                iconParam={imagePath.arrowLeftLogo}
+                iconPosition="left"
+                bgColorPressed="#BBCE70"
+                buttonStyles={{ 
+                    width: moderateScale(120),
+                    paddingVertical: moderateVerticalScale(5),
+                    borderRadius: 30,
+                }}
+            >
+                Anterior
+            </ButtonX>
+        </View>
+    )
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
 
@@ -158,7 +209,8 @@ export default function Encuestas() {
                 keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 24}
             >
                 <LinearGradient colors={["#fff", "#ddc", ]} style={styles.container}>
-                    <ScrollView contentContainerStyle={styles.body}>
+                    <ScrollView contentContainerStyle={styles.body}
+                    onContentSizeChange={handleContenidoSize}>
                         <View style={styles.card}>
                         
                             {getPreguntasPagina().map((pregunta) => (
@@ -232,51 +284,19 @@ export default function Encuestas() {
                             ))}
                         
                         </View>
-
-                        {/* BOTONES NAVEGACION */}
-                        <View style={{alignItems: "center", marginBottom: moderateVerticalScale(30),}}>
-                            <ButtonX
-                                onPress={
-                                    pagina === preguntasPorPagina.length - 1
-                                        ? guardarEncuesta
-                                        : () => setPagina(pagina + 1)
-                                    }
-                                fontSize={moderateScale(25)}
-                                iconParam={imagePath.arrowRightLogo}
-                                iconPosition="right"
-                                bgColor="#E0F393"
-                                bgColorPressed="#BBCE70"
-                                buttonStyles={{ 
-                                    width: moderateScale(175), 
-                                    paddingVertical: moderateVerticalScale(5),
-                                    marginBottom: moderateVerticalScale(20),
-                                    borderRadius: 30,
-                                }}
-                                disabled={pagina === preguntasPorPagina.length - 1}
-                            >
-                                {pagina === preguntasPorPagina.length - 1 ? "Finalizar" : "Siguiente"}
-                            </ButtonX>
-
-                            <ButtonX
-                                onPress={() => setPagina(pagina - 1)}
-                                disabled={pagina === 0}
-                                fontSize={moderateScale(18)}
-                                iconParam={imagePath.arrowLeftLogo}
-                                iconPosition="left"
-                                bgColorPressed="#BBCE70"
-                                buttonStyles={{ 
-                                    width: moderateScale(120),
-                                    paddingVertical: moderateVerticalScale(5),
-                                    borderRadius: 30,
-                                }}
-                            >
-                                Anterior
-                            </ButtonX>
-
-                        </View>
-
+                        
+                        { scrollHabilitado && BotonesNavegacion }
 
                     </ScrollView>
+
+                    { !scrollHabilitado && (
+                        <View style={{ position: "absolute", bottom: 0, left: 0, right: 0 }}>
+                            {BotonesNavegacion}
+                        </View>
+                    )}
+
+
+
                 </LinearGradient>
             </KeyboardAvoidingView>
 
@@ -296,9 +316,8 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: "#ddd",
     },
-    body: { 
-        flex: 1,
-        justifyContent: "space-between", 
+    body: {
+        // flex: 1, // No es necesario flex: 1 aquí, ya que ScrollView maneja el scroll
         alignItems: "center" 
     },
 
