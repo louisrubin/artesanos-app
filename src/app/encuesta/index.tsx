@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { LinearGradient } from 'expo-linear-gradient';
-import { View, Text, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import ButtonX from '../../components/ButtonX';
 import InputX from '../../components/InputX';
@@ -10,26 +10,28 @@ import { app } from "../../../credenciales";
 import { moderateScale, moderateVerticalScale } from "react-native-size-matters";
 import imagePath from "../../constants/imagePath";
 import { format } from "date-fns";
+import { router } from "expo-router";
+import ModalX from "../../components/Modal";
 
 const preguntas = [
     // Información básica
     { key: "nombres", label: "Nombres" },
     { key: "apellidos", label: "Apellidos" },
-    { key: "dni", label: "DNI" },
-    { key: "cuil", label: "CUIT/CUIL" },
+    { key: "dni", label: "DNI", keyboard: "number-pad" },
+    { key: "cuil", label: "CUIT/CUIL", keyboard: "number-pad"  },
     { key: "genero", label: "Género", type: "select", options: ["Masculino", "Femenino", "Otro"] },
     { key: "fecha_nacimiento", label: "Fecha de nacimiento", type: "date" },
 
     // Información de contacto
-    { key: "telefono", label: "Teléfono" },
-    { key: "email", label: "Correo Electrónico" },
+    { key: "telefono", label: "Teléfono", keyboard: "number-pad"  },
+    { key: "email", label: "Correo Electrónico", keyboard: "email-address" },
     { key: "domicilio", label: "Domicilio" },
     { key: "localidad", label: "Localidad" },
 
     // Información socioeconómica
     { key: "estado_civil", label: "Estado civil", type: "select", options: ["Soltero/a", "Casado/a", "Divorciado/a", "Viudo/a", "Otro"] },
     { key: "tiene_hijos", label: "¿Tiene hijos?", type: "select", options: ["Sí", "No"] },
-    { key: "cantidad_hijos", label: "Número de hijos" },
+    { key: "cantidad_hijos", label: "Número de hijos", keyboard: "number-pad"  },
     { key: "activ_artesan_ingreso_princ", label: "¿La actividad artesanal es el principal ingreso en su hogar?", type: "select", options: ["Sí", "No"] },
     { key: "otro_ingreso", label: "Otro ingreso" },
 
@@ -47,7 +49,7 @@ const preguntas = [
 
     // Conocimiento y experiencia
     { key: "transmision_saberes", label: "¿De quién aprendió la técnica?" },
-    { key: "anios_trayectoria", label: "Años de trayectoria" },
+    { key: "anios_trayectoria", label: "Años de trayectoria", keyboard: "number-pad"  },
     { key: "dicta_talleres", label: "¿Dicta talleres o enseña la técnica?", type: "select", options: ["Sí", "No"] },
     { key: "logros_trayectoria", label: "Logros en su trayectoria artesanal" },
 
@@ -72,12 +74,12 @@ const preguntas = [
 
     // Materia prima y familia
     { key: "lug_extrac_mat_prima", label: "¿Dónde realiza la extracción de la materia prima?" },
-    { key: "cant_artesan_flia", label: "¿Cuántas personas artesanas hay en su familia?" },
+    { key: "cant_artesan_flia", label: "¿Cuántas personas artesanas hay en su familia?", keyboard: "number-pad"  },
 
     // Registro e identificación
     { key: "pertenece_pueb_orig", label: "¿Pertenece a Pueblos Originarios?", type: "select", options: ["Sí", "No"] },
     { key: "pueblo_originario", label: "¿Pueblo originario?" },
-    { key: "profesion_ocupac", label: "Profesión/Ocupación" },
+    { key: "profesion_ocupac", label: "Profesión / Ocupación" },
 
     // Información adicional
     { key: "red_social", label: "Redes Sociales" },
@@ -113,26 +115,53 @@ export default function Encuestas() {
         Object.fromEntries(preguntas.map(p => [p.key, ""]))
     );
 
+    // MODAL CONFIGURACION
+    const [showModal, setShowModal] = useState(false); // Para manejar el modal
+    const [isLoading, setLoading] = useState(true);
+    const [titleModal, setTitleModal] = useState("");
+    const [descripcionModal, setDescripcionModal] = useState("");
+    const [iconHeaderModal, setIconModal] = useState(imagePath.databaseLogo);
+    const [errorSubmit, setErrorSubmit] = useState(false);
+
+    const handleModal = () => {
+        setShowModal(false);
+        if (!errorSubmit) router.back();        
+    }
+
     // Función para enviar a Firestore
     const guardarEncuesta = async () => {
+        setErrorSubmit(false);  // limpia el estado
+        setShowModal(true);
+        setTitleModal("Registrando");
+        setDescripcionModal("Guardando en la base de datos...");
         try {
             await addDoc(collection(db, "encuestas"), {
-                fecha_registro: Timestamp.fromDate(new Date()),
+                fecha_registro: (new Date().toISOString()), // Fecha de registro actual
                 ...respuestas,
-                fecha_nacimiento: Timestamp.fromDate(respuestas.fecha_nacimiento as Date), // Asegurarse de que la fecha sea un Timestamp
+                // fecha_nacimiento: Timestamp.fromDate(respuestas.fecha_nacimiento as Date)
+                fecha_nacimiento: respuestas["fecha_nacimiento"] 
+                    ? (respuestas["fecha_nacimiento"] as Date).toISOString()
+                    : null, // Si no hay fecha, se guarda como null
             });
-            alert("¡Encuesta guardada correctamente!");
-            // Opcional: limpiar respuestas o navegar a otra pantalla
-        } catch (error) {
-            alert("Error al guardar la encuesta");
-            console.error(error);
+            setTitleModal("Registrado con éxito");
+            setDescripcionModal("Artesano guardado correctamente.");
+            setIconModal(imagePath.userCheckLogo);
+            setLoading(false);
+        }
+        catch (error) {
+            setErrorSubmit(true);
+            setTitleModal("Algo salió mal");
+            setDescripcionModal("No se pudo registrar al artesano.");
+            setIconModal(imagePath.iconXcircle);
+            setLoading(false);
+            // console.error(error);
         }
     };
 
     const getPreguntasPagina = () => {
         let start = 0;
         for (let i = 0; i < pagina; i++) {
-        start += preguntasPorPagina[i];
+            start += preguntasPorPagina[i];
         }
         const end = start + preguntasPorPagina[pagina];
         return preguntas.slice(start, end);
@@ -157,7 +186,7 @@ export default function Encuestas() {
                     marginBottom: moderateVerticalScale(20),
                     borderRadius: 30,
                 }}
-                disabled={pagina === preguntasPorPagina.length - 1}
+                disabled={false}
             >
                 {pagina === preguntasPorPagina.length - 1 ? "Enviar" : "Siguiente"}
             </ButtonX>
@@ -181,6 +210,28 @@ export default function Encuestas() {
     )
 
     return (
+        <>
+        <ModalX isModalVisible={showModal} 
+            isLoading={isLoading} 
+            iconHeader={iconHeaderModal}
+            title={titleModal}
+            messageLoading={descripcionModal}
+        >
+            { !isLoading && (
+                <ButtonX 
+                buttonStyles={{ width: moderateScale(160),
+                marginTop: moderateScale(20), paddingVertical: moderateScale(10),
+                }}
+                fontSize={moderateScale(20)}
+                bgColor="#E0F393"
+                bgColorPressed='#B1C464'
+                onPress={ handleModal }
+                >
+                    Volver al Inicio
+                </ButtonX>
+            )}
+        </ModalX>
+
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
 
             {/* HEADER */}
@@ -241,12 +292,13 @@ export default function Encuestas() {
                                         {showDatePicker === pregunta.key && (
                                             <DateTimePicker
                                                 value={
-                                                    respuestas[pregunta.key]
+                                                    respuestas[pregunta.key] instanceof Date
                                                     ? respuestas[pregunta.key] as Date
                                                     : new Date()
                                                 }
                                                 mode="date"
                                                 display="default"
+                                                minimumDate={new Date(1900, 0, 1)} // Fecha mínima
                                                 maximumDate={new Date()}
                                                 onChange={(event, selectedDate) => {
                                                     setShowDatePicker(null); // Cerrar el picker
@@ -267,6 +319,7 @@ export default function Encuestas() {
                                             value={respuestas[pregunta.key] as string}
                                             onChangeText={text => setRespuestas({ ...respuestas, [pregunta.key]: text })}
                                             placeholder="Respuesta"
+                                            tipoTeclado={ (pregunta.keyboard || "default") as "default" | "email-address" | "number-pad" }
                                         />
                                     )}
                                 </View>
@@ -282,6 +335,7 @@ export default function Encuestas() {
             {/* </KeyboardAvoidingView> */}
 
         </SafeAreaView>
+        </>
     );
 }
 
