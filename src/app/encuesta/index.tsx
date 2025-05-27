@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { LinearGradient } from 'expo-linear-gradient';
-import { View, Text, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView, useWindowDimensions } from 'react-native';
-import { Picker } from '@react-native-picker/picker'; // Instala si no lo tienes
+import { View, Text, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import ButtonX from '../../components/ButtonX';
 import InputX from '../../components/InputX';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { getFirestore, collection, addDoc } from "firebase/firestore";
-import { app } from "../../../credenciales"; // Ajusta la ruta a tu archivo de credenciales
+import { getFirestore, collection, addDoc, Timestamp } from "firebase/firestore";
+import { app } from "../../../credenciales";
 import { moderateScale, moderateVerticalScale } from "react-native-size-matters";
 import imagePath from "../../constants/imagePath";
+import { format } from "date-fns";
 
 const preguntas = [
     // Información básica
@@ -104,36 +105,27 @@ const titulosPorPagina = [
 ];
 
 export default function Encuestas() {
-    // const { encuestaData, setEncuestaData } = useEncuesta(); // Accede al contexto de Encuesta
-    const [showDatePicker, setShowDatePicker] = useState<string | null>(null);
-    const [scrollHabilitado, setScrollHabilitado] = useState(false);
-    const { height: alturaPantalla } = useWindowDimensions();
     const db = getFirestore(app);
-
-    const [alturaContenido, setAlturaContenido] = useState(0); // Ajusta la altura del contenido
-
+    const [showDatePicker, setShowDatePicker] = useState<string | null>(null);
     const [pagina, setPagina] = useState(0);
-    const [respuestas, setRespuestas] = useState(
+    // un objeto con claves tipo string y valores que pueden ser string o Date
+    const [respuestas, setRespuestas] = useState<{ [key: string]: string | Date }>(
         Object.fromEntries(preguntas.map(p => [p.key, ""]))
     );
 
-    const handleContenidoSize = (widht: number, height: number) => {
-        setAlturaContenido(height);
-        setScrollHabilitado(height > alturaPantalla);
-    }
-
-    // Función para guardar en Firestore
+    // Función para enviar a Firestore
     const guardarEncuesta = async () => {
         try {
-        await addDoc(collection(db, "encuestas"), {
-            respuestas,
-            fecha: new Date().toISOString(),
-        });
-        alert("¡Encuesta guardada correctamente!");
-        // Opcional: limpiar respuestas o navegar a otra pantalla
+            await addDoc(collection(db, "encuestas"), {
+                fecha_registro: Timestamp.fromDate(new Date()),
+                ...respuestas,
+                fecha_nacimiento: Timestamp.fromDate(respuestas.fecha_nacimiento as Date), // Asegurarse de que la fecha sea un Timestamp
+            });
+            alert("¡Encuesta guardada correctamente!");
+            // Opcional: limpiar respuestas o navegar a otra pantalla
         } catch (error) {
-        alert("Error al guardar la encuesta");
-        console.error(error);
+            alert("Error al guardar la encuesta");
+            console.error(error);
         }
     };
 
@@ -167,7 +159,7 @@ export default function Encuestas() {
                 }}
                 disabled={pagina === preguntasPorPagina.length - 1}
             >
-                {pagina === preguntasPorPagina.length - 1 ? "Finalizar" : "Siguiente"}
+                {pagina === preguntasPorPagina.length - 1 ? "Enviar" : "Siguiente"}
             </ButtonX>
 
             <ButtonX
@@ -203,14 +195,13 @@ export default function Encuestas() {
             </View>
 
             {/* BODY */}
-            <KeyboardAvoidingView
+            {/* <KeyboardAvoidingView
                 style={{ flex: 1 }}
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
-                keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 24}
-            >
+                keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+            > */}
                 <LinearGradient colors={["#fff", "#ddc", ]} style={styles.container}>
-                    <ScrollView contentContainerStyle={styles.body}
-                    onContentSizeChange={handleContenidoSize}>
+                    <ScrollView contentContainerStyle={styles.body}>
                         <View style={styles.card}>
                         
                             {getPreguntasPagina().map((pregunta) => (
@@ -240,42 +231,40 @@ export default function Encuestas() {
                                             bgColor="#ddd"
                                             bgColorPressed="#BFBFBF"
                                         >
-                                            {respuestas[pregunta.key]
-                                            ? respuestas[pregunta.key]
-                                            : "Seleccionar fecha"}
+                                            {
+                                            respuestas[pregunta.key] instanceof Date
+                                                ? format(respuestas[pregunta.key] as Date, "dd / MM / yyyy")
+                                                : "Seleccionar fecha"}
                                         </ButtonX>
 
-                                        {/* Mostrar el DateTimePicker si showDatePicker coincide con la pregunta actual */}
+                                        {/* Mostrar el DateTimePicker si showDatePicker coincide con la pregunta actual  */}
                                         {showDatePicker === pregunta.key && (
                                             <DateTimePicker
                                                 value={
                                                     respuestas[pregunta.key]
-                                                    ? new Date(
-                                                        respuestas[pregunta.key].split("/").reverse().join("-")
-                                                    )
-                                                    : new Date(2000, 0, 1)
+                                                    ? respuestas[pregunta.key] as Date
+                                                    : new Date()
                                                 }
                                                 mode="date"
                                                 display="default"
                                                 maximumDate={new Date()}
-                                                onChange={(event, date) => {
-                                                    setShowDatePicker(null);
-                                                    if (date) {
-                                                        const day = String(date.getDate()).padStart(2, "0");
-                                                        const month = String(date.getMonth() + 1).padStart(2, "0");
-                                                        const year = date.getFullYear();
+                                                onChange={(event, selectedDate) => {
+                                                    setShowDatePicker(null); // Cerrar el picker
+
+                                                    if (event.type === "set" && selectedDate) {
                                                         setRespuestas({
                                                             ...respuestas,
-                                                            [pregunta.key]: `${day} / ${month} / ${year}`,
+                                                            [pregunta.key]: selectedDate,   // Guardar la fecha seleccionada
                                                         });
                                                     }
+                                                    // Si se cancela, no hacer nada y dejar el valor como está
                                                 }}
                                             />
                                         )}
                                         </>
                                     ) : (
                                         <InputX
-                                            value={respuestas[pregunta.key]}
+                                            value={respuestas[pregunta.key] as string}
                                             onChangeText={text => setRespuestas({ ...respuestas, [pregunta.key]: text })}
                                             placeholder="Respuesta"
                                         />
@@ -285,21 +274,12 @@ export default function Encuestas() {
                         
                         </View>
                         
-                        { scrollHabilitado && BotonesNavegacion }
+                        { BotonesNavegacion }
 
                     </ScrollView>
 
-                    { !scrollHabilitado && (
-                        <View style={{ position: "absolute", bottom: 0, left: 0, right: 0 }}>
-                            {BotonesNavegacion}
-                        </View>
-                    )}
-
-
-
                 </LinearGradient>
-            </KeyboardAvoidingView>
-
+            {/* </KeyboardAvoidingView> */}
 
         </SafeAreaView>
     );
@@ -313,12 +293,15 @@ const styles = StyleSheet.create({
         paddingTop: moderateVerticalScale(40),
         paddingBottom: moderateVerticalScale(15),
         alignItems: "center",
+        
         borderBottomWidth: 1,
         borderBottomColor: "#ddd",
     },
     body: {
-        // flex: 1, // No es necesario flex: 1 aquí, ya que ScrollView maneja el scroll
-        alignItems: "center" 
+        flexGrow: 1, // Permite que el contenido crezca
+        alignItems: "center", 
+        justifyContent: "space-between",
+        gap: moderateVerticalScale(30),
     },
 
     card: {
