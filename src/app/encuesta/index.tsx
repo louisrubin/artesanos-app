@@ -1,4 +1,3 @@
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { useState } from "react";
 import { LinearGradient } from 'expo-linear-gradient';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
@@ -187,15 +186,15 @@ export default function Encuestas() {
                         : () => setPagina(pagina + 1)
                     }
                //  fontSize={moderateScale(25)}
-                fontSize={hp(3.2)}
+                fontSize={25}
                 iconParam={imagePath.arrowRightLogo}
                 iconPosition="right"
                 bgColor="#E0F393"
                 bgColorPressed="#BBCE70"
                 buttonStyles={{
-                    width: wp(47), 
+                    width: 175, 
                     paddingVertical: moderateVerticalScale(5),
-                    marginBottom: hp(2.5),
+                    marginBottom: 25,
                     borderRadius: 30,
                 }}
                 disabled={false}
@@ -206,12 +205,12 @@ export default function Encuestas() {
             <ButtonX
                 onPress={() => setPagina(pagina - 1)}
                 disabled={pagina === 0}
-                fontSize={hp(2.2)}
+                fontSize={20}
                 iconParam={imagePath.arrowLeftLogo}
                 iconPosition="left"
                 bgColorPressed="#BBCE70"
                 buttonStyles={{
-                    width: wp(32),
+                    width: 130,
                     paddingVertical: moderateVerticalScale(5),
                     borderRadius: 30,
                 }}
@@ -295,7 +294,7 @@ export default function Encuestas() {
                                           <Picker
                                              selectedValue={respuestas[pregunta.key]}
                                              onValueChange={value => setRespuestas({ ...respuestas, [pregunta.key]: value })}
-                                             style={{ backgroundColor: "#fff", height: hp(5.2) }}
+                                             style={{ backgroundColor: "#fff"}}
                                           >
                                           <Picker.Item label="Seleccione..." value="" />
                                              {pregunta.options.map(opt => (
@@ -308,7 +307,7 @@ export default function Encuestas() {
                                        <ButtonX
                                           onPress={() => setShowDatePicker(pregunta.key)}
                                           buttonStyles={{ paddingVertical: moderateVerticalScale(6), borderRadius: 30, }}
-                                          fontSize={hp(2.4)}
+                                          fontSize={22}
                                           bgColor="#ddd"
                                           bgColorPressed="#BFBFBF"
                                        >
@@ -394,16 +393,16 @@ const styles = StyleSheet.create({
         width: "100%",
     },
     title: {  
-        fontSize: hp(3),
+        fontSize: 26,
         fontWeight: "bold",
     },
     label: { 
-        fontSize: hp(2.7),
-        marginBottom: hp(0.5), 
+        fontSize: 24,
+        marginBottom: 5, 
     },
 
     paginador: { 
-        fontSize: hp(2),
+        fontSize: 16,
         color: "#888" 
     },
 });
