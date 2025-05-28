@@ -1,5 +1,6 @@
 import { Image, Pressable, StyleSheet, TextInput, View } from "react-native";
 import { useTogglePasswordVisibility } from "../hooks/useTogglePasswordVisibility";
+import { heightPercentageToDP } from "react-native-responsive-screen";
 
 export type PropsInputX = {
     // nombreParam: string;
@@ -63,12 +64,13 @@ const styles = StyleSheet.create({
         width: '100%',
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: '#d7d7d7'
+        borderColor: '#d7d7d7',
+        height: heightPercentageToDP(5.2)
     },
     input: {
         borderRadius: 8,
         padding: 10,
-        fontSize: 20,
+        fontSize: heightPercentageToDP(2.3),
     },
     eyeImage: {
         resizeMode: "contain",
