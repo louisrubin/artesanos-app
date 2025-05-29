@@ -32,9 +32,11 @@ export default function ModalX(props: PropsParam) {
                     { props.title }
                 </Text>
 
-                <Text>
-                    { props.messageLoading }
-                </Text>
+                { props.messageLoading && (
+                    <Text>
+                        { props.messageLoading }
+                    </Text>
+                )}
 
                 { /* botones o lo que se quiera agregar por children */}
                 {  !props.isLoading && (
@@ -53,7 +55,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         marginVertical: "auto",
         alignItems: "center",
-        maxHeight: moderateVerticalScale(250),
+        maxHeight: 250,
         fontSize: 30,
     },
     modalView: {
@@ -74,10 +76,9 @@ const styles = StyleSheet.create({
         elevation: 5,
     },  
     label: {
-        fontSize: moderateScale(25), 
-        marginTop: moderateScale(15),
-        marginBottom: moderateVerticalScale(10),
-        alignSelf: "center",
-        // fontWeight: "bold",
+        fontSize: 25, 
+        marginTop: 15,
+        marginBottom: 15,
+        textAlign: "center",
     },
 })

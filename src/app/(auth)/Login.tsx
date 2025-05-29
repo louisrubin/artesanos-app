@@ -116,10 +116,10 @@ export default function LoginScreen() {
             messageLoading={modalMessage}
             >
                 <ButtonX
-                    buttonStyles={{ width: moderateScale(150),
-                    marginTop: moderateScale(20), paddingVertical: moderateScale(10),
+                    buttonStyles={{ width: 150,
+                    marginTop: moderateScale(20), paddingVertical: 8,
                     }}
-                    fontSize={moderateScale(20)}
+                    fontSize={20}
                     iconParam={iconButtonModal}
                     iconPosition="left"
                     bgColor='#E0F393'
@@ -129,7 +129,7 @@ export default function LoginScreen() {
                     Volver
                 </ButtonX>
 
-        </ModalX>      
+        		</ModalX>      
 
 
         {/* HEADER */}
@@ -137,50 +137,53 @@ export default function LoginScreen() {
             <Image source={imagePath.logoGobChaco} style={styles.imageHeader} />
         </View>
 
-        <View style={{ marginTop: moderateVerticalScale(-65), alignItems: 'center' }}>
+        <View style={{ marginTop: moderateVerticalScale(10), alignItems: 'center' }}>
           <Text style={styles.labelTitulo}>Ingresar a su cuenta</Text>
         </View>
 
         {/* BODY  */}
         <View style={styles.body}>
-            <Text style={styles.label}>Correo Electrónico</Text>
-            <Controller control={control} name="email"
-                render={ ({field: {onChange, value}}) => (
-                    <InputX placeholder="Ingrese Correo Electrónico" 
-                        tipoTeclado="email-address"
-                        value={value}
-                        onChangeText={onChange} />
-                )}
-            />
+				<View style={{ width: "80%" }}>
+					<Text style={styles.label}>Correo Electrónico</Text>
+					<Controller control={control} name="email"
+						render={ ({field: {onChange, value}}) => (
+							<InputX placeholder="Ingrese Correo Electrónico" 
+									tipoTeclado="email-address"
+									value={value}
+									onChangeText={onChange} />
+						)}
+					/>
 
-            <Text style={styles.labelInputValidation}>
-                { errors.email ? errors.email.message : '' }
-            </Text>
+					<Text style={styles.labelInputValidation}>
+						{ errors.email ? errors.email.message : '' }
+					</Text>
 
-            <Text style={[styles.label, {marginTop: moderateScale(16)}]}>Contraseña</Text>
-            <Controller control={control} name='password' 
-                render={({field: {onChange, value}}) => (
-                    <InputX placeholder="Ingrese Contraseña" 
-                        passwordInput
-                        onChangeText={onChange} 
-                        value={value} />
-                )}
-            />       
+					<Text style={[styles.label, {marginTop: moderateScale(16)}]}>Contraseña</Text>
+					<Controller control={control} name='password' 
+						render={({field: {onChange, value}}) => (
+							<InputX placeholder="Ingrese Contraseña" 
+									passwordInput
+									onChangeText={onChange} 
+									value={value} />
+						)}
+					/>       
 
-            <Text style={styles.labelInputValidation}>
-                { errors.password ? errors.password.message : '' }
-            </Text>
+					<Text style={styles.labelInputValidation}>
+						{ errors.password ? errors.password.message : '' }
+					</Text>
+				</View>
+            
 
             {/* BOTONES INCIAR Y REGISTER */}
             <View style={{alignItems: 'center'}}>
                 <ButtonX 
-                    buttonStyles={{ width: moderateScale(200), 
-                    marginTop: moderateScale(30), padding: moderateScale(12),
+                    buttonStyles={{ width: 210,
+                    padding: moderateScale(12),
                     }}
                     textStyles={{ fontWeight: 'bold' }}
                     bgColor="#E0F393" //E0F393
                     bgColorPressed="#BCB85d"
-                    fontSize={moderateScale(20)}
+                    fontSize={20}
                     iconParam={imagePath.iconLogin}
                     iconPosition="right"
                     onPress={ handleSubmit(onSubmitLogin) } // Cambiar a router.push('/main/pantallaPrincipal')
@@ -189,13 +192,12 @@ export default function LoginScreen() {
                 </ButtonX>
 
                 <ButtonX      
-                    buttonStyles={{ width: moderateScale(140), 
+                    buttonStyles={{ width: 150, 
                     marginTop: moderateScale(18), paddingVertical: moderateScale(6),
                     }}           
                     // bgColor="#A0AE6A"
                     bgColorPressed="#f86"
-                    textStyles={null}
-                    fontSize={moderateScale(15)}
+                    fontSize={15}
                     iconParam={imagePath.iconRegister}
                     iconPosition="right"
                     onPress={() => router.push('/(auth)/Register')} 
@@ -204,15 +206,15 @@ export default function LoginScreen() {
                 </ButtonX>
             </View>
             
-          </View>
+			</View>
 
 
-        {/* FOOTER */}
-        <View style={styles.footer}>
-            <Image source={imagePath.logoICCH} style={styles.imageFooter} />
-            <Text style={styles.labelCreditos}>UTN FRRe</Text>
-            <Text style={styles.labelCreditos}>Rubín-Zamora</Text>
-        </View>
+			{/* FOOTER */}
+			<View style={styles.footer}>
+					<Image source={imagePath.logoICCH} style={styles.imageFooter} />
+					<Text style={{ fontSize: 14, opacity: 0.5, }}>UTN FRRe</Text>
+					<Text style={{ fontSize: 14, opacity: 0.5, }}>Rubín-Zamora</Text>
+			</View>
 
     </LinearGradient>    
   );
@@ -220,49 +222,45 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    paddingVertical: moderateVerticalScale(30),
-    paddingHorizontal: moderateScale(40),
+    flexGrow: 1,
   },
   header: {
     alignItems: 'center',
   },
   body: {
     flexGrow: 1,
-    width: '100%',
-    paddingTop: moderateVerticalScale(40),
+    alignItems: 'center',
+	 justifyContent: "space-evenly",
   },
   footer: {
     alignItems: 'center',
-    marginBottom: moderateVerticalScale(10),
+    paddingBottom: moderateVerticalScale(15),
   },
+
   imageHeader: {
-    marginTop: moderateVerticalScale(-90),
-    height: moderateScale(300),
-    width: moderateScale(300),
+    marginTop: -70,
+    marginBottom: -100,
+    height: moderateScale(250),
+    width: moderateScale(250),
     resizeMode: "contain",
   },
   imageFooter: {
-    height: moderateScale(150),
-    width: moderateScale(150),
-    marginBottom: moderateVerticalScale(-10),
+    height: moderateScale(130),
+    width: moderateScale(130),
+    marginTop: -40,
+    marginBottom: -30,
     resizeMode: "contain",
   },
   labelTitulo: {
     fontVariant: ['small-caps'],
-    fontSize: moderateScale(25),
     fontWeight: 'bold',
+    fontSize: 24,
     marginBottom: moderateVerticalScale(20),
   },
   label: {
-        fontSize: moderateScale(20), 
-        marginTop: moderateScale(10),
-        marginBottom: 3,
-        alignSelf: 'flex-start',
-  },
-  labelCreditos: {
-    fontSize: moderateScale(14),
-    opacity: 0.7,
+	 fontSize: 20, 
+	 marginBottom: 3,
+	 alignSelf: 'flex-start',
   },
   labelInputValidation:{
       fontSize: moderateScale(15), 
