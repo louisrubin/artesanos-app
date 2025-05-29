@@ -42,11 +42,11 @@ export default function PantallaPrincipal() {
     const { userData, isInternetReachable } = useUser(); // Obtener el contexto del usuario
     const [funcionesON, setFuncionesON] = useState(false); // Estado para habilitar/deshabilitar botones
 
-    // useEffect(() => {
-    //     if (userData?.isAdmin || userData?.aprobado) setFuncionesON(true); // Habilita los botones si es admin o aprobado
-    //     else setFuncionesON(false);
+    useEffect(() => {
+        if (userData?.isAdmin || userData?.aprobado) setFuncionesON(true); // Habilita los botones si es admin o aprobado
+        else setFuncionesON(false);
         
-    // }, [userData, isInternetReachable]); // , funcionesON
+    }, [userData, isInternetReachable]); // , funcionesON
     
     return (
         <LinearGradient
@@ -70,8 +70,7 @@ export default function PantallaPrincipal() {
 
                     <View style={ styles2.centroNotificacion }>
                         { !funcionesON && (
-                            // <Text style={styles2.notificacionRed}>Cuenta pendiente de aprobación</Text>
-                            <Text style={styles2.notificacionRed}>Rama REDMI (offline)</Text>
+                            <Text style={styles2.notificacionRed}>Cuenta pendiente de aprobación</Text>
                         )}
                     </View>
 
@@ -93,8 +92,7 @@ export default function PantallaPrincipal() {
             <View style={styles.body}>
 
 
-            { true && (
-            //!userData?.isAdmin && (
+            { userData?.isAdmin && (
                 <ButtonX
                     buttonStyles={{ width: moderateScale(300), marginTop: moderateScale(30), padding: moderateScale(12) }}
                     textStyles={{ fontWeight: 'bold', marginLeft: moderateScale(10) }}
@@ -119,7 +117,7 @@ export default function PantallaPrincipal() {
                     fontSize={moderateScale(20)}
                     iconParam={imagePath.iconUser}
                     iconPosition="left"
-                    disabled={ false }
+                    disabled={ !funcionesON }
                     onPress={() => router.push('/encuesta')} >Registrar Artesanos 
                 </ButtonX>
 

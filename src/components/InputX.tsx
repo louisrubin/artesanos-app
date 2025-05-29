@@ -2,7 +2,6 @@ import { Image, Pressable, StyleSheet, TextInput, View } from "react-native";
 import { useTogglePasswordVisibility } from "../hooks/useTogglePasswordVisibility";
 
 export type PropsInputX = {
-    // nombreParam: string;
     tipoTeclado?: 'email-address' | 'number-pad' | 'default'  //| 'numeric';
     placeholder?: string;
     value?: string;
@@ -61,12 +60,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         width: '100%',
+        height: 45,
+
         borderRadius: 8,
         borderWidth: 1,
         borderColor: '#d7d7d7',
     },
     input: {
         borderRadius: 8,
+        fontSize: 20,
         padding: 10,
     },
     eyeImage: {

@@ -1,7 +1,6 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router'; // Cambiar a useRouter
 import { LinearGradient } from 'expo-linear-gradient';
-import { moderateScale, moderateVerticalScale } from 'react-native-size-matters';
 import { z } from 'zod';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -117,7 +116,7 @@ export default function LoginScreen() {
             >
                 <ButtonX
                     buttonStyles={{ width: 150,
-                    marginTop: moderateScale(20), paddingVertical: 8,
+                    marginTop: 22, paddingVertical: 8,
                     }}
                     fontSize={20}
                     iconParam={iconButtonModal}
@@ -137,7 +136,7 @@ export default function LoginScreen() {
             <Image source={imagePath.logoGobChaco} style={styles.imageHeader} />
         </View>
 
-        <View style={{ marginTop: moderateVerticalScale(10), alignItems: 'center' }}>
+        <View style={{ marginTop: 10 }}>
           <Text style={styles.labelTitulo}>Ingresar a su cuenta</Text>
         </View>
 
@@ -158,7 +157,7 @@ export default function LoginScreen() {
 						{ errors.email ? errors.email.message : '' }
 					</Text>
 
-					<Text style={[styles.label, {marginTop: moderateScale(16)}]}>Contraseña</Text>
+					<Text style={[styles.label, {marginTop: 15}]}>Contraseña</Text>
 					<Controller control={control} name='password' 
 						render={({field: {onChange, value}}) => (
 							<InputX placeholder="Ingrese Contraseña" 
@@ -178,7 +177,7 @@ export default function LoginScreen() {
             <View style={{alignItems: 'center'}}>
                 <ButtonX 
                     buttonStyles={{ width: 210,
-                    padding: moderateScale(12),
+                    padding: 14,
                     }}
                     textStyles={{ fontWeight: 'bold' }}
                     bgColor="#E0F393" //E0F393
@@ -193,7 +192,7 @@ export default function LoginScreen() {
 
                 <ButtonX      
                     buttonStyles={{ width: 150, 
-                    marginTop: moderateScale(18), paddingVertical: moderateScale(6),
+                    marginTop: 20, paddingVertical: 7,
                     }}           
                     // bgColor="#A0AE6A"
                     bgColorPressed="#f86"
@@ -212,8 +211,8 @@ export default function LoginScreen() {
 			{/* FOOTER */}
 			<View style={styles.footer}>
 					<Image source={imagePath.logoICCH} style={styles.imageFooter} />
-					<Text style={{ fontSize: 14, opacity: 0.5, }}>UTN FRRe</Text>
-					<Text style={{ fontSize: 14, opacity: 0.5, }}>Rubín-Zamora</Text>
+					<Text style={{ fontSize: 12, opacity: 0.5, }}>UTN FRRe</Text>
+					<Text style={{ fontSize: 12, opacity: 0.5, }}>Rubín-Zamora</Text>
 			</View>
 
     </LinearGradient>    
@@ -234,28 +233,28 @@ const styles = StyleSheet.create({
   },
   footer: {
     alignItems: 'center',
-    paddingBottom: moderateVerticalScale(15),
+    paddingBottom: 17,
   },
 
   imageHeader: {
     marginTop: -70,
     marginBottom: -100,
-    height: moderateScale(250),
-    width: moderateScale(250),
+    height: 285,
+    width: 285,
     resizeMode: "contain",
   },
   imageFooter: {
-    height: moderateScale(130),
-    width: moderateScale(130),
+    height: 150,
+    width: 150,
     marginTop: -40,
-    marginBottom: -30,
+    marginBottom: -45,
     resizeMode: "contain",
   },
   labelTitulo: {
     fontVariant: ['small-caps'],
     fontWeight: 'bold',
     fontSize: 24,
-    marginBottom: moderateVerticalScale(20),
+	 textAlign: "center",
   },
   label: {
 	 fontSize: 20, 
@@ -263,8 +262,8 @@ const styles = StyleSheet.create({
 	 alignSelf: 'flex-start',
   },
   labelInputValidation:{
-      fontSize: moderateScale(15), 
-      marginTop: moderateScale(2),
+      fontSize: 17, 
+      marginTop: 3,
       fontWeight: "600",
       color: 'red',
   },
