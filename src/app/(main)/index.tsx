@@ -94,11 +94,11 @@ export default function PantallaPrincipal() {
 
             { userData?.isAdmin && (
                 <ButtonX
-                    buttonStyles={{ width: moderateScale(300), marginTop: moderateScale(30), padding: moderateScale(12) }}
+                    buttonStyles={styles.buttons}
                     textStyles={{ fontWeight: 'bold', marginLeft: moderateScale(10) }}
                     bgColor="#808090"
                     bgColorPressed="#9696A2"
-                    fontSize={moderateScale(20)}
+                    fontSize={20}
                     iconParam={imagePath.iconAdmin}
                     iconPosition="left"
                     onPress={() => router.push('/admin')}
@@ -108,13 +108,11 @@ export default function PantallaPrincipal() {
             )}
 
                 <ButtonX
-                    buttonStyles={{ width: moderateScale(300), 
-                            marginTop: moderateScale(30),
-                            padding: moderateScale(12),}}
+                    buttonStyles={styles.buttons}
                     textStyles={{ fontWeight: 'bold',marginLeft: moderateScale(10) }}
                     bgColor="#E0F393"
                     bgColorPressed="#BBCE70"
-                    fontSize={moderateScale(20)}
+                    fontSize={20}
                     iconParam={imagePath.iconUser}
                     iconPosition="left"
                     disabled={ !funcionesON }
@@ -126,13 +124,11 @@ export default function PantallaPrincipal() {
                 </Text>
 
                 <ButtonX
-                    buttonStyles={{ width: moderateScale(300), 
-                        marginTop: moderateScale(30),
-                        padding: moderateScale(12),}}
+                    buttonStyles={styles.buttons}
                     textStyles={{ fontWeight: 'bold',marginLeft: moderateScale(10) }}
                     bgColor="#E0F393"
                     bgColorPressed="#BCB850"
-                    fontSize={moderateScale(20)}
+                    fontSize={20}
                     iconParam={imagePath.iconRegistros}
                     iconPosition="left"
                     disabled={ true }
@@ -144,13 +140,11 @@ export default function PantallaPrincipal() {
                 </Text>
 
                 <ButtonX
-                    buttonStyles={{ width: moderateScale(300), 
-                        marginTop: moderateScale(30), 
-                        padding: moderateScale(12),}}
+                    buttonStyles={styles.buttons}
                     textStyles={{ fontWeight: 'bold',marginLeft: moderateScale(10) }}
                     bgColor="#E0F393"
                     bgColorPressed="#BCB850"
-                    fontSize={moderateScale(20)}
+                    fontSize={20}
                     iconParam={imagePath.iconStadistics}
                     iconPosition="left"
                     disabled={ true }
@@ -201,4 +195,9 @@ const styles = StyleSheet.create({
         marginTop: moderateVerticalScale(-40),
         marginBottom: -55,
     },
+    buttons: {
+        width: moderateScale(300), 
+        marginTop: 30,
+        padding: moderateScale(12),
+    }
 });

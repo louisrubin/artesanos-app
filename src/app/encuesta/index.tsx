@@ -177,7 +177,7 @@ export default function Encuestas() {
     };
 
     const BotonesNavegacion = (
-        <View style={{ alignItems: "center", marginBottom: moderateVerticalScale(30),}}>
+        <View style={styles.footer}>
             <ButtonX
                 onPress={
                     pagina === preguntasPorPagina.length - 1
@@ -185,8 +185,7 @@ export default function Encuestas() {
                          }
                         : () => setPagina(pagina + 1)
                     }
-               //  fontSize={moderateScale(25)}
-                fontSize={25}
+                fontSize={20}
                 iconParam={imagePath.arrowRightLogo}
                 iconPosition="right"
                 bgColor="#E0F393"
@@ -194,6 +193,7 @@ export default function Encuestas() {
                 buttonStyles={{
                     width: 175, 
                     paddingVertical: moderateVerticalScale(5),
+                    paddingLeft: 6,
                     marginBottom: 25,
                     borderRadius: 30,
                 }}
@@ -205,7 +205,7 @@ export default function Encuestas() {
             <ButtonX
                 onPress={() => setPagina(pagina - 1)}
                 disabled={pagina === 0}
-                fontSize={20}
+                fontSize={16}
                 iconParam={imagePath.arrowLeftLogo}
                 iconPosition="left"
                 bgColorPressed="#BBCE70"
@@ -280,85 +280,90 @@ export default function Encuestas() {
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
             > */}
-                <LinearGradient colors={["#fff", "#ddc", ]} style={styles.container}>
-                    <ScrollView contentContainerStyle={styles.body}>
-                     <View style={styles.card}>
+                <LinearGradient colors={["#fff", "#ddc", ]} style={{flex: 1}}>
+                    <View style={{flex: 1}}>
+                    <ScrollView contentContainerStyle={{flexGrow: 1}}>
+                        <View style={styles.innerContainer}>
+                            <View style={styles.card}>
                      
-                           {getPreguntasPagina().map((pregunta) => (
-                              <View key={pregunta.key} style={{ marginBottom: moderateScale(20)}}>
-                                 <Text style={styles.label}>{pregunta.label}</Text>
+                                {getPreguntasPagina().map((pregunta) => (
+                                    <View key={pregunta.key} style={{ marginBottom: 20}}>
+                                        <Text style={styles.label}>{pregunta.label}</Text>
 
-                                 {/* Renderizar el tipo de input según la pregunta */}
-                                 {pregunta.type === "select" ? (
-                                       <View style={{ borderWidth: 1, borderColor: "#ddd", borderRadius: 8, overflow: "hidden" }}>
-                                          <Picker
-                                             selectedValue={respuestas[pregunta.key]}
-                                             onValueChange={value => setRespuestas({ ...respuestas, [pregunta.key]: value })}
-                                             style={{ backgroundColor: "#fff"}}
-                                          >
-                                          <Picker.Item label="Seleccione..." value="" />
-                                             {pregunta.options.map(opt => (
-                                                   <Picker.Item key={opt} label={opt} value={opt} />
-                                             ))}
-                                          </Picker>
-                                       </View>
-                                 ) : pregunta.type === "date" ? (
-                                       <>
-                                       <ButtonX
-                                          onPress={() => setShowDatePicker(pregunta.key)}
-                                          buttonStyles={{ paddingVertical: moderateVerticalScale(6), borderRadius: 30, }}
-                                          fontSize={22}
-                                          bgColor="#ddd"
-                                          bgColorPressed="#BFBFBF"
-                                       >
-                                          {
-                                          respuestas[pregunta.key] instanceof Date
-                                             ? format(respuestas[pregunta.key] as Date, "dd / MM / yyyy")
-                                             : "Seleccionar fecha"}
-                                       </ButtonX>
+                                        {/* Renderizar el tipo de input según la pregunta */}
+                                        {pregunta.type === "select" ? (
+                                            <View style={{ borderWidth: 1, borderColor: "#ddd", borderRadius: 8, overflow: "hidden" }}>
+                                                <Picker
+                                                    selectedValue={respuestas[pregunta.key]}
+                                                    onValueChange={value => setRespuestas({ ...respuestas, [pregunta.key]: value })}
+                                                    style={{ backgroundColor: "#fff"}}
+                                                >
+                                                <Picker.Item label="Seleccione..." value="" />
+                                                    {pregunta.options.map(opt => (
+                                                        <Picker.Item key={opt} label={opt} value={opt} />
+                                                    ))}
+                                                </Picker>
+                                            </View>
+                                        ) : pregunta.type === "date" ? (
+                                            <>
+                                            <ButtonX
+                                                onPress={() => setShowDatePicker(pregunta.key)}
+                                                buttonStyles={{ paddingVertical: 8, borderRadius: 30, }}
+                                                fontSize={18}
+                                                bgColor="#ddd"
+                                                bgColorPressed="#BFBFBF"
+                                            >
+                                                {
+                                                respuestas[pregunta.key] instanceof Date
+                                                    ? format(respuestas[pregunta.key] as Date, "dd / MM / yyyy")
+                                                    : "Seleccionar fecha"}
+                                            </ButtonX>
 
-                                       {/* Mostrar el DateTimePicker si showDatePicker coincide con la pregunta actual  */}
-                                       {showDatePicker === pregunta.key && (
-                                          <DateTimePicker
-                                             value={
-                                                   respuestas[pregunta.key] instanceof Date
-                                                   ? respuestas[pregunta.key] as Date
-                                                   : new Date()
-                                             }
-                                             mode="date"
-                                             display="default"
-                                             minimumDate={new Date(1900, 0, 1)} // Fecha mínima
-                                             maximumDate={new Date()}
-                                             onChange={(event, selectedDate) => {
-                                                   setShowDatePicker(null); // Cerrar el picker
+                                            {/* Mostrar el DateTimePicker si showDatePicker coincide con la pregunta actual  */}
+                                            {showDatePicker === pregunta.key && (
+                                                <DateTimePicker
+                                                    value={
+                                                        respuestas[pregunta.key] instanceof Date
+                                                        ? respuestas[pregunta.key] as Date
+                                                        : new Date()
+                                                    }
+                                                    mode="date"
+                                                    display="default"
+                                                    minimumDate={new Date(1900, 0, 1)} // Fecha mínima
+                                                    maximumDate={new Date()}
+                                                    onChange={(event, selectedDate) => {
+                                                        setShowDatePicker(null); // Cerrar el picker
 
-                                                   if (event.type === "set" && selectedDate) {
-                                                      setRespuestas({
-                                                         ...respuestas,
-                                                         [pregunta.key]: selectedDate,   // Guardar la fecha seleccionada
-                                                      });
-                                                   }
-                                                   // Si se cancela, no hacer nada y dejar el valor como está
-                                             }}
-                                          />
-                                       )}
-                                       </>
-                                 ) : (
-                                       <InputX
-                                          value={respuestas[pregunta.key] as string}
-                                          onChangeText={text => setRespuestas({ ...respuestas, [pregunta.key]: text })}
-                                          placeholder="Respuesta"
-                                          tipoTeclado={ (pregunta.keyboard || "default") as "default" | "email-address" | "number-pad" }
-                                       />
-                                 )}
-                              </View>
-                           ))}
-                     
-                     </View>
-                     
-                     { BotonesNavegacion }
+                                                        if (event.type === "set" && selectedDate) {
+                                                            setRespuestas({
+                                                                ...respuestas,
+                                                                [pregunta.key]: selectedDate,   // Guardar la fecha seleccionada
+                                                            });
+                                                        }
+                                                        // Si se cancela, no hacer nada y dejar el valor como está
+                                                    }}
+                                                />
+                                            )}
+                                            </>
+                                        ) : (
+                                            <InputX
+                                                value={respuestas[pregunta.key] as string}
+                                                onChangeText={text => setRespuestas({ ...respuestas, [pregunta.key]: text })}
+                                                placeholder="Respuesta"
+                                                tipoTeclado={ (pregunta.keyboard || "default") as "default" | "email-address" | "number-pad" }
+                                            />
+                                        )}
+                                    </View>
+                                ))}
+                            
+                            </View>
+                            
+                            { BotonesNavegacion }
+
+                        </View>                        
 
                     </ScrollView>
+                    </View>
 
                 </LinearGradient>
             {/* </KeyboardAvoidingView> */}
@@ -369,40 +374,41 @@ export default function Encuestas() {
 }
 
 const styles = StyleSheet.create({
-    container: { 
-        flexGrow: 1,
-    },
     header: {
-        paddingTop: moderateVerticalScale(40),
-        paddingBottom: moderateVerticalScale(15),
+        paddingTop: 30,
+        paddingBottom: 15,
         alignItems: "center",
         
         borderBottomWidth: 1,
         borderBottomColor: "#ddd",
     },
-    body: {
-        flexGrow: 1, // Permite que el contenido crezca
+    // dentro de scrollView
+    innerContainer: {
+        flex: 1, 
+        justifyContent: "space-between", 
+        gap: 30
+    },
+    footer: {
         alignItems: "center", 
-        justifyContent: "space-between",
-        gap: moderateVerticalScale(30),
+        marginBottom: 40,
     },
 
     card: {
-        paddingHorizontal: moderateScale(25),
-        paddingTop: moderateVerticalScale(25),
+        paddingHorizontal: 35,
+        paddingTop: 20,
         width: "100%",
     },
     title: {  
-        fontSize: 26,
+        fontSize: 20,
         fontWeight: "bold",
     },
     label: { 
-        fontSize: 24,
+        fontSize: 18,
         marginBottom: 5, 
     },
 
     paginador: { 
-        fontSize: 16,
+        fontSize: 14,
         color: "#888" 
     },
 });
