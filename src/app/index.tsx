@@ -1,9 +1,9 @@
+import { useEffect } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { View, Image, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { moderateScale, moderateVerticalScale } from "react-native-size-matters";
 import imagePath from "../constants/imagePath";
 import { useRouter } from "expo-router";
-import { useEffect } from "react";
 import { useUser } from "../hooks/UserContext";
 
 export default function Index() {
@@ -38,9 +38,9 @@ export default function Index() {
 
             {/* FOOTER */}
             <View style={styles.footer}>
-                <Image source={imagePath.logoUTN} style={styles.imageFooter} />
-                <Text style={styles.labelUTN}>Facultad Regional</Text>
-                <Text style={styles.labelUTN}>Resistencia</Text>
+                <Image source={ imagePath.logoUTN } style={styles.imageFooter} />
+                <Text style={{ fontSize: 12 }}>Facultad Regional</Text>
+                <Text style={{ fontSize: 12 }}>Resistencia</Text>
             </View>
 
         </LinearGradient>
@@ -50,51 +50,39 @@ export default function Index() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     paddingVertical: moderateVerticalScale(20),
   },
   header: {
     alignItems: 'center',
-    marginBottom: moderateScale(12),
+    marginBottom: -110,
   },
-  flexBody: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 40,
-  },
+
   body: {
-    // marginTop: -170,
-    alignItems: 'center',
     flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: "center",
   },
   footer: {
     alignItems: 'center',
-    marginTop: 10,
     opacity: 0.5,
   },
+  
   imageHeader: {
-    marginTop: moderateScale(-50),
-    height: moderateScale(350),
-    width: moderateScale(350),
+    marginTop: moderateScale(-100),
+    height: moderateScale(280),
+    width: moderateScale(280),
     resizeMode: "contain",
   },
   imageFooter: {
-    height: moderateScale(65),
-    width: moderateScale(65),
+    height: moderateScale(50),
+    width: moderateScale(50),
     resizeMode: "contain",
     marginBottom: moderateScale(5),
   },
   labelIniciando: {
-    // fontVariant: ['small-caps'],
-    fontSize: moderateScale(20),
-    // fontWeight: 'bold',
-    // marginBottom: moderateVerticalScale(20),
-    marginTop: 14,
-  },
-  labelUTN: {
-    // width: '100%',
-    fontSize: moderateScale(14),
-    
+    fontSize: 15,
+    marginTop: 10,
   },
 });
 
