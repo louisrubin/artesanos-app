@@ -42,11 +42,11 @@ export default function PantallaPrincipal() {
     const { userData, isInternetReachable } = useUser(); // Obtener el contexto del usuario
     const [funcionesON, setFuncionesON] = useState(false); // Estado para habilitar/deshabilitar botones
 
-    useEffect(() => {
-        if (userData?.isAdmin || userData?.aprobado) setFuncionesON(true); // Habilita los botones si es admin o aprobado
-        else setFuncionesON(false);
+    // useEffect(() => {
+    //     if (userData?.isAdmin || userData?.aprobado) setFuncionesON(true); // Habilita los botones si es admin o aprobado
+    //     else setFuncionesON(false);
         
-    }, [userData, isInternetReachable]); // , funcionesON
+    // }, [userData, isInternetReachable]); // , funcionesON
     
     return (
         <LinearGradient
@@ -70,7 +70,8 @@ export default function PantallaPrincipal() {
 
                     <View style={ styles2.centroNotificacion }>
                         { !funcionesON && (
-                            <Text style={styles2.notificacionRed}>Cuenta pendiente de aprobación</Text>
+                            // <Text style={styles2.notificacionRed}>Cuenta pendiente de aprobación</Text>
+                            <Text style={styles2.notificacionRed}>Rama REDMI (offline)</Text>
                         )}
                     </View>
 
@@ -92,7 +93,8 @@ export default function PantallaPrincipal() {
             <View style={styles.body}>
 
 
-            {userData?.isAdmin && (
+            { true && (
+            //!userData?.isAdmin && (
                 <ButtonX
                     buttonStyles={{ width: moderateScale(300), marginTop: moderateScale(30), padding: moderateScale(12) }}
                     textStyles={{ fontWeight: 'bold', marginLeft: moderateScale(10) }}
@@ -117,11 +119,11 @@ export default function PantallaPrincipal() {
                     fontSize={moderateScale(20)}
                     iconParam={imagePath.iconUser}
                     iconPosition="left"
-                    disabled={ !funcionesON }
+                    disabled={ false }
                     onPress={() => router.push('/encuesta')} >Registrar Artesanos 
                 </ButtonX>
 
-                <Text style={{alignSelf: "flex-end", opacity: 0.6, marginTop: 3}}
+                <Text style={{ width: moderateScale(285), textAlign: "right", opacity: 0.6, marginTop: 3}}
                     >Registros en espera de conexión: <Text style={{fontWeight: "600"}}>4</Text>
                 </Text>
 
@@ -178,26 +180,27 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },    
     header: {
-        marginTop: moderateScale(20),
-        marginBottom: moderateScale(12),
-        width: "100%",
+        marginTop: 10,
+        paddingTop: 5,
         alignItems: "center",
     },
     body:{
         flexGrow: 1,
+        width: "100%",
+        paddingTop: 20,
+        alignItems: "center",
     },
     footer: {
         alignItems: 'center',
-        marginTop: 10,
-        position: 'absolute', // Fija el contenedor en una posición específica
-        bottom: 30, // Ubica el contenedor a 10px del borde inferior
-        width: '100%', // Asegura que el contenedor ocupe todo el ancho
-        opacity: 0.7,
+        marginTop: 5,
+        width: '100%',
+        opacity: 0.4,
     },
     imageHeader: {
         height: moderateScale(150),
         width: moderateScale(150),
         resizeMode: "contain",
         marginTop: moderateVerticalScale(-40),
+        marginBottom: -55,
     },
 });
