@@ -126,13 +126,12 @@ export default function RegisterScreen(){
             title={modalMessage}
             isLoading={isLoadingActivity}
             iconHeader={iconHeaderModal}
-            // onBackdropPress={() => {setIsVisibleModal(!isVisibleModal)}}     // funct al click fuera del modal
             >
                 <ButtonX
-                buttonStyles={{ width: moderateScale(160),
-                marginTop: moderateScale(20), paddingVertical: moderateScale(10),
+                buttonStyles={{ width: 160,
+                marginTop: 20, paddingVertical: 10,
                 }}
-                fontSize={moderateScale(20)}
+                fontSize={18}
                 iconParam={iconButtonModal}
                 iconPosition="left"
                 bgColor="#E0F393"
@@ -299,24 +298,24 @@ export default function RegisterScreen(){
                         
                     </View>
 
-                    <View style={{ alignItems: 'center' }}>
+                    <View style={{ alignItems: 'center', marginTop: 30, }}>
                         <ButtonX
-                            buttonStyles={{ width: moderateScale(220), marginTop: 20, borderWidth: 1, borderColor: '#000', padding: 10 }}
+                            buttonStyles={{ width: 220, borderWidth: 1, borderColor: '#000', padding: 10 }}
                             textStyles={{ fontWeight: 'bold' }}
                             bgColor="#E0F393"
                             bgColorPressed="#BCB850"
-                            fontSize={moderateScale(22)}
+                            fontSize={18}
                             onPress={handleSubmit(onSubmit)} // Cambiar a handleSubmit(onSubmit)
                             >
                                 Confirmar Registro
                         </ButtonX>
 
                         <ButtonX
-                            buttonStyles={{ width: moderateScale(120), marginTop: 20, borderWidth: 1, borderColor: '#000', padding: 5 }}
+                            buttonStyles={{ width: 140, marginTop: 20, borderWidth: 1, borderColor: '#000', padding: 5 }}
                             // textStyles={{ fontWeight: 'bold' }}
                             // bgColor="#E0F393"
                             bgColorPressed="#B1C464"
-                            fontSize={moderateScale(16)}
+                            fontSize={16}
                             onPress={ () => { router.back() } } // Cambiar a router.back()
                             >
                                 Volver atrás
@@ -346,49 +345,48 @@ const styles = StyleSheet.create({
         alignItems: 'center', 
     },
     header:{
-        marginTop: moderateVerticalScale(50),
-        position: 'absolute',
-        top: 0,
+        paddingTop: 100,
+        width: "100%",
         alignItems: 'center',
     },
     body:{
         flexGrow: 1,
-        marginTop: moderateVerticalScale(95),
-        // marginBottom: moderateVerticalScale(5),
-        width: '100%',
+        marginBottom: 50,
     },
     footer:{
         alignItems: 'center', 
-        marginBottom: moderateVerticalScale(30),
+        // marginBottom: 30,
         marginTop: moderateVerticalScale(10),
         opacity: 0.7,
     },
+    
     titleHeader:{ 
-        fontSize: moderateScale(30),
+        fontSize: 22,
         fontWeight: 'bold' 
     },
     labelInput: { 
-        fontSize: moderateScale(25), 
-        marginTop: moderateScale(15),
+        fontSize: 18, 
+        marginTop: 15,
         marginBottom: 2,
     },
     labelInputMini:{
-        fontSize: moderateScale(15), 
-        paddingLeft: moderateScale(10),
+        fontSize: 15, 
+        paddingLeft: 10,
         opacity: 0.7,
     },
     labelInputValidation:{
-        fontSize: moderateScale(15), 
-        paddingLeft: moderateScale(10),
+        fontSize: 14, 
+        paddingLeft: 10,
         fontWeight: 'bold',
     },
     viewInput:{
-        paddingHorizontal: moderateScale(40),
+        paddingHorizontal: 40,
     },
     imageFooter: {
       height: moderateScale(100),
       width: moderateScale(100),
-      marginBottom: moderateScale(-40),
+      marginTop: -20,
+    //   marginBottom: moderateScale(-20),
       resizeMode: "contain",
     },
 

@@ -26,8 +26,9 @@ export default function InputX( { tipoTeclado, placeholder, value, onChangeText,
                 style={[
                     styles.input, 
                     {
-                        width: passwordInput ? "90%" : "100%",
+                        // width: passwordInput ? "90%" : "100%",
                         color: colorTexto ?? "black",
+                        
                     }
                 ]}
                 placeholder={placeholder}
@@ -45,9 +46,14 @@ export default function InputX( { tipoTeclado, placeholder, value, onChangeText,
             />
             {
                 passwordInput && (
-                    <Pressable onPress={handlePasswordVisibility}>
+                    <Pressable onPress={handlePasswordVisibility} style={styles.pressable}>
                         <Image source={eyeIcon} style={styles.eyeImage} />
                     </Pressable>
+                )
+            }
+            {
+                !passwordInput && (
+                  <View style={styles.overlay} pointerEvents="box-only" />
                 )
             }
             
@@ -57,6 +63,7 @@ export default function InputX( { tipoTeclado, placeholder, value, onChangeText,
 
 const styles = StyleSheet.create({    
     inputContainer: {
+        position: 'relative',
         flexDirection: 'row',
         alignItems: 'center',
         width: '100%',
@@ -69,12 +76,37 @@ const styles = StyleSheet.create({
     input: {
         borderRadius: 8,
         fontSize: 20,
-        padding: 10,
+        paddingLeft: 10,
+        width: "100%"
+
+        // backgroundColor: "tomato"
+    },
+    overlay: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        width: 50,  // Tamaño de la zona no clickeable
+        height: '100%',
+        borderRadius: 8,
+
+        backgroundColor: 'transparent',
+        borderWidth: 0.1,
+        borderColor: 'transparent',
+    },
+    pressable: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        width: 50,  // Tamaño de la zona no clickeable
+        height: '100%',
+        paddingRight: 10,
     },
     eyeImage: {
+        alignSelf: "flex-end",
         resizeMode: "contain",
         width: 24,
         opacity: 0.7,
         marginVertical: -3.3,   // 3.3 tamaño ok
+
     },
 })
