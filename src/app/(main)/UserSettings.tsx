@@ -30,61 +30,67 @@ export default function UserSettings() {
             <ScrollView>
                 <View style={styles.header}>
                     <Image source={imagePath.userLogo} style={styles.userHeaderIcon} />
-                    <Text style={{fontSize: 28}}>
+                    <Text style={{fontSize: 22}}>
                         Detalles de la cuenta
                     </Text>
                 </View>
 
                 <View style={styles.body}>
-                    <InputAndLabelX titleLabel='Nombre' editable={false}
-                    styleLabel={{opacity: 0.4}} value={userData?.nombre}
-                    bgColorInput={"#D9D9D9"}
-                    colorTexto='#757575'
-                    />
+                    {/* INPUTS-LABELS */}
+                    <View>
+                        <InputAndLabelX titleLabel='Nombre' editable={false}
+                        styleLabel={{fontSize: 20, opacity: 0.4}} value={userData?.nombre}
+                        bgColorInput={"#D9D9D9"}
+                        colorTexto='#757575'
+                        />
 
-                    <InputAndLabelX titleLabel='Apellido' editable={false}
-                    styleLabel={{opacity: 0.4}} value={userData?.apellido}
-                    bgColorInput={"#D9D9D9"}
-                    colorTexto='#757575'
-                    />
-                    
-                    <InputAndLabelX titleLabel='DNI' editable={false}
-                    styleLabel={{opacity: 0.4}} value={userData?.dni}
-                    bgColorInput={"#D9D9D9"}
-                    colorTexto='#757575'
-                    />
-                    
-                    <InputAndLabelX titleLabel='Correo Electrónico' editable={false}
-                    styleLabel={{opacity: 0.4}} value={userData?.email}
-                    bgColorInput={"#D9D9D9"}
-                    colorTexto='#757575'
-                    />
-                    
-                    <InputAndLabelX titleLabel='Fecha de Registro' editable={false}
-                    styleLabel={{opacity: 0.4}} value={userData?.fechaRegistro}
-                    bgColorInput={"#D9D9D9"}
-                    colorTexto='#757575'
-                    />
+                        <InputAndLabelX titleLabel='Apellido' editable={false}
+                        styleLabel={{fontSize: 20, opacity: 0.4}} value={userData?.apellido}
+                        bgColorInput={"#D9D9D9"}
+                        colorTexto='#757575'
+                        />
+                        
+                        <InputAndLabelX titleLabel='DNI' editable={false}
+                        styleLabel={{fontSize: 20, opacity: 0.4}} value={userData?.dni}
+                        bgColorInput={"#D9D9D9"}
+                        colorTexto='#757575'
+                        />
+                        
+                        <InputAndLabelX titleLabel='Correo Electrónico' editable={false}
+                        styleLabel={{fontSize: 20, opacity: 0.4}} value={userData?.email}
+                        bgColorInput={"#D9D9D9"}
+                        colorTexto='#757575'
+                        />
+                        
+                        <InputAndLabelX titleLabel='Fecha de Registro' editable={false}
+                        styleLabel={{fontSize: 20, opacity: 0.4}} value={userData?.fechaRegistro}
+                        bgColorInput={"#D9D9D9"}
+                        colorTexto='#757575'
+                        />
 
-                    <InputAndLabelX titleLabel='Estado' editable={false}
-                    styleLabel={{opacity: 0.4}} 
-                    value={ userData?.isAdmin ? "Administrador" :
-                            userData?.aprobado ? "Verificado" : "No verificado"
-                    }
-                    bgColorInput={"#D9D9D9"}
-                    colorTexto='#757575'
-                    />
-                    
-                    <Text style={{fontSize: 18, color: "#D04A4A",
-                            marginTop: moderateVerticalScale(10), opacity: 0.8}}
-                        >
-                        { userData?.aprobado || userData?.isAdmin
-                            ? null
-                            : "Su cuenta está pendiente de verificación por un administrador."
+                        <InputAndLabelX titleLabel='Estado' editable={false}
+                        styleLabel={{fontSize: 20, opacity: 0.4}} 
+                        value={ userData?.isAdmin ? "Administrador" :
+                                userData?.aprobado ? "Verificado" : "No verificado"
                         }
-                    </Text>
+                        bgColorInput={"#D9D9D9"}
+                        colorTexto='#757575'
+                        />
+                        
+                        <Text style={{fontSize: 18, color: "#D04A4A",
+                                marginTop: moderateVerticalScale(10), opacity: 0.8}}
+                            >
+                            { userData?.aprobado || userData?.isAdmin
+                                ? null
+                                : "Su cuenta está pendiente de verificación por un administrador."
+                            }
+                        </Text>
+                    </View>
 
-                    <ButtonX 
+
+                    {/* BOTONES */}
+                    <View>
+                        <ButtonX 
                         iconParam={imagePath.arrowLeftLogo} 
                         iconPosition="left" 
                         onPress={ () => router.back() }
@@ -92,21 +98,22 @@ export default function UserSettings() {
                         buttonStyles={styles.button}
                         bgColor='#ECF692'
                         bgColorPressed='#CAD561'
-                    >
-                        Volver
-                    </ButtonX>
+                        >
+                            Volver
+                        </ButtonX>
 
-                    <ButtonX 
-                        iconParam={imagePath.iconLogout} 
-                        iconPosition="left" 
-                        fontSize={moderateScale(20)}
-                        buttonStyles={styles.button}
-                        bgColor='#F9B9B2'
-                        bgColorPressed='#F69C92'
-                        onPress={ handleLogOut }
-                    >
-                        Cerrar Sesión
-                    </ButtonX>
+                        <ButtonX 
+                            iconParam={imagePath.iconLogout} 
+                            iconPosition="left" 
+                            fontSize={moderateScale(20)}
+                            buttonStyles={styles.button}
+                            bgColor='#F9B9B2'
+                            bgColorPressed='#F69C92'
+                            onPress={ handleLogOut }
+                        >
+                            Cerrar Sesión
+                        </ButtonX>
+                    </View>                    
 
                 </View>
 
@@ -117,6 +124,7 @@ export default function UserSettings() {
 
 const styles = StyleSheet.create({
     container: {
+        flexGrow: 1,
         backgroundColor: "#feb", // #feb
         paddingTop: moderateVerticalScale(25),
     },
@@ -127,8 +135,10 @@ const styles = StyleSheet.create({
     },
     body: {
         flexGrow: 1,
+        justifyContent: "space-evenly",
         marginHorizontal: moderateScale(25),
         marginBottom: moderateScale(40),
+        gap: 30,
 
         paddingHorizontal: moderateScale(20),
         paddingBottom: moderateVerticalScale(25),
@@ -136,7 +146,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#fed",
         borderWidth: 1,
         borderRadius: 16,
-        // width: "85%",
         
         borderColor: '#d7d7d7',
     },
@@ -146,8 +155,7 @@ const styles = StyleSheet.create({
         height: moderateScale(25),
     },
     button: {
-        padding: 10,
+        padding: 8,
         marginTop: moderateVerticalScale(25),
-        // width: "80%",
     }
 })
