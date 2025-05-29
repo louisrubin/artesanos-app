@@ -7,7 +7,7 @@ import InputX from '../../components/InputX';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { getFirestore, collection, addDoc, Timestamp } from "firebase/firestore";
 import { app } from "../../../credenciales";
-import { moderateScale, moderateVerticalScale } from "react-native-size-matters";
+import { moderateVerticalScale } from "react-native-size-matters";
 import imagePath from "../../constants/imagePath";
 import { format } from "date-fns";
 import { router } from "expo-router";
@@ -230,31 +230,45 @@ export default function Encuestas() {
         >
             {/* CONFIRMAR ENVIO */}
             { modalMode === "confirm" && (
-                <ButtonX 
-                buttonStyles={{ width: moderateScale(180),
-                marginTop: moderateScale(20), paddingVertical: moderateScale(10),
-                }}
-                fontSize={moderateScale(20)}
-                bgColor="#E0F393"
-                bgColorPressed='#B1C464'
-                onPress={ submitEncuesta }
-                >
-                    Confirmar Registro
-                </ButtonX>
+                <>
+                    <ButtonX 
+                    buttonStyles={{ width: 190,
+                    marginTop: 20, paddingVertical: 10,
+                    }}
+                    fontSize={18}
+                    bgColor="#E0F393"
+                    bgColorPressed='#B1C464'
+                    onPress={ submitEncuesta }
+                    >
+                        Confirmar y enviar
+                    </ButtonX>
+
+                    <ButtonX 
+                    buttonStyles={{ width: 150,
+                    marginTop: 25, paddingVertical: 6,
+                    }}
+                    fontSize={18}
+                    bgColor="#FF9984"
+                    bgColorPressed='#FD7C62'
+                    onPress={ ()=>{setModal(false)} }
+                    >
+                        Volver
+                    </ButtonX>
+                </>
             )}
 
             {/* ENVIANDO FORMULARIO */}
             { modalMode === "submit" && !isLoading && (
                 <ButtonX 
-                buttonStyles={{ width: moderateScale(160),
-                marginTop: moderateScale(20), paddingVertical: moderateScale(10),
+                buttonStyles={{ width: 190,
+                marginTop: 20, paddingVertical: 10,
                 }}
-                fontSize={moderateScale(20)}
+                fontSize={18}
                 bgColor="#E0F393"
                 bgColorPressed='#B1C464'
                 onPress={ handleModalButtonSubmit }
                 >
-                    Volver al Inicio
+                    { errorSubmit ? "Volver" : "Inicio"} 
                 </ButtonX>
             )}
         </ModalX>
