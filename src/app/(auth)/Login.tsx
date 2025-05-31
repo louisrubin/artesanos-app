@@ -1,5 +1,5 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
-import { useRouter } from 'expo-router'; // Cambiar a useRouter
+import { Image, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
+import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { z } from 'zod';
 import { Controller, useForm } from 'react-hook-form';
@@ -26,7 +26,7 @@ type FormData = z.infer<typeof esquema>;    // Definición del tipo de datos del
 
 export default function LoginScreen() {
   const { setUserData } = useUser(); // Obtener el contexto del usuario
-  const router = useRouter(); // Cambiar a useRouter
+  const router = useRouter();
   const auth = getAuth(app);
 
   const [isVisibleModal, setIsVisibleModal] = useState(false);
@@ -61,8 +61,6 @@ export default function LoginScreen() {
   // ENVIO DE FORMULARIO LOGIN
   async function onSubmitLogin(data: FormData){
     const { email, password } = data;
-
-    // verificar conexion internet antes de enviar el formulario
 
     setModalMessage("Autenticando..."); // mensaje de carga
     setLoadingParams("Iniciando...");   // setea todo para el loading
@@ -100,136 +98,135 @@ export default function LoginScreen() {
     }
 
     return (
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <LinearGradient 
-        colors={["#c85", "#da7"]}
+      //   colors={["#c88", "#c87", "#cb8", "#cb4"]}
+        colors={["#cb4", "#cb6", "#cb8", "#cb8", "#c86"]}
         style={styles.container}
         >
 
-            {/* MODAL DE INICIO DE SESIÓN */}
-            <ModalX
-            isModalVisible={isVisibleModal}
-            title={modalTitle}
-            iconHeader={iconHeaderModal}
-            isLoading={isLoadingActivity}
-            onBackdropPress={toggleVisibleModal}
-            messageLoading={modalMessage}
-            >
-                <ButtonX
-                    buttonStyles={{ width: 150,
-                    marginTop: 22, paddingVertical: 8,
-                    }}
-                    fontSize={20}
-                    iconParam={iconButtonModal}
-                    iconPosition="left"
-                    bgColor='#E0F393'
-                    bgColorPressed='#B1C464'
-                    onPress={toggleVisibleModal}
-                >
-                    Volver
-                </ButtonX>
+                  {/* MODAL DE INICIO DE SESIÓN */}
+                  <ModalX
+                  isModalVisible={isVisibleModal}
+                  title={modalTitle}
+                  iconHeader={iconHeaderModal}
+                  isLoading={isLoadingActivity}
+                  onBackdropPress={toggleVisibleModal}
+                  messageLoading={modalMessage}
+                  >
+                     <ButtonX
+                        buttonStyles={{ width: 150,
+                        marginTop: 22, paddingVertical: 8,
+                        }}
+                        fontSize={20}
+                        iconParam={iconButtonModal}
+                        iconPosition="left"
+                        bgColor='#E0F393'
+                        bgColorPressed='#B1C464'
+                        onPress={toggleVisibleModal}
+                     >
+                        Volver
+                     </ButtonX>
 
-        		</ModalX>      
+                  </ModalX>      
 
 
         {/* HEADER */}
         <View style={styles.header}>
             <Image source={imagePath.logoGobChaco} style={styles.imageHeader} />
-        </View>
-
-        <View style={{ marginTop: 10 }}>
-          <Text style={styles.labelTitulo}>Ingresar a su cuenta</Text>
+            <Text style={styles.labelTitulo}>Ingresar a su cuenta</Text>
         </View>
 
         {/* BODY  */}
         <View style={styles.body}>
-				<View style={{ width: "80%" }}>
-					<Text style={styles.label}>Correo Electrónico</Text>
-					<Controller control={control} name="email"
-						render={ ({field: {onChange, value}}) => (
-							<InputX placeholder="Ingrese Correo Electrónico" 
-									tipoTeclado="email-address"
-									value={value}
-									onChangeText={onChange} />
-						)}
-					/>
+            <View style={{marginTop: -60}}>
+               <Text style={styles.label}>Correo Electrónico</Text>
+               <Controller control={control} name="email"
+                  render={ ({field: {onChange, value}}) => (
+                     <InputX placeholder="Ingrese Correo Electrónico" 
+                           tipoTeclado="email-address"
+                           value={value}
+                           onChangeText={onChange} />
+                  )}
+               />
 
-					<Text style={styles.labelInputValidation}>
-						{ errors.email ? errors.email.message : '' }
-					</Text>
+               <Text style={styles.labelInputValidation}>
+                  { errors.email ? errors.email.message : '' }
+               </Text>
 
-					<Text style={[styles.label, {marginTop: 15}]}>Contraseña</Text>
-					<Controller control={control} name='password' 
-						render={({field: {onChange, value}}) => (
-							<InputX placeholder="Ingrese Contraseña" 
-									passwordInput
-									onChangeText={onChange} 
-									value={value} />
-						)}
-					/>       
+               <Text style={[styles.label, {marginTop: 15}]}>Contraseña</Text>
+               <Controller control={control} name='password' 
+                  render={({field: {onChange, value}}) => (
+                     <InputX placeholder="Ingrese Contraseña" 
+                           passwordInput
+                           onChangeText={onChange} 
+                           value={value} 
+                     />
+                  )}
+               />
 
-					<Text style={styles.labelInputValidation}>
-						{ errors.password ? errors.password.message : '' }
-					</Text>
-				</View>
-            
+               <Text style={styles.labelInputValidation}>
+                  { errors.password ? errors.password.message : '' }
+               </Text>
+
+            </View>
 
             {/* BOTONES INCIAR Y REGISTER */}
             <View style={{alignItems: 'center'}}>
-                <ButtonX 
-                    buttonStyles={{ width: 210,
-                    padding: 14,
-                    }}
-                    textStyles={{ fontWeight: 'bold' }}
-                    bgColor="#E0F393" //E0F393
-                    bgColorPressed="#BCB85d"
-                    fontSize={20}
-                    iconParam={imagePath.iconLogin}
-                    iconPosition="right"
-                    onPress={ handleSubmit(onSubmitLogin) } // Cambiar a router.push('/main/pantallaPrincipal')
-                >
-                    Iniciar Sesión
-                </ButtonX>
+               <ButtonX 
+                  buttonStyles={{ width: 210, padding: 14, }}
+                  textStyles={{ fontWeight: 'bold' }}
+                  bgColor="#E0F393" //E0F393
+                  bgColorPressed="#BCB85d"
+                  fontSize={20}
+                  iconParam={imagePath.iconLogin}
+                  iconPosition="right"
+                  onPress={ handleSubmit(onSubmitLogin) } // Cambiar a router.push('/main/pantallaPrincipal')
+               >
+                  Iniciar Sesión
+               </ButtonX>
 
-                <ButtonX      
-                    buttonStyles={{ width: 150, 
-                    marginTop: 20, paddingVertical: 7,
-                    }}           
-                    // bgColor="#A0AE6A"
-                    bgColorPressed="#f86"
-                    fontSize={15}
-                    iconParam={imagePath.iconRegister}
-                    iconPosition="right"
-                    onPress={() => router.push('/(auth)/Register')} 
-                >
-                    o Registrarse
-                </ButtonX>
-            </View>
-            
-			</View>
+               <ButtonX      
+                  buttonStyles={{ width: 150, 
+                  marginTop: 20, paddingVertical: 7,
+                  }}
+                  bgColorPressed="#c86"
+                  textStyles={null}
+                  fontSize={15}
+                  iconParam={imagePath.iconRegister}
+                  iconPosition="right"
+                  onPress={() => router.push('/(auth)/Register')} 
+               >
+                  o Registrarse
+               </ButtonX>
+            </View>  
 
+         </View>
 
-			{/* FOOTER */}
-			<View style={styles.footer}>
-					<Image source={imagePath.logoICCH} style={styles.imageFooter} />
-					<Text style={{ fontSize: 12, opacity: 0.5, }}>UTN FRRe</Text>
-					<Text style={{ fontSize: 12, opacity: 0.5, }}>Rubín-Zamora</Text>
-			</View>
+        {/* FOOTER */}
+        <View style={styles.footer}>
+            <Image source={imagePath.logoICCH} style={styles.imageFooter} />
+            <Text style={styles.labelCreditos}>UTN FRRe</Text>
+            <Text style={styles.labelCreditos}>Rubín-Zamora</Text>
+        </View>
 
-    </LinearGradient>    
+    </LinearGradient>
+   </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
   },
   header: {
     alignItems: 'center',
   },
   body: {
-    flexGrow: 1,
-    alignItems: 'center',
-	 justifyContent: "space-evenly",
+    flex: 1,
+    paddingHorizontal: 50,
+    justifyContent: "center",
+    gap: 40
   },
   footer: {
     alignItems: 'center',
@@ -238,7 +235,7 @@ const styles = StyleSheet.create({
 
   imageHeader: {
     marginTop: -70,
-    marginBottom: -100,
+    marginBottom: -90,
     height: 285,
     width: 285,
     resizeMode: "contain",
@@ -257,9 +254,13 @@ const styles = StyleSheet.create({
 	 textAlign: "center",
   },
   label: {
-	 fontSize: 20, 
-	 marginBottom: 3,
-	 alignSelf: 'flex-start',
+    fontSize: 20, 
+    marginBottom: 3,
+    alignSelf: 'flex-start',
+  },
+  labelCreditos: {
+    fontSize: 12,
+    opacity: 0.5,
   },
   labelInputValidation:{
       fontSize: 17, 
@@ -268,6 +269,4 @@ const styles = StyleSheet.create({
       color: 'red',
   },
 });
-
-
 
