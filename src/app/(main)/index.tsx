@@ -2,7 +2,6 @@ import { useRouter } from 'expo-router';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import ButtonX from '../../components/ButtonX';
 import { LinearGradient } from 'expo-linear-gradient';
-import { moderateScale, moderateVerticalScale } from 'react-native-size-matters';
 import imagePath from '../../constants/imagePath';
 import { useEffect, useState } from "react";
 import { useUser } from '../../hooks/UserContext';
@@ -17,14 +16,14 @@ const styles2= StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
         width: "100%",
-        paddingHorizontal: moderateScale(20),
+        paddingHorizontal: 22,
     },
     notificacionRed: {
-        fontSize: moderateScale(16),
+        fontSize: 16,
         backgroundColor: redNotifColor,
         color: "white",
-        padding: moderateScale(5),
-        paddingHorizontal: moderateScale(10),
+        padding: 5,
+        paddingHorizontal: 10,
         borderRadius: 16,
     },
     centroNotificacion: {
@@ -36,6 +35,26 @@ const styles2= StyleSheet.create({
     },
 
 })
+
+const ButtonXComponent = ({onPress, icon, children, disabled}) => {
+    // reutilizar para varios button con mismas caracteristicas
+    return(
+        <ButtonX
+            buttonStyles={styles.buttons}
+            textStyles={{ fontWeight: 'bold', marginLeft: 10 }}
+            bgColor="#E0F393"
+            bgColorPressed="#BCB850"
+            fontSize={20}
+            iconParam={icon}
+            iconPosition="left"
+            disabled={disabled}
+            onPress={ onPress }
+        >
+            {children}
+        </ButtonX>
+    )
+    
+}
 
 export default function PantallaPrincipal() {
     const router = useRouter(); // Cambiar a useRouter
@@ -95,7 +114,7 @@ export default function PantallaPrincipal() {
             { userData?.isAdmin && (
                 <ButtonX
                     buttonStyles={styles.buttons}
-                    textStyles={{ fontWeight: 'bold', marginLeft: moderateScale(10) }}
+                    textStyles={{ fontWeight: 'bold', marginLeft: 10 }}
                     bgColor="#808090"
                     bgColorPressed="#9696A2"
                     fontSize={20}
@@ -107,53 +126,42 @@ export default function PantallaPrincipal() {
                 </ButtonX>
             )}
 
-                <ButtonX
-                    buttonStyles={styles.buttons}
-                    textStyles={{ fontWeight: 'bold',marginLeft: moderateScale(10) }}
-                    bgColor="#E0F393"
-                    bgColorPressed="#BBCE70"
-                    fontSize={20}
-                    iconParam={imagePath.iconUser}
-                    iconPosition="left"
-                    disabled={ !funcionesON }
-                    onPress={() => router.push('/encuesta')} >Registrar Artesanos 
-                </ButtonX>
+                <ButtonXComponent 
+                    icon={imagePath.iconUser}
+                    disabled={false}
+                    onPress={() => router.push('/encuesta')}
+                >
+                    Registrar Artesanos
+                </ButtonXComponent>
 
-                <Text style={{ width: moderateScale(285), textAlign: "right", opacity: 0.6, marginTop: 3}}
+                <Text style={{ width: 320, textAlign: "right", opacity: 0.6, marginTop: 3}}
                     >Registros en espera de conexión: <Text style={{fontWeight: "600"}}>4</Text>
                 </Text>
 
-                <ButtonX
-                    buttonStyles={styles.buttons}
-                    textStyles={{ fontWeight: 'bold',marginLeft: moderateScale(10) }}
-                    bgColor="#E0F393"
-                    bgColorPressed="#BCB850"
-                    fontSize={20}
-                    iconParam={imagePath.iconRegistros}
-                    iconPosition="left"
-                    disabled={ true }
-                    onPress={() => router.push('/encuesta')} >Registros 
-                </ButtonX>
+                <ButtonXComponent 
+                    icon={imagePath.iconRegistros}
+                    disabled={true}
+                    onPress={() => router.push('/encuesta')}
+                >
+                    Registros
+                </ButtonXComponent>
                 
                 <Text style={{alignSelf: "flex-end", opacity: 0.6, marginTop: 3}}
                     >
                 </Text>
 
-                <ButtonX
-                    buttonStyles={styles.buttons}
-                    textStyles={{ fontWeight: 'bold',marginLeft: moderateScale(10) }}
-                    bgColor="#E0F393"
-                    bgColorPressed="#BCB850"
-                    fontSize={20}
-                    iconParam={imagePath.iconStadistics}
-                    iconPosition="left"
-                    disabled={ true }
-                    onPress={() => router.push('/encuesta')} >Estadísticas
-                </ButtonX>
+                <ButtonXComponent 
+                    icon={imagePath.iconStadistics}
+                    disabled={true}
+                    onPress={() => router.push('/encuesta')}
+                >
+                    Estadísticas
+                </ButtonXComponent>
                 
                 <Text style={{alignSelf: "flex-end", opacity: 0.6, marginTop: 3}}
                     >
                 </Text>
+
             </View>
 
             {/* FOOTER */}
@@ -168,7 +176,7 @@ export default function PantallaPrincipal() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingVertical: moderateVerticalScale(20),
+        paddingVertical: 22,
         alignItems: 'center',
     },    
     header: {
@@ -189,15 +197,15 @@ const styles = StyleSheet.create({
         opacity: 0.4,
     },
     imageHeader: {
-        height: moderateScale(150),
-        width: moderateScale(150),
+        height: 165,
+        width: 165,
         resizeMode: "contain",
-        marginTop: moderateVerticalScale(-40),
+        marginTop: -45,
         marginBottom: -55,
     },
     buttons: {
-        width: moderateScale(300), 
+        width: 330, 
         marginTop: 30,
-        padding: moderateScale(12),
+        padding: 14,
     }
 });
