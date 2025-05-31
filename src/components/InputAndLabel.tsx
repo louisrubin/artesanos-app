@@ -11,8 +11,7 @@ type PropsParam ={
     name?: string;
 }
 
-// Combinás ambos tipos en uno solo
-type Props = PropsParam & PropsInputX;
+type Props = PropsParam & PropsInputX;  // combinar ambos tipos en uno solo
 
 export default function InputAndLabelX(props : Props ) {
 
@@ -30,7 +29,7 @@ export default function InputAndLabelX(props : Props ) {
 
                             placeholder={props.placeholder}
                             tipoTeclado={props.tipoTeclado}
-                            passwordInput={props.passwordInput}
+                            passInp={props.passInp}
                             editable={props.editable}
                             bgColorInput={props.bgColorInput}
                             />
@@ -43,7 +42,7 @@ export default function InputAndLabelX(props : Props ) {
 
                 placeholder={props.placeholder}
                 tipoTeclado={props.tipoTeclado}
-                passwordInput={props.passwordInput}
+                passInp={props.passInp}
                 editable={props.editable}
                 bgColorInput={props.bgColorInput}
                 colorTexto={props.colorTexto}

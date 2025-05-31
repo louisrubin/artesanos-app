@@ -94,7 +94,7 @@ export default function UserSettings() {
                         iconParam={imagePath.arrowLeftLogo} 
                         iconPosition="left" 
                         onPress={ () => router.back() }
-                        fontSize={moderateScale(20)}
+                        fontSize={20}
                         buttonStyles={styles.button}
                         bgColor='#ECF692'
                         bgColorPressed='#CAD561'
@@ -105,7 +105,7 @@ export default function UserSettings() {
                         <ButtonX 
                             iconParam={imagePath.iconLogout} 
                             iconPosition="left" 
-                            fontSize={moderateScale(20)}
+                            fontSize={20}
                             buttonStyles={styles.button}
                             bgColor='#F9B9B2'
                             bgColorPressed='#F69C92'

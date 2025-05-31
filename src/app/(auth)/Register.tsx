@@ -260,7 +260,7 @@ export default function RegisterScreen(){
                                     value={value} 
                                     onChangeText={onChange} // Actualiza el valor del campo
                                     onBlur={onBlur} // Marca el campo como "tocado"
-                                    passwordInput // Campo de contraseña
+                                    passInp // Campo de contraseña
                                 />
                             )}
                         />
@@ -285,7 +285,7 @@ export default function RegisterScreen(){
                                     value={value} 
                                     onChangeText={onChange} // Actualiza el valor del campo
                                     onBlur={onBlur} // Marca el campo como "tocado"
-                                    passwordInput // Campo de contraseña
+                                    passInp // Campo de contraseña
                                 />
                             )}
                         />

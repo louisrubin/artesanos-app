@@ -158,7 +158,7 @@ export default function LoginScreen() {
                <Controller control={control} name='password' 
                   render={({field: {onChange, value}}) => (
                      <InputX placeholder="Ingrese Contraseña" 
-                           passwordInput
+                           passInp
                            onChangeText={onChange} 
                            value={value} 
                      />
