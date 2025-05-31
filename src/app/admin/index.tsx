@@ -3,7 +3,7 @@ import { View, Text, Button, FlatList, Alert, StyleSheet } from "react-native";
 import { getFirestore, collection, getDocs, updateDoc, doc, } from "firebase/firestore";
 import { LinearGradient } from "expo-linear-gradient";
 import { auth, app } from "../../../credenciales";
-import { moderateScale, moderateVerticalScale, } from "react-native-size-matters";
+import { format } from "date-fns";
 
 const db = getFirestore(app);
 
@@ -40,20 +40,21 @@ export default function AdminPanel() {
     return (
         <LinearGradient
         colors={["#fda", "#fda", "#ffc"]}
-        style={styles.gradientContainer}
+        style={{ flex: 1 }}
         >
         <View style={styles.container}>
             <Text style={styles.title}>Lista de usuarios</Text>
             <FlatList
                 data={usuarios}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                <View style={styles.card}>
+                renderItem={({ item, index }) => (
+                <View style={[styles.card, index === usuarios.length -1 && {marginBottom: 60} ]}>
                     <Text style={styles.name}>
                         {item.nombre} {item.apellido}
                     </Text>
                     <Text>{item.email}</Text>
                     <Text>DNI: {item.dni}</Text>
+                    <Text>{format(item.fechaRegistro, "dd/MM/yyyy - hh:mm")}</Text>
                     <Text style={{ marginBottom: 5 }}>
                         Estado:{" "}
                         <Text style={{ color: item.aprobado ? "green" : "red" }}>
@@ -75,21 +76,18 @@ export default function AdminPanel() {
 }
 
 const styles = StyleSheet.create({
-    gradientContainer: { flex: 1 },
     container: {
         flex: 1,
-        paddingVertical: moderateVerticalScale(20),
-        marginTop: moderateScale(20),
-        paddingHorizontal: moderateScale(10),
-        backgroundColor: "transparent",
+        paddingTop: 26,
     },
     title: { 
-        fontSize: moderateScale(24), 
-        fontWeight: "bold", 
-        marginBottom: 20 
+        fontSize: 22, 
+        fontWeight: "bold",
+        marginLeft: 12 
     },
     card: {
         marginVertical: 10,
+        marginHorizontal: 12,
         padding: 10,
         borderWidth: 1,
         borderRadius: 8,
