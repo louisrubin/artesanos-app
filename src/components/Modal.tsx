@@ -1,5 +1,4 @@
 import { ActivityIndicator, Image, StyleSheet, Text, View } from "react-native";
-import { moderateScale, moderateVerticalScale } from "react-native-size-matters";
 import Modal from 'react-native-modal';
 
 type PropsParam = {
