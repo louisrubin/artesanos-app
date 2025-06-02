@@ -12,7 +12,7 @@ import ModalX from '../../components/Modal';
 import InputX from '../../components/InputX';
 import ButtonX from '../../components/ButtonX';
 import imagePath from '../../constants/imagePath';
-import { getFirebaseErrorMessage, getUserInfoFirebase, saveLocalUserData } from '../../hooks/firebaseHooks';
+import { getFirebaseErrorMessage, getUserInfoFirebase, saveLocalData } from '../../hooks/firebaseHooks';
 import { useUser } from '../../hooks/UserContext';
 
 
@@ -73,7 +73,7 @@ export default function LoginScreen() {
             const userData = await getUserInfoFirebase(user.uid) // sus datos de firebase
 
             setModalMessage("Sincronizando datos..."); // mensaje de carga
-            await saveLocalUserData(userData); // Guardar datos del usuario en AsyncStorage
+            await saveLocalData(userData); // Guardar datos del usuario en AsyncStorage
             setUserData(userData); // Guardar datos del usuario en el contexto global           
 
             setIsVisibleModal(false); // QUITA EL MODAL

@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import ButtonX from '../../components/ButtonX';
 import { LinearGradient } from 'expo-linear-gradient';
 import imagePath from '../../constants/imagePath';
@@ -58,14 +58,14 @@ const ButtonXComponent = ({onPress, icon, children, disabled}) => {
 
 export default function PantallaPrincipal() {
     const router = useRouter(); // Cambiar a useRouter
-    const { userData, isInternetReachable } = useUser(); // Obtener el contexto del usuario
+    const { userData, isInternetReachable, encuestasEnLocal, sincronizando } = useUser(); // Obtener el contexto del usuario
     const [funcionesON, setFuncionesON] = useState(false); // Estado para habilitar/deshabilitar botones
 
     useEffect(() => {
         if (userData?.isAdmin || userData?.aprobado) setFuncionesON(true); // Habilita los botones si es admin o aprobado
         else setFuncionesON(false);
         
-    }, [userData, isInternetReachable]); // , funcionesON
+    }, [userData, isInternetReachable, encuestasEnLocal]); // , funcionesON
     
     return (
         <LinearGradient
@@ -128,15 +128,40 @@ export default function PantallaPrincipal() {
 
                 <ButtonXComponent 
                     icon={imagePath.iconUser}
-                    disabled={false}
+                    disabled={ !funcionesON }
                     onPress={() => router.push('/encuesta')}
                 >
                     Registrar Artesanos
                 </ButtonXComponent>
 
-                <Text style={{ width: 320, textAlign: "right", opacity: 0.6, marginTop: 3}}
-                    >Registros en espera de conexión: <Text style={{fontWeight: "600"}}>4</Text>
-                </Text>
+                {/* MENSAJE DE REGISTROS EN LOCAL Y INDICADOR SINCRONIZANDO */}
+                { (sincronizando || encuestasEnLocal.length > 0) && (
+                    <View style={{ 
+                        width: 320,
+                        flexDirection: 'row', 
+                        alignItems: 'center', 
+                        justifyContent: "flex-end",
+                        marginTop: 3, 
+                        // backgroundColor: 'tomato', 
+                        opacity: 0.6,
+                    }}>
+                        {sincronizando && (
+                            <ActivityIndicator 
+                                size={15}
+                                color="#000" 
+                                style={{ marginRight: 5 }} 
+                            />
+                        )}
+                        <Text>
+                            Registros en espera de conexión:{" "}
+                            <Text style={{ fontWeight: "bold" }}>
+                                {encuestasEnLocal.length}
+                            </Text>
+                        </Text>
+
+                    </View>
+                )}
+                
 
                 <ButtonXComponent 
                     icon={imagePath.iconRegistros}

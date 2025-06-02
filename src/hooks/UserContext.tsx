@@ -5,9 +5,11 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { format } from "date-fns";
 import { onAuthStateChanged } from "firebase/auth";
 import { useNetInfo } from "@react-native-community/netinfo";
-import { getStoredUserData } from "./firebaseHooks";
+import { getStoredLocalData, sincronizarEncuestasLocal } from "./firebaseHooks";
 
 const UserContext = createContext(null);    // Crear el contexto del usuario --> valor default null
+
+
 
 // UserProviderContext component para proveer el contexto GLOBAL del usuario
 // Este componente envuelve a la aplicación y proporciona el contexto del usuario
@@ -17,12 +19,38 @@ export const UserProviderContext = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [messageStatus, setMessageStatus] = useState(""); // almacenar el mensaje de error
     const { isInternetReachable } = useNetInfo(); // Hook para obtener el estado de Internet
+    const [encuestasEnLocal, setEncuestasLocal] = useState([]);
+    const [sincronizando, setSincronizando] = useState(false);
+
+    // función para almacenar en local --> se exporta en el useUser
+    const saveEncuestaLocal = async (nuevaEncuesta) => {
+        try{
+            const clave = "encuestas_pendientes";
+            // Obtener lista actual (si hay)
+            const listaJson = await AsyncStorage.getItem(clave);
+            const listaActual = listaJson ? JSON.parse(listaJson) : [];
+
+            // Agregar nueva encuesta
+            listaActual.push(nuevaEncuesta);
+
+            // Guardar de nuevo en AsyncStorage
+            setEncuestasLocal(listaActual);       // set Context global
+            await AsyncStorage.setItem(clave, JSON.stringify(listaActual));
+
+            // console.log('Encuesta guardada offline');
+        } catch (error) {
+            console.error('Error al guardar encuesta offline:', error);
+        }
+    }
 
     useEffect( () => {
         setMessageStatus("Obteniendo datos..."); // mensaje de carga
 
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             // detecta si ya habia usuario logueado o no
+            
+            const listaJson = await AsyncStorage.getItem("encuestas_pendientes");
+            setEncuestasLocal( listaJson ? JSON.parse(listaJson) : [] );
             
             if(!user) {                
                 setMessageStatus("Redirigiendo..."); // mensaje de carga
@@ -36,7 +64,7 @@ export const UserProviderContext = ({ children }) => {
             try {
                 // sin conexión a Internet 
                 if(!isInternetReachable) {
-                    const storedUserData = await getStoredUserData(); // Obtener datos del usuario desde AsyncStorage
+                    const storedUserData = await getStoredLocalData(); // Obtener datos del usuario desde AsyncStorage
                     if (storedUserData) {
                         setUserData(storedUserData); // Si hay datos, los establece en el estado
                         setIsLoggedIn(true); // Usuario está logueado
@@ -48,6 +76,15 @@ export const UserProviderContext = ({ children }) => {
                         return;
                     }
                 }
+                try {
+                    if( encuestasEnLocal.length > 0 ){
+                        setSincronizando(true);
+                        const ok = await sincronizarEncuestasLocal(encuestasEnLocal);
+                        if (ok) setEncuestasLocal([]);
+                        setSincronizando(false);
+                    }
+                } catch { setSincronizando(false); }
+                                
 
                 const docRef = doc(database, "registros", auth.currentUser.uid); // Referencia al documento del usuario en Firestore
                 
@@ -84,7 +121,7 @@ export const UserProviderContext = ({ children }) => {
         });
 
         return () => unsubscribe(); // limpiador        
-    }, [isInternetReachable]); // Dependencia del estado de la conexión a Internet
+    }, [ isInternetReachable, ]); // Dependencia del estado de la conexión a Internet
 
     return (
         // Proveer el contexto Global del usuario a los componentes hijos
@@ -92,7 +129,9 @@ export const UserProviderContext = ({ children }) => {
         value={{ 
             userData, setUserData, 
             isLoggedIn, isInternetReachable, 
-            loading, messageStatus 
+            loading, messageStatus,
+            encuestasEnLocal, saveEncuestaLocal,
+            sincronizando,
         }}>
             {children}
         </UserContext.Provider>

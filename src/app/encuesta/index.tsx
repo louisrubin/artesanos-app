@@ -12,6 +12,7 @@ import imagePath from "../../constants/imagePath";
 import { format } from "date-fns";
 import { router } from "expo-router";
 import ModalX from "../../components/Modal";
+import { useUser } from "../../hooks/UserContext";
 
 const preguntas = [
     // Información básica
@@ -108,6 +109,7 @@ const titulosPorPagina = [
 
 export default function Encuestas() {
     const db = getFirestore(app);
+    const { isInternetReachable, saveEncuestaLocal } = useUser();
     const [showDatePicker, setShowDatePicker] = useState<string | null>(null);
     const [pagina, setPagina] = useState(0);
     // un objeto con claves tipo string y valores que pueden ser string o Date
@@ -144,14 +146,32 @@ export default function Encuestas() {
         setTitleModal("Registrando");
         setDescripcionModal("Guardando en la base de datos...");
         try {
-            await addDoc(collection(db, "encuestas"), {
+            // todos los datos del formulario
+            const dataSubmit = {
                 fecha_registro: (new Date().toISOString()), // Fecha de registro actual
                 ...respuestas,
-                fecha_nacimiento: Timestamp.fromDate(respuestas.fecha_nacimiento as Date)
-               //  fecha_nacimiento: respuestas["fecha_nacimiento"] 
-               //      ? (respuestas["fecha_nacimiento"] as Date).toISOString()
-               //      : null, // Si no hay fecha, se guarda como null
-            });
+                // fecha_nacimiento: Timestamp.fromDate(respuestas.fecha_nacimiento as Date)
+                fecha_nacimiento: respuestas["fecha_nacimiento"] 
+                    ? (respuestas["fecha_nacimiento"] as Date).toISOString()
+                    : null, // Si no hay fecha, se guarda como null
+            }
+            // console.log(`encuesta_${dataSubmit.fecha_registro}`);
+
+            if( !isInternetReachable ){
+                // sin internet --> guardar cuestionario en local
+                saveEncuestaLocal(dataSubmit);
+                //saveLocalData(dataSubmit, `encuesta_${dataSubmit.fecha_registro}`); // 'encuesta_1/6/25-10:45'
+                
+                setTitleModal("Artesano guardado correctamente");
+                setDescripcionModal("Guardado en dispositivo local hasta volver la conexión.");
+                setIconModal(imagePath.userCheckLogo);
+                setLoading(false);
+                
+                return;
+            }
+
+            await addDoc(collection(db, "encuestas"), dataSubmit);
+
             setTitleModal("Registrado con éxito");
             setDescripcionModal("Artesano guardado correctamente.");
             setIconModal(imagePath.userCheckLogo);
