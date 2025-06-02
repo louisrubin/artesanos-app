@@ -6,7 +6,7 @@ import ButtonX from '../../components/ButtonX';
 import InputX from '../../components/InputX';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { getFirestore, collection, addDoc } from "firebase/firestore";
-import { app } from "../../../credenciales";
+import { app, auth } from "../../../credenciales";
 import { moderateVerticalScale } from "react-native-size-matters";
 import imagePath from "../../constants/imagePath";
 import { format } from "date-fns";
@@ -61,6 +61,7 @@ export default function Encuestas() {
                 fecha_nacimiento: respuestas["fecha_nacimiento"] 
                     ? (respuestas["fecha_nacimiento"] as Date).toISOString()
                     : null, // Si no hay fecha, se guarda como null
+                registrado_por: auth.currentUser.uid,
             }
 
             if( !isInternetReachable ){
