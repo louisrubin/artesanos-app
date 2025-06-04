@@ -12,6 +12,7 @@ import imagePath from "../../constants/imagePath";
 import { format } from "date-fns";
 import { router } from "expo-router";
 import ModalX from "../../components/Modal";
+import FotosDNI from "../fotos"; 
 
 const preguntas = [
     // Información básica
@@ -88,22 +89,21 @@ const preguntas = [
     { key: "inscripto_afip", label: "¿Está inscripto en AFIP?", type: "select", options: ["Sí", "No"] },
     { key: "es_proveedor_estado", label: "¿Es proveedor del estado?", type: "select", options: ["Sí", "No"] },
 ];
-const preguntasPorPagina = [6, 4, 3, 5, 4, 5, 3, 4, 4, 2, 3, 4]; // suma 50
+const preguntasPorPagina = [6, 4, 3, 5, 4, 5, 3, 4, 4, 2, 3, 4, 0]; // suma 51, la última es para fotos
 const titulosPorPagina = [
-    "Informacion Básica",//6
-    "Información de contacto", //4
-    "Práctica Artesanal",//3
-    "Materiales y técnicas",//5
-    "Conocimientos y experiencia",//4
-    "Información Socio-económica",//3
-    "Educación y obras sociales",//4
-    "Comercialización",//4
-    "Asociaciones y marcas",//4
-    "Materia prima y familia",//2
-    "Registro e identificación",//3
-    "Información adicional",//4
-
-  // ...agrega tantos títulos como páginas tengas
+    "Informacion Básica",
+    "Información de contacto",
+    "Práctica Artesanal",
+    "Materiales y técnicas",
+    "Conocimientos y experiencia",
+    "Información Socio-económica",
+    "Educación y obras sociales",
+    "Comercialización",
+    "Asociaciones y marcas",
+    "Materia prima y familia",
+    "Registro e identificación",
+    "Información adicional",
+    "Fotos del DNI" // <-- NUEVA PÁGINA
 ];
 
 export default function Encuestas() {
@@ -114,6 +114,7 @@ export default function Encuestas() {
     const [respuestas, setRespuestas] = useState<{ [key: string]: string | Date }>(
         Object.fromEntries(preguntas.map(p => [p.key, ""]))
     );
+    const [urlsFotos, setUrlsFotos] = useState<(string | null)[]>([null, null, null, null]);
 
     // MODAL CONFIGURACION
     const [showModal, setModal] = useState(false); // Para manejar los modales
@@ -147,7 +148,8 @@ export default function Encuestas() {
             await addDoc(collection(db, "encuestas"), {
                 fecha_registro: (new Date().toISOString()), // Fecha de registro actual
                 ...respuestas,
-                fecha_nacimiento: Timestamp.fromDate(respuestas.fecha_nacimiento as Date)
+                fecha_nacimiento: Timestamp.fromDate(respuestas.fecha_nacimiento as Date),
+                fotos_dni: urlsFotos, // <-- agrega esto
                //  fecha_nacimiento: respuestas["fecha_nacimiento"] 
                //      ? (respuestas["fecha_nacimiento"] as Date).toISOString()
                //      : null, // Si no hay fecha, se guarda como null
@@ -258,6 +260,7 @@ export default function Encuestas() {
             )}
 
             {/* ENVIANDO FORMULARIO */}
+            {/* ENVIANDO FORMULARIO */}
             { modalMode === "submit" && !isLoading && (
                 <ButtonX 
                 buttonStyles={{ width: 190,
@@ -299,77 +302,80 @@ export default function Encuestas() {
                     <ScrollView contentContainerStyle={{flexGrow: 1}}>
                         <View style={styles.innerContainer}>
                             <View style={styles.card}>
-                     
-                                {getPreguntasPagina().map((pregunta) => (
-                                    <View key={pregunta.key} style={{ marginBottom: 20}}>
-                                        <Text style={styles.label}>{pregunta.label}</Text>
-
-                                        {/* Renderizar el tipo de input según la pregunta */}
-                                        {pregunta.type === "select" ? (
-                                            <View style={{ borderWidth: 1, borderColor: "#ddd", borderRadius: 8, overflow: "hidden" }}>
-                                                <Picker
-                                                    selectedValue={respuestas[pregunta.key]}
-                                                    onValueChange={value => setRespuestas({ ...respuestas, [pregunta.key]: value })}
-                                                    style={{ backgroundColor: "#fff"}}
+                                {pagina < preguntasPorPagina.length - 1 ? (
+                                    getPreguntasPagina().map((pregunta) => (
+                                        <View key={pregunta.key} style={{ marginBottom: 20 }}>
+                                            <Text style={styles.label}>{pregunta.label}</Text>
+                                            {/* ...inputs según tipo... */}
+                                            {pregunta.type === "select" ? (
+                                                <View style={{ borderWidth: 1, borderColor: "#ddd", borderRadius: 8, overflow: "hidden" }}>
+                                                    <Picker
+                                                        selectedValue={respuestas[pregunta.key]}
+                                                        onValueChange={value => setRespuestas({ ...respuestas, [pregunta.key]: value })}
+                                                        style={{ backgroundColor: "#fff"}}
+                                                    >
+                                                    <Picker.Item label="Seleccione..." value="" />
+                                                        {pregunta.options.map(opt => (
+                                                            <Picker.Item key={opt} label={opt} value={opt} />
+                                                        ))}
+                                                    </Picker>
+                                                </View>
+                                            ) : pregunta.type === "date" ? (
+                                                <>
+                                                <ButtonX
+                                                    onPress={() => setShowDatePicker(pregunta.key)}
+                                                    buttonStyles={{ paddingVertical: 8, borderRadius: 30, }}
+                                                    fontSize={18}
+                                                    bgColor="#ddd"
+                                                    bgColorPressed="#BFBFBF"
                                                 >
-                                                <Picker.Item label="Seleccione..." value="" />
-                                                    {pregunta.options.map(opt => (
-                                                        <Picker.Item key={opt} label={opt} value={opt} />
-                                                    ))}
-                                                </Picker>
-                                            </View>
-                                        ) : pregunta.type === "date" ? (
-                                            <>
-                                            <ButtonX
-                                                onPress={() => setShowDatePicker(pregunta.key)}
-                                                buttonStyles={{ paddingVertical: 8, borderRadius: 30, }}
-                                                fontSize={18}
-                                                bgColor="#ddd"
-                                                bgColorPressed="#BFBFBF"
-                                            >
-                                                {
-                                                respuestas[pregunta.key] instanceof Date
-                                                    ? format(respuestas[pregunta.key] as Date, "dd / MM / yyyy")
-                                                    : "Seleccionar fecha"}
-                                            </ButtonX>
+                                                    {
+                                                    respuestas[pregunta.key] instanceof Date
+                                                        ? format(respuestas[pregunta.key] as Date, "dd / MM / yyyy")
+                                                        : "Seleccionar fecha"}
+                                                </ButtonX>
 
-                                            {/* Mostrar el DateTimePicker si showDatePicker coincide con la pregunta actual  */}
-                                            {showDatePicker === pregunta.key && (
-                                                <DateTimePicker
-                                                    value={
-                                                        respuestas[pregunta.key] instanceof Date
-                                                        ? respuestas[pregunta.key] as Date
-                                                        : new Date()
-                                                    }
-                                                    mode="date"
-                                                    display="default"
-                                                    minimumDate={new Date(1900, 0, 1)} // Fecha mínima
-                                                    maximumDate={new Date()}
-                                                    onChange={(event, selectedDate) => {
-                                                        setShowDatePicker(null); // Cerrar el picker
-
-                                                        if (event.type === "set" && selectedDate) {
-                                                            setRespuestas({
-                                                                ...respuestas,
-                                                                [pregunta.key]: selectedDate,   // Guardar la fecha seleccionada
-                                                            });
+                                                {/* Mostrar el DateTimePicker si showDatePicker coincide con la pregunta actual  */}
+                                                {showDatePicker === pregunta.key && (
+                                                    <DateTimePicker
+                                                        value={
+                                                            respuestas[pregunta.key] instanceof Date
+                                                            ? respuestas[pregunta.key] as Date
+                                                            : new Date()
                                                         }
-                                                        // Si se cancela, no hacer nada y dejar el valor como está
-                                                    }}
+                                                        mode="date"
+                                                        display="default"
+                                                        minimumDate={new Date(1900, 0, 1)} // Fecha mínima
+                                                        maximumDate={new Date()}
+                                                        onChange={(event, selectedDate) => {
+                                                            setShowDatePicker(null); // Cerrar el picker
+
+                                                            if (event.type === "set" && selectedDate) {
+                                                                setRespuestas({
+                                                                    ...respuestas,
+                                                                    [pregunta.key]: selectedDate,   // Guardar la fecha seleccionada
+                                                                });
+                                                            }
+                                                            // Si se cancela, no hacer nada y dejar el valor como está
+                                                        }}
+                                                    />
+                                                )}
+                                                </>
+                                            ) : (
+                                                <InputX
+                                                    value={respuestas[pregunta.key] as string}
+                                                    onChangeText={text => setRespuestas({ ...respuestas, [pregunta.key]: text })}
+                                                    placeholder="Respuesta"
+                                                    tipoTeclado={(pregunta.keyboard || "default") as "default" | "email-address" | "number-pad"}
                                                 />
                                             )}
-                                            </>
-                                        ) : (
-                                            <InputX
-                                                value={respuestas[pregunta.key] as string}
-                                                onChangeText={text => setRespuestas({ ...respuestas, [pregunta.key]: text })}
-                                                placeholder="Respuesta"
-                                                tipoTeclado={ (pregunta.keyboard || "default") as "default" | "email-address" | "number-pad" }
-                                            />
-                                        )}
+                                        </View>
+                                    ))
+                                ) : (
+                                    <View style={{ flex: 1, justifyContent: "center" }}>
+                                        <FotosDNI onFotosSubidas={setUrlsFotos} />
                                     </View>
-                                ))}
-                            
+                                )}
                             </View>
                             
                             { BotonesNavegacion }
@@ -383,6 +389,7 @@ export default function Encuestas() {
             {/* </KeyboardAvoidingView> */}
 
         </SafeAreaView>
+       
         </>
     );
 }
