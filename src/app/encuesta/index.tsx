@@ -14,6 +14,7 @@ import { router } from "expo-router";
 import ModalX from "../../components/Modal";
 import { useUser } from "../../hooks/UserContext";
 import { preguntas, preguntasPorPagina, titulosPorPagina } from "../../constants/PreguntasInfo";
+import FotosDNI from "../fotos";
 
 export default function Encuestas() {
     const db = getFirestore(app);
@@ -62,15 +63,14 @@ export default function Encuestas() {
                 fecha_nacimiento: respuestas["fecha_nacimiento"] 
                     ? (respuestas["fecha_nacimiento"] as Date).toISOString()
                     : null, // Si no hay fecha, se guarda como null
-                registrado_por: auth.currentUser.uid,
-                fotos_dni: urlsFotos, // <-- agrega esto
+                registrado_por: "un id supuestamente",
+                fotos_dni: urlsFotos, 
             };
 
             if( !isInternetReachable ){
                 // sin internet --> guardar cuestionario en local
                 saveEncuestaLocal(dataSubmit);
-                //saveLocalData(dataSubmit, `encuesta_${dataSubmit.fecha_registro}`); // 'encuesta_1/6/25-10:45'
-                
+
                 setTitleModal("Artesano guardado correctamente");
                 setDescripcionModal("Guardado en dispositivo local hasta volver la conexión.");
                 setIconModal(imagePath.userCheckLogo);

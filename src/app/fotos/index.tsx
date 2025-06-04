@@ -1,38 +1,45 @@
 import React, { useState } from "react";
 import { View, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import ButtonX from "../../components/ButtonX";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
-import { app } from "../../../credenciales"; 
+import { app, database } from "../../../credenciales"; 
 import { Feather } from "@expo/vector-icons";
 
 const storage = getStorage(app);
-const db = getFirestore(app);
 
 const labels = [
   "DNI Frente",
   "DNI Dorso",
   "Persona",
-  "Artesania"
+  "Artesanía"
 ];
 
+const getFileSize = (fileSize: number): string => {
+   // retornar string del tamaño del archivo
+   if (fileSize <= 1024 * 1024 ){
+      const sizeKB = (fileSize / 1024).toFixed(2);
+      return `${sizeKB} KB`;
+   }
+   return `${(fileSize / (1024*1024)).toFixed(2)} MB`;
+}
+
 export default function FotosDNI({ onFotosSubidas }) {
-  const [imagenes, setImagenes] = useState<(string | null)[]>([null, null, null, null]);
+  const [imagenes, setImagenes] = useState<(ImagePicker.ImagePickerAsset | null)[]>([null, null, null, null]);
 
-  const pickImage = async (idx: number) => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: "images", // Solo imágenes
-      allowsEditing: false,
-      quality: 1,
-    });
+   const pickImage = async (idx: number) => {
+      let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ["images"],
+            allowsEditing: true,
+            quality: 0.3,
+      });
 
-    if (!result.canceled && result.assets && result.assets[0]?.uri) {
-      const nuevas = [...imagenes];
-      nuevas[idx] = result.assets[0].uri;
-      setImagenes(nuevas);
-    }
-  };
+      if (!result.canceled && result.assets && result.assets[0]?.uri) {
+         // const asset = result.assets[0];
+         const nuevas = [...imagenes];    // todas las imagenes hasta el momento
+         nuevas[idx] = result.assets[0];  // la imagen en si
+         setImagenes(nuevas);
+      }
+   };
 
   const handleUploadAll = async () => {
     try {
@@ -40,7 +47,7 @@ export default function FotosDNI({ onFotosSubidas }) {
       for (let i = 0; i < imagenes.length; i++) {
         if (imagenes[i]) {
           try {
-            const url = await uploadImageAsync(imagenes[i]!, `foto_${i}_${Date.now()}.jpg`);
+            const url = await uploadImageAsync(imagenes[i].uri!, `foto_${i}_${Date.now()}.jpg`);
             urls[i] = url;
           } catch (err) {
             alert(`Error subiendo la foto ${labels[i]}`);
@@ -63,14 +70,19 @@ export default function FotosDNI({ onFotosSubidas }) {
       {labels.map((label, idx) => (
         <View key={idx} style={styles.fotoContainer}>
           <Text style={styles.label}>{label}</Text>
-          {imagenes[idx] && (
+          { imagenes[idx] && (
             <View style={{ position: "relative", marginBottom: 8 }}>
-              <Image source={{ uri: imagenes[idx]! }} style={styles.image} />
+
+              <Image source={{ uri: imagenes[idx].uri! }} style={styles.image} />
+              <Text style={{textAlign: "center",}}>{
+               `${imagenes[idx]?.fileName.slice(0,20)}... (${getFileSize(imagenes[idx]!.fileSize!)})`}
+               </Text>
+
               <TouchableOpacity
                 style={{
                   position: "absolute",
-                  top: 4,
-                  right: 4,
+                  top: 5,
+                  right: 5,
                   backgroundColor: "rgba(255,255,255,0.7)",
                   borderRadius: 16,
                   padding: 2,
@@ -85,15 +97,21 @@ export default function FotosDNI({ onFotosSubidas }) {
               </TouchableOpacity>
             </View>
           )}
-          <View style={{ flexDirection: "row", gap: 16, marginTop: 8 }}>
-            <TouchableOpacity
-              style={styles.iconButton}
-              onPress={() => pickImage(idx)}
-            >
-              <Feather name="image" size={28} color="#555" />
-              <Text style={{ fontSize: 12 }}>Galería</Text>
-            </TouchableOpacity>
-          </View>
+
+          { // si ya selección imagen no aparece
+            !imagenes[idx] && (
+               <View style={{ flexDirection: "row", gap: 16, marginTop: 8 }}>
+                  <TouchableOpacity
+                  style={styles.iconButton}
+                  onPress={() => pickImage(idx)}
+                  >
+                     <Feather name="image" size={32} color="#555" />
+                     <Text style={{ fontSize: 20 }}>Galería</Text>
+                  </TouchableOpacity>
+               </View>
+            )
+          }
+          
         </View>
       ))}
         {/* <ButtonX onPress={handleUploadAll} buttonStyles={{ marginTop: 20 }}>
@@ -132,8 +150,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   image: {
-    width: 200,
-    height: 140,
+    width: 250,
+    height: 190,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "#ccc",
@@ -144,12 +162,15 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   iconButton: {
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: "#f3f3f3",
-    marginHorizontal: 8,
+      width: 200,
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 10,
+      borderRadius: 10,
+      backgroundColor: "#ddd",
+      marginHorizontal: 8,
+
+      borderWidth: 1,
   },
   button: {
     backgroundColor: "#222",
