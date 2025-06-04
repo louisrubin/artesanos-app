@@ -1,6 +1,6 @@
 export default {
     logoGobChaco: require('../assets/images/logo-gobierno-chaco.png'),
-    logoICCH: require('../assets/images/logo-icch.png'),
+    logoICCH: require('../assets/images/logo-icch-full.png'),
     iconLogin: require('../assets/images/Login.png'),
     iconRegister: require('../assets/images/person.png'),
     iconUser: require('../assets/images/usuario.png'),
