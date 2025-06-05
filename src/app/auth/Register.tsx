@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { moderateScale, moderateVerticalScale } from "react-native-size-matters";
 import imagePath from "../../constants/imagePath";
@@ -43,7 +43,6 @@ const esquema = z.object({
 type FormData = z.infer<typeof esquema>; // Inferir el tipo de datos del esquema
 
 export default function RegisterScreen(){
-    const router = useRouter(); // Cambiar a useRouter
     const auth = getAuth();
 
     const { control, handleSubmit, trigger, formState: { errors, touchedFields } } = useForm<FormData>({
@@ -139,7 +138,7 @@ export default function RegisterScreen(){
                 onPress={ () => { 
                     setIsVisibleModal(false); // Ocultar el modal
                     if(operationCode === 200) {
-                        router.replace("/(main)"); // Redirigir a la pantalla principal
+                        router.replace("/main"); // Redirigir a la pantalla principal
                     }
                 }}
                 >

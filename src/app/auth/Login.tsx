@@ -1,11 +1,11 @@
 import { Image, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
-import { useRouter } from 'expo-router';
+import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { z } from 'zod';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { app } from '../../../credenciales';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../../credenciales';
 import { useState } from 'react';
 
 import ModalX from '../../components/Modal';
@@ -26,8 +26,6 @@ type FormData = z.infer<typeof esquema>;    // Definición del tipo de datos del
 
 export default function LoginScreen() {
   const { setUserData } = useUser(); // Obtener el contexto del usuario
-  const router = useRouter();
-  const auth = getAuth(app);
 
   const [isVisibleModal, setIsVisibleModal] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
@@ -77,7 +75,7 @@ export default function LoginScreen() {
             setUserData(userData); // Guardar datos del usuario en el contexto global           
 
             setIsVisibleModal(false); // QUITA EL MODAL
-            router.replace('/(main)'); // Reemplaza con la pantalla principal (no puede volver atras)
+            router.replace('/main'); // Reemplaza con la pantalla principal (no puede volver atras)
         })
       .catch((error) => {
         const errorCode = error.code;
@@ -195,7 +193,7 @@ export default function LoginScreen() {
                   fontSize={15}
                   iconParam={imagePath.iconRegister}
                   iconPosition="right"
-                  onPress={() => router.push('/(auth)/Register')} 
+                  onPress={() => router.push('/auth/Register')} 
                >
                   o Registrarse
                </ButtonX>

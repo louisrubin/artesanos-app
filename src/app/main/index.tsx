@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { router } from 'expo-router';
 import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import ButtonX from '../../components/ButtonX';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -57,7 +57,7 @@ const ButtonXComponent = ({onPress, icon, children, disabled}) => {
 }
 
 export default function PantallaPrincipal() {
-    const router = useRouter(); // Cambiar a useRouter
+    // const router = useRouter(); // Cambiar a useRouter
     const { userData, isInternetReachable, encuestasEnLocal, sincronizando } = useUser(); // Obtener el contexto del usuario
     const [funcionesON, setFuncionesON] = useState(false); // Estado para habilitar/deshabilitar botones
 
@@ -96,7 +96,7 @@ export default function PantallaPrincipal() {
                     <View style={{ flex: 1, alignItems: 'flex-end' }}>
                         <ButtonSettings 
                             addStyle={{ alignSelf: "flex-end", }}
-                            onPress={() => router.push('/UserSettings')}
+                            onPress={() => router.push('/userConfig')}
                             imgPath={imagePath.settingsCircleLogo} 
                             pressable
                         />

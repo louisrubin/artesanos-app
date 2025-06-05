@@ -28,12 +28,12 @@ export default function UserSettings() {
     return (
         <SafeAreaProvider style={styles.container}>
             <ScrollView>
-                <View style={styles.header}>
+                {/* <View style={styles.header}>
                     <Image source={imagePath.userLogo} style={styles.userHeaderIcon} />
                     <Text style={{fontSize: 22}}>
                         Detalles de la cuenta
                     </Text>
-                </View>
+                </View> */}
 
                 <View style={styles.body}>
                     {/* INPUTS-LABELS */}

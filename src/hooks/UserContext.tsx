@@ -119,6 +119,13 @@ export const UserProviderContext = ({ children }) => {
                 // setLoading(false);                
             }
         });
+        // setIsLoggedIn(true);
+        // setUserData({
+        //     "nombre": "el pepe", "apellido": "gonzales", 
+        //     "email": "elpepe@correo.com", "aprobado": true, 
+        //     "isAdmin": true,
+        // })
+        // setLoading(false);
 
         return () => unsubscribe(); // limpiador        
     }, [ isInternetReachable, ]); // Dependencia del estado de la conexión a Internet

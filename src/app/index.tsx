@@ -3,24 +3,24 @@ import { LinearGradient } from "expo-linear-gradient";
 import { View, Image, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { moderateScale, moderateVerticalScale } from "react-native-size-matters";
 import imagePath from "../constants/imagePath";
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
 import { useUser } from "../hooks/UserContext";
 
 export default function Index() {
     const { userData, isLoggedIn, loading, messageStatus } = useUser(); // Obtener el contexto del usuario
-    const router = useRouter(); // Cambiar a useRouter
 
     useEffect( () => {
         if( !loading && isLoggedIn && userData){
             // verifica login desde el Context
-            router.replace('/(main)');  // Usuario logueado, redirige al home o main
+            router.replace('/main');  // Usuario logueado, redirige al home o main
         } else if (!loading && !isLoggedIn){
             // No hay sesión activa
-            router.replace('/Login');
+            router.replace('/auth/Login');
         }        
     }, [loading, userData, isLoggedIn]); 
 
     return (
+      <>
         <LinearGradient 
             colors={["#c85",  "#da7"]}
             style={styles.container}
@@ -44,6 +44,7 @@ export default function Index() {
             </View>
 
         </LinearGradient>
+      </>
     )
 }
 

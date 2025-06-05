@@ -43,7 +43,7 @@ export default function AdminPanel() {
         style={{ flex: 1 }}
         >
         <View style={styles.container}>
-            <Text style={styles.title}>Lista de usuarios</Text>
+            {/* <Text style={styles.title}>Lista de usuarios</Text> */}
             <FlatList
                 data={usuarios}
                 keyExtractor={(item) => item.id}
@@ -78,7 +78,8 @@ export default function AdminPanel() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 26,
+        // paddingTop: 26,
+        paddingTop: 10,
     },
     title: { 
         fontSize: 22, 

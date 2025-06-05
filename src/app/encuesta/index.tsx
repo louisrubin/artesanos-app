@@ -5,8 +5,8 @@ import { Picker } from '@react-native-picker/picker';
 import ButtonX from '../../components/ButtonX';
 import InputX from '../../components/InputX';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { getFirestore, collection, addDoc } from "firebase/firestore";
-import { app, auth } from "../../../credenciales";
+import { collection, addDoc } from "firebase/firestore";
+import { database } from "../../../credenciales";
 import { moderateVerticalScale } from "react-native-size-matters";
 import imagePath from "../../constants/imagePath";
 import { format } from "date-fns";
@@ -17,7 +17,6 @@ import { preguntas, preguntasPorPagina, titulosPorPagina } from "../../constants
 import FotosDNI from "../fotos";
 
 export default function Encuestas() {
-    const db = getFirestore(app);
     const { isInternetReachable, saveEncuestaLocal } = useUser();
     const [showDatePicker, setShowDatePicker] = useState<string | null>(null);
     const [pagina, setPagina] = useState(0);
@@ -78,7 +77,7 @@ export default function Encuestas() {
                 return;
             }
 
-            await addDoc(collection(db, "encuestas"), dataSubmit);
+            await addDoc(collection(database, "encuestas"), dataSubmit);
 
             setTitleModal("Registrado con éxito");
             setDescripcionModal("Artesano guardado correctamente.");
@@ -186,7 +185,6 @@ export default function Encuestas() {
             )}
 
             {/* ENVIANDO FORMULARIO */}
-            {/* ENVIANDO FORMULARIO */}
             { modalMode === "submit" && !isLoading && (
                 <ButtonX 
                 buttonStyles={{ width: 190,
@@ -226,6 +224,18 @@ export default function Encuestas() {
                 <LinearGradient colors={["#fff", "#ddc", ]} style={{flex: 1}}>
                     <View style={{flex: 1}}>
                     <ScrollView contentContainerStyle={{flexGrow: 1}}>
+
+                        {/* HEADER */}
+                        {/* <View style={styles.header}>
+                            <Text style={styles.title}>
+                                {titulosPorPagina[pagina] || "Encuesta"}
+                            </Text>
+                            
+                            <Text style={styles.paginador}>
+                                Página {pagina + 1} / {preguntasPorPagina.length}
+                            </Text>
+                        </View> */}
+
                         <View style={styles.innerContainer}>
                             <View style={styles.card}>
                                 {pagina < preguntasPorPagina.length - 1 ? (
@@ -322,8 +332,7 @@ export default function Encuestas() {
 
 const styles = StyleSheet.create({
     header: {
-        paddingTop: 30,
-        paddingBottom: 15,
+        paddingVertical: 10,
         alignItems: "center",
         
         borderBottomWidth: 1,
