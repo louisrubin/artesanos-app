@@ -18,7 +18,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/images/logo-icch.png",
+        "foregroundImage": "./src/assets/images/jarron-icch.jpg",
         "backgroundColor": "#ffffff"
       },
       "softwareKeyboardLayoutMode": "pan",

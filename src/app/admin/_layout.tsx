@@ -5,7 +5,7 @@ const AdminLayout = () => {
     <Stack screenOptions={{ headerShown: true }}>
       <Stack.Screen name="index" 
         options={{ 
-          headerTitle: "Lista de usuarios",
+          headerTitle: "Panel de Administración",
           headerStyle: {
               backgroundColor: "#fda"
           }

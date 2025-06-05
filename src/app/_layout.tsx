@@ -11,11 +11,6 @@ const RootNavigation = () => {
       <UserProviderContext>
          <Stack screenOptions={{ headerShown: false }} >
             <Stack.Screen name="index" />
-            {/* <Stack.Screen name="userConfig" />
-            <Stack.Screen name="auth" />
-            <Stack.Screen name="main" />
-            <Stack.Screen name="admin" />
-            <Stack.Screen name="encuesta" /> */}
          </Stack>
       </UserProviderContext>
    </>

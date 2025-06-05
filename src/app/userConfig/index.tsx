@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
         backgroundColor: "#feb", // #feb
-        paddingTop: moderateVerticalScale(25),
+        // paddingTop: moderateVerticalScale(25),
     },
     header:{
         alignItems: "center",
@@ -136,6 +136,7 @@ const styles = StyleSheet.create({
     body: {
         flexGrow: 1,
         justifyContent: "space-evenly",
+        marginTop: 10,
         marginHorizontal: moderateScale(25),
         marginBottom: moderateScale(40),
         gap: 30,
