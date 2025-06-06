@@ -2,7 +2,7 @@
   "expo": {
     "name": "Gestión de Artesanos",
     "slug": "artesanos-app",
-    "version": "1.0.0",
+    "version": "v1.0.5-2025.6.6",
     "orientation": "portrait",
     "icon": "./src/assets/images/logo-icch.png",
     "userInterfaceStyle": "light",
@@ -18,7 +18,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/images/jarron-icch.jpg",
+        "foregroundImage": "./src/assets/images/jarron-icch.png",
         "backgroundColor": "#ffffff"
       },
       "softwareKeyboardLayoutMode": "pan",

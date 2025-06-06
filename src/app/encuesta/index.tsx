@@ -14,6 +14,7 @@ import { router } from "expo-router";
 import ModalX from "../../components/Modal";
 import { useUser } from "../../hooks/UserContext";
 import { preguntas, preguntasPorPagina, titulosPorPagina } from "../../constants/PreguntasInfo";
+import { getFirebaseErrorMessage } from "../../hooks/firebaseHooks";
 import FotosDNI from "../fotos";
 
 export default function Encuestas() {
@@ -84,13 +85,12 @@ export default function Encuestas() {
             setIconModal(imagePath.userCheckLogo);
             setLoading(false);
         }
-        catch (error) {
+        catch (error) {            
             setErrorSubmit(true);
-            setTitleModal("Algo salió mal");
-            setDescripcionModal("No se pudo registrar al artesano.");
+            setTitleModal(getFirebaseErrorMessage(error.code));     // obtiene el mensaje acorde al error
+            setDescripcionModal("No se pudo realizar la acción.");
             setIconModal(imagePath.iconXcircle);
             setLoading(false);
-            // console.error(error);
         }
     };
 

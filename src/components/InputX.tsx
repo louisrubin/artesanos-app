@@ -2,14 +2,14 @@ import { Image, Pressable, StyleSheet, TextInput, View } from "react-native";
 import { useTogglePasswordVisibility } from "../hooks/useTogglePasswordVisibility";
 
 export type PropsInputX = {
-    tipoTeclado?: 'email-address' | 'number-pad' | 'default'  //| 'numeric';
+    tipoTeclado?: "email-address" | "ascii-capable" | "number-pad" | "default"  //| 'numeric';
     placeholder?: string;
     value?: string;
     passInp?: boolean;
     onChangeText?: (text: string) => void;  // metodo que queremos que se ejecute al cambiar el texto
     maxLength?: number;
     onBlur?: () => void; // metodo que queremos que se ejecute al perder el foco
-    autoCapitalize?: any;
+    autoCapitalize?: "none" | "sentences" | "words" | "characters";
     bgColorInput?: string;
     colorTexto?: string;
     editable?: boolean;
@@ -26,16 +26,14 @@ export default function InputX( { tipoTeclado, placeholder, value, onChangeText,
                 style={[
                     styles.input, 
                     {
-                        // width: passInp ? "90%" : "100%",
                         color: colorTexto ?? "black",
-                        
                     }
                 ]}
                 placeholder={placeholder}
                 placeholderTextColor={"#A9A9A9"}
 
                 editable={editable}
-                secureTextEntry={passInp ? passwordVisibility : false}
+                secureTextEntry={ passInp ? passwordVisibility : false}
                 value={value}
                 
                 maxLength={maxLength}
@@ -52,15 +50,15 @@ export default function InputX( { tipoTeclado, placeholder, value, onChangeText,
                 )
             }
             {
-                !passInp && (
-                    // si no es editable overlay tapa todo el input para no seleccionar
-                  <View style={[styles.overlay, 
-                     !editable ? {width: "100%"}
-                       : {width: 50 }
-                  ]} 
-                     pointerEvents="box-only" 
-                  />
-                )
+                // !passInp && (
+                //     // si no es editable overlay tapa todo el input para no seleccionar
+                //   <View style={[styles.overlay, 
+                //      !editable ? {width: "100%"}
+                //        : {width: 50 }
+                //   ]} 
+                //      pointerEvents="box-only" 
+                //   />
+                // )
             }
             
             

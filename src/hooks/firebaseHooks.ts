@@ -83,13 +83,13 @@ export const sincronizarEncuestasLocal  = async (listaParam) => {
 };
 
 
-
-export const getFirebaseErrorMessage = (errorCode: string): string => {
+export const getFirebaseErrorMessage = (errorCode: string): string => {    
     return firebaseErrorMessages[errorCode] || "Ocurrió un error inesperado. Intenta nuevamente.";
 }
 
 // código de error de firebase con sus traducciones
 const firebaseErrorMessages: Record<string, string> = {
+    "permission-denied": "Permisos insuficientes.",
     "auth/invalid-credential": "Credenciales inválidas.",
     "auth/invalid-email": "El correo electrónico no es válido.",
     "auth/network-request-failed": "Error de red. Verifica tu conexión.",

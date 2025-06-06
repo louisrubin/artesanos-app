@@ -157,6 +157,7 @@ export default function LoginScreen() {
                   render={({field: {onChange, value}}) => (
                      <InputX placeholder="Ingrese Contraseña" 
                            passInp
+                           tipoTeclado="ascii-capable"
                            onChangeText={onChange} 
                            value={value} 
                      />

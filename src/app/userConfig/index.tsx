@@ -1,7 +1,7 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import ButtonX from '../../components/ButtonX'
-import { useRouter } from 'expo-router';
+import { router } from 'expo-router';
 import imagePath from '../../constants/imagePath';
 import InputAndLabelX from '../../components/InputAndLabel';
 import { auth } from '../../../credenciales';
@@ -9,7 +9,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUser } from '../../hooks/UserContext';
 
 export default function UserSettings() {
-    const router = useRouter();
     const { userData, setUserData } = useUser(); // Obtener el contexto del usuario
 
     const handleLogOut = async () => {
@@ -111,7 +110,7 @@ export default function UserSettings() {
                 </View>
 
             <Text style={{textAlign: "center", opacity: 0.3}}>
-                v1.0.4-2025.6.5
+                v1.0.5-2025.6.6
             </Text>
             
             </ScrollView>
