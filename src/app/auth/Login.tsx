@@ -67,7 +67,7 @@ export default function LoginScreen() {
       .then( 
           async (userCredential) => {
             const user = userCredential.user;   // el propio usuario 
-            setModalMessage("Cargando datos de Firebase..."); // mensaje de carga
+            setModalMessage("Obteniendo datos..."); // mensaje de carga
             const userData = await getUserInfoFirebase(user.uid) // sus datos de firebase
 
             setModalMessage("Sincronizando datos..."); // mensaje de carga

@@ -94,6 +94,7 @@ export default function RegisterScreen(){
               email: data.email,
               fechaRegistro: new Date().toISOString(),
               aprobado: false,
+              isAdmin: false,
             });
       
             setIconHeaderModal(imagePath.checkCircleLogo);
