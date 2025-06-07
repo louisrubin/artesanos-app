@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LinearGradient } from 'expo-linear-gradient';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
@@ -15,7 +15,7 @@ import ModalX from "../../components/Modal";
 import { useUser } from "../../hooks/UserContext";
 import { preguntas } from "../../constants/PreguntasInfo";
 import { getFirebaseErrorMessage } from "../../hooks/firebaseHooks";
-import FotosDNI from "../fotos";
+import CargaFotos from "../fotos";
 
 export default function Encuestas() {
     const { isInternetReachable, saveEncuestaLocal } = useUser();
@@ -30,6 +30,11 @@ export default function Encuestas() {
       )
     );
     const [urlsFotos, setUrlsFotos] = useState<(string | null)[]>([null, null, null, null]);
+
+   //  useEffect( ()=> {
+   //    console.log(urlsFotos);
+      
+   //  }, [urlsFotos])
 
     // MODAL CONFIGURACION
     const [showModal, setModal] = useState(false); // Para manejar los modales
@@ -291,7 +296,7 @@ export default function Encuestas() {
                                 ))
                             ) : (
                                 <View style={{ flex: 1, justifyContent: "center" }}>
-                                    <FotosDNI onFotosSubidas={setUrlsFotos} />
+                                    <CargaFotos urlsFotos={urlsFotos} setUrlFotos={setUrlsFotos} />
                                 </View>
                             )}
                         </View>

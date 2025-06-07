@@ -1,8 +1,7 @@
-import React, { useState } from "react";
 import { View, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { app, database } from "../../../credenciales"; 
+import { app } from "../../../credenciales"; 
 import { Feather } from "@expo/vector-icons";
 
 const storage = getStorage(app);
@@ -23,8 +22,8 @@ const getFileSize = (fileSize: number): string => {
    return `${(fileSize / (1024*1024)).toFixed(2)} MB`;
 }
 
-export default function FotosDNI({ onFotosSubidas }) {
-  const [imagenes, setImagenes] = useState<(ImagePicker.ImagePickerAsset | null)[]>([null, null, null, null]);
+export default function CargaFotos({ urlsFotos, setUrlFotos }) {
+//   const [imagenes, setImagenes] = useState<(ImagePicker.ImagePickerAsset | null)[]>([null, null, null, null]);
 
    const pickImage = async (idx: number) => {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -35,71 +34,71 @@ export default function FotosDNI({ onFotosSubidas }) {
 
       if (!result.canceled && result.assets && result.assets[0]?.uri) {
          // const asset = result.assets[0];
-         const nuevas = [...imagenes];    // todas las imagenes hasta el momento
-         nuevas[idx] = result.assets[0];  // la imagen en si
-         setImagenes(nuevas);
+         const updatedFotos = [...urlsFotos];    // Copia del estado
+         updatedFotos[idx] = result.assets[0];  // Actualiza en la posición adecuada
+         setUrlFotos(updatedFotos);   // Actualiza el estado en el padre
       }
    };
 
-  const handleUploadAll = async () => {
-    try {
-      const urls: (string | null)[] = [];
-      for (let i = 0; i < imagenes.length; i++) {
-        if (imagenes[i]) {
-          try {
-            const url = await uploadImageAsync(imagenes[i].uri!, `foto_${i}_${Date.now()}.jpg`);
-            urls[i] = url;
-          } catch (err) {
-            alert(`Error subiendo la foto ${labels[i]}`);
-            urls[i] = null;
-          }
-        } else {
-          urls[i] = null;
-        }
-      }
-      if (onFotosSubidas) onFotosSubidas(urls);
-      alert("¡Fotos subidas correctamente!");
-    } catch (err) {
-      alert("Ocurrió un error al subir las fotos.");
-      console.error(err);
-    }
-  };
+//   const handleUploadAll = async () => {
+//     try {
+//       const urls: (string | null)[] = [];
+//       for (let i = 0; i < imagenes.length; i++) {
+//         if (imagenes[i]) {
+//           try {
+//             const url = await uploadImageAsync(imagenes[i].uri!, `foto_${i}_${Date.now()}.jpg`);
+//             urls[i] = url;
+//           } catch (err) {
+//             alert(`Error subiendo la foto ${labels[i]}`);
+//             urls[i] = null;
+//           }
+//         } else {
+//           urls[i] = null;
+//         }
+//       }
+//       if (setUrlFotos) setUrlFotos(urls);
+//       alert("¡Fotos subidas correctamente!");
+//     } catch (err) {
+//       alert("Ocurrió un error al subir las fotos.");
+//       console.error(err);
+//     }
+//   };
 
   return (
     <View style={[styles.container, { flex: 1 }]}>
       {labels.map((label, idx) => (
         <View key={idx} style={styles.fotoContainer}>
           <Text style={styles.label}>{label}</Text>
-          { imagenes[idx] && (
+          { urlsFotos[idx] && (
             <View style={{ position: "relative", marginBottom: 8 }}>
 
-              <Image source={{ uri: imagenes[idx].uri! }} style={styles.image} />
+              <Image source={{ uri: urlsFotos[idx].uri! }} style={styles.image} />
               <Text style={{textAlign: "center",}}>{
-               `${imagenes[idx]?.fileName.slice(0,20)}... (${getFileSize(imagenes[idx]!.fileSize!)})`}
+               `${urlsFotos[idx]?.fileName.slice(0,20)}... (${getFileSize(urlsFotos[idx]!.fileSize!)})`}
                </Text>
 
-              <TouchableOpacity
-                style={{
-                  position: "absolute",
-                  top: 5,
-                  right: 5,
-                  backgroundColor: "rgba(255,255,255,0.7)",
-                  borderRadius: 16,
-                  padding: 2,
-                }}
-                onPress={() => {
-                  const nuevas = [...imagenes];
-                  nuevas[idx] = null;
-                  setImagenes(nuevas);
-                }}
-              >
-                <Feather name="x-circle" size={28} color="#d00" />
-              </TouchableOpacity>
+               <TouchableOpacity
+                  style={{
+                     position: "absolute",
+                     top: 5,
+                     right: 5,
+                     backgroundColor: "rgba(255,255,255,0.7)",
+                     borderRadius: 16,
+                     padding: 2,
+                  }}
+                  onPress={() => {
+                     const nuevas = [...urlsFotos];
+                     nuevas[idx] = null;
+                     setUrlFotos(nuevas);
+                  }}
+               >
+                  <Feather name="x-circle" size={28} color="#d00" />
+               </TouchableOpacity>
             </View>
           )}
 
-          { // si ya selección imagen no aparece
-            !imagenes[idx] && (
+          { // SIN SELECCIONAR IMAGEN
+            !urlsFotos[idx] && (
                <View style={{ flexDirection: "row", gap: 16, marginTop: 8 }}>
                   <TouchableOpacity
                   style={styles.iconButton}
