@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import ModalX from "../../components/Modal";
 import InputX from "../../components/InputX";
 import ButtonX from "../../components/ButtonX";
-import { getFirebaseErrorMessage } from "../../hooks/firebaseHooks";
+import { getFirebaseErrorMessage } from "../../hooks/firebaseFunctions";
 
 
 const minLengthPassword = 6; // Longitud máxima de la contraseña

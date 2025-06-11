@@ -4,8 +4,9 @@ import ButtonX from '../../components/ButtonX';
 import { LinearGradient } from 'expo-linear-gradient';
 import imagePath from '../../constants/imagePath';
 import { useEffect, useState } from "react";
-import { useUser } from '../../hooks/UserContext';
 import ButtonSettings from '../../components/ButtonSettings';
+import { useAuthVariables } from '../../hooks/authActions';
+import { useNetInfo } from '@react-native-community/netinfo';
 
 const redNotifColor = "#D04A4A";
 
@@ -57,16 +58,19 @@ const ButtonXComponent = ({onPress, icon, children, disabled}) => {
 }
 
 export default function PantallaPrincipal() {
-    // const router = useRouter(); // Cambiar a useRouter
-    const { userData, isInternetReachable, encuestasEnLocal, sincronizando } = useUser(); // Obtener el contexto del usuario
+    // const { userData, isInternetReachable, encuestasEnLocal, sincronizando } = useUser(); // Obtener el contexto del usuario
+    const { userData } = useAuthVariables();
+    const { isInternetReachable } = useNetInfo(); // Hook para obtener el estado de Internet
     const [funcionesON, setFuncionesON] = useState(false); // Estado para habilitar/deshabilitar botones
 
     useEffect(() => {
         if (userData?.isAdmin || userData?.aprobado) setFuncionesON(true); // Habilita los botones si es admin o aprobado
         else setFuncionesON(false);
         
-    }, [userData, isInternetReachable, encuestasEnLocal]); // , funcionesON
+    }, [userData, isInternetReachable, ]); // , funcionesON , encuestasEnLocal
     
+    const encuestasEnLocal = [];
+
     return (
         <LinearGradient
         colors={["#fda", "#fda", "#ffc"]}
@@ -135,7 +139,7 @@ export default function PantallaPrincipal() {
                 </ButtonXComponent>
 
                 {/* MENSAJE DE REGISTROS EN LOCAL Y INDICADOR SINCRONIZANDO */}
-                { (sincronizando || encuestasEnLocal.length > 0) && (
+                { (true || encuestasEnLocal.length > 0) && (
                     <View style={{ 
                         width: 320,
                         flexDirection: 'row', 
@@ -145,7 +149,7 @@ export default function PantallaPrincipal() {
                         // backgroundColor: 'tomato', 
                         opacity: 0.6,
                     }}>
-                        {sincronizando && (
+                        {true && (
                             <ActivityIndicator 
                                 size={15}
                                 color="#000" 

@@ -12,8 +12,9 @@ import ModalX from '../../components/Modal';
 import InputX from '../../components/InputX';
 import ButtonX from '../../components/ButtonX';
 import imagePath from '../../constants/imagePath';
-import { getFirebaseErrorMessage, getUserInfoFirebase, saveLocalData } from '../../hooks/firebaseHooks';
-import { useUser } from '../../hooks/UserContext';
+import { getFirebaseErrorMessage } from '../../hooks/firebaseFunctions';
+import { useAuthActions } from '../../hooks/authActions';
+import { getUserInfoFirebase, saveLocalData } from '../../hooks/asyncStorageFunctions';
 
 
 // ESQUEMA DE ZOD PARA RESTRICCIONES DE LOS CAMPOS
@@ -25,7 +26,7 @@ const esquema = z.object({
 type FormData = z.infer<typeof esquema>;    // Definición del tipo de datos del formulario
 
 export default function LoginScreen() {
-  const { setUserData } = useUser(); // Obtener el contexto del usuario
+  const { setUserData } = useAuthActions();
 
   const [isVisibleModal, setIsVisibleModal] = useState(false);
   const [modalTitle, setModalTitle] = useState('');

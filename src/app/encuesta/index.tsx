@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { LinearGradient } from 'expo-linear-gradient';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
@@ -6,30 +6,30 @@ import ButtonX from '../../components/ButtonX';
 import InputX from '../../components/InputX';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { collection, addDoc } from "firebase/firestore";
-import { database } from "../../../credenciales";
+import { auth, database } from "../../../credenciales";
 import { moderateVerticalScale } from "react-native-size-matters";
 import imagePath from "../../constants/imagePath";
 import { format } from "date-fns";
 import { router } from "expo-router";
 import ModalX from "../../components/Modal";
-import { useUser } from "../../hooks/UserContext";
+import { useUser } from "../../hooks/AppInitializer";
 import { preguntas } from "../../constants/PreguntasInfo";
-import { getFirebaseErrorMessage } from "../../hooks/firebaseHooks";
+import { getArrayUrlFotosSubidas, getFirebaseErrorMessage } from "../../hooks/firebaseFunctions";
 import CargaFotos from "../fotos";
 
 export default function Encuestas() {
     const { isInternetReachable, saveEncuestaLocal } = useUser();
     const [showDatePicker, setShowDatePicker] = useState<string | null>(null);
-    const [pagina, setPagina] = useState(0);
-    // un objeto con claves tipo string y valores que pueden ser string o Date
-    const [respuestas, setRespuestas] = useState<{ [key: string]: string | Date }>(
+    const [pagina, setPagina] = useState(0);   
+
+    const [respuestas, setRespuestas] = useState<{ [key: string]: string | Date }>( // un objeto con claves string y valores string o Date
       () => Object.fromEntries(
          preguntas
          .flatMap(seccion => seccion.campos)
          .map(p => [p.key, ""])
       )
     );
-    const [urlsFotos, setUrlsFotos] = useState<(string | null)[]>([null, null, null, null]);
+    const [fotosState, setFotosState] = useState<(string | null)[]>([null, null, null, null]);
 
    //  useEffect( ()=> {
    //    console.log(urlsFotos);
@@ -63,8 +63,12 @@ export default function Encuestas() {
         setLoading(true);
         setErrorSubmit(false);  // limpia el estado
         setTitleModal("Registrando");
-        setDescripcionModal("Guardando en la base de datos...");
+        // setDescripcionModal("Guardando en la base de datos...");
         try {
+            setDescripcionModal("Subiendo fotos...");
+            // lista de url de todas las fotos
+            const lista_URL_Fotos = await getArrayUrlFotosSubidas(fotosState);
+
             // todos los datos del formulario
             const dataSubmit = {
                 fecha_registro: (new Date().toISOString()), // Fecha de registro actual
@@ -72,8 +76,9 @@ export default function Encuestas() {
                 fecha_nacimiento: respuestas["fecha_nacimiento"] 
                     ? (respuestas["fecha_nacimiento"] as Date).toISOString()
                     : null, // Si no hay fecha, se guarda como null
-                registrado_por: "un id supuestamente",
-                fotos_dni: urlsFotos, 
+                fotos: lista_URL_Fotos,
+                registrado_por: "**********************************",
+                // registrado_por: auth.currentUser.uid,
             };
 
             if( !isInternetReachable ){
@@ -90,11 +95,13 @@ export default function Encuestas() {
             await addDoc(collection(database, "encuestas"), dataSubmit);
 
             setTitleModal("Registrado con éxito");
-            setDescripcionModal("Artesano guardado correctamente.");
+            setDescripcionModal("Datos guardados correctamente.");
             setIconModal(imagePath.userCheckLogo);
             setLoading(false);
         }
-        catch (error) {            
+        catch (error) {
+            console.log(error);
+                 
             setErrorSubmit(true);
             setTitleModal(getFirebaseErrorMessage(error.code));     // obtiene el mensaje acorde al error
             setDescripcionModal("No se pudo realizar la acción.");
@@ -296,7 +303,7 @@ export default function Encuestas() {
                                 ))
                             ) : (
                                 <View style={{ flex: 1, justifyContent: "center" }}>
-                                    <CargaFotos urlsFotos={urlsFotos} setUrlFotos={setUrlsFotos} />
+                                    <CargaFotos fotosState={fotosState} setFotosState={setFotosState} />
                                 </View>
                             )}
                         </View>

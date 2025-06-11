@@ -4,10 +4,10 @@ import { View, Image, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { moderateScale, moderateVerticalScale } from "react-native-size-matters";
 import imagePath from "../constants/imagePath";
 import { router } from "expo-router";
-import { useUser } from "../hooks/UserContext";
+import { useAuthVariables } from "../hooks/authActions";
 
 export default function Index() {
-    const { userData, isLoggedIn, loading, messageStatus } = useUser(); // Obtener el contexto del usuario
+    const { userData, loading, isLoggedIn, messageStatus } = useAuthVariables();
 
     useEffect( () => {
         if( !loading && isLoggedIn && userData){

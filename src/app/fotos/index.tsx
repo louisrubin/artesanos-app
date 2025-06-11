@@ -1,10 +1,6 @@
 import { View, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { app } from "../../../credenciales"; 
 import { Feather } from "@expo/vector-icons";
-
-const storage = getStorage(app);
 
 const labels = [
   "DNI Frente",
@@ -22,7 +18,7 @@ const getFileSize = (fileSize: number): string => {
    return `${(fileSize / (1024*1024)).toFixed(2)} MB`;
 }
 
-export default function CargaFotos({ urlsFotos, setUrlFotos }) {
+export default function CargaFotos({ fotosState, setFotosState }) {
 //   const [imagenes, setImagenes] = useState<(ImagePicker.ImagePickerAsset | null)[]>([null, null, null, null]);
 
    const pickImage = async (idx: number) => {
@@ -32,11 +28,11 @@ export default function CargaFotos({ urlsFotos, setUrlFotos }) {
             quality: 0.3,
       });
 
-      if (!result.canceled && result.assets && result.assets[0]?.uri) {
+      if (!result.canceled && result.assets ) { //&& result.assets[0]?.uri
          // const asset = result.assets[0];
-         const updatedFotos = [...urlsFotos];    // Copia del estado
-         updatedFotos[idx] = result.assets[0];  // Actualiza en la posición adecuada
-         setUrlFotos(updatedFotos);   // Actualiza el estado en el padre
+         const updatedFotos = [...fotosState];    // Copia del estado
+         updatedFotos[idx] = result.assets[0].uri;  // Actualiza en la posición adecuada
+         setFotosState(updatedFotos);   // Actualiza el estado en el padre
       }
    };
 
@@ -69,13 +65,13 @@ export default function CargaFotos({ urlsFotos, setUrlFotos }) {
       {labels.map((label, idx) => (
         <View key={idx} style={styles.fotoContainer}>
           <Text style={styles.label}>{label}</Text>
-          { urlsFotos[idx] && (
+          { fotosState[idx] && (
             <View style={{ position: "relative", marginBottom: 8 }}>
 
-              <Image source={{ uri: urlsFotos[idx].uri! }} style={styles.image} />
-              <Text style={{textAlign: "center",}}>{
-               `${urlsFotos[idx]?.fileName.slice(0,20)}... (${getFileSize(urlsFotos[idx]!.fileSize!)})`}
-               </Text>
+              <Image source={{ uri: fotosState[idx]! }} style={styles.image} />
+              {/* <Text style={{textAlign: "center",}}>{
+               `${fotosState[idx]?.fileName.slice(0,20)}... (${getFileSize(fotosState[idx]!.fileSize!)})`}
+               </Text> */}
 
                <TouchableOpacity
                   style={{
@@ -87,9 +83,9 @@ export default function CargaFotos({ urlsFotos, setUrlFotos }) {
                      padding: 2,
                   }}
                   onPress={() => {
-                     const nuevas = [...urlsFotos];
+                     const nuevas = [...fotosState];
                      nuevas[idx] = null;
-                     setUrlFotos(nuevas);
+                     setFotosState(nuevas);
                   }}
                >
                   <Feather name="x-circle" size={28} color="#d00" />
@@ -98,7 +94,7 @@ export default function CargaFotos({ urlsFotos, setUrlFotos }) {
           )}
 
           { // SIN SELECCIONAR IMAGEN
-            !urlsFotos[idx] && (
+            !fotosState[idx] && (
                <View style={{ flexDirection: "row", gap: 16, marginTop: 8 }}>
                   <TouchableOpacity
                   style={styles.iconButton}
@@ -121,14 +117,14 @@ export default function CargaFotos({ urlsFotos, setUrlFotos }) {
 }
 
 // Sube una imagen a Firebase Storage y retorna la URL de descarga
-async function uploadImageAsync(uri: string, filename: string): Promise<string> {
-  const response = await fetch(uri);
-  const blob = await response.blob();
-  const storageRef = ref(storage, filename);
-  await uploadBytes(storageRef, blob);
-  const downloadURL = await getDownloadURL(storageRef);
-  return downloadURL;
-}
+// async function uploadImageAsync(uri: string, filename: string): Promise<string> {
+//   const response = await fetch(uri);
+//   const blob = await response.blob();
+//   const storageRef = ref(storage, filename);
+//   await uploadBytes(storageRef, blob);
+//   const downloadURL = await getDownloadURL(storageRef);
+//   return downloadURL;
+// }
 
 const styles = StyleSheet.create({
   container: {

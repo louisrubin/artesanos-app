@@ -1,18 +1,21 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { UserProviderContext } from "../hooks/UserContext";
-// import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { AppInitializer } from "../hooks/AppInitializer";
+import { Provider } from "react-redux";
+import { store } from "../redux";
 
 const RootNavigation = () => {
   return (
    <>
       <StatusBar style="dark" />
 
-      <UserProviderContext>
-         <Stack screenOptions={{ headerShown: false }} >
+      <Provider store={store}>
+        <AppInitializer>
+          <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="index" />
-         </Stack>
-      </UserProviderContext>
+          </Stack>
+        </AppInitializer>
+      </Provider>
    </>
    )
 }

@@ -6,7 +6,7 @@ import imagePath from '../../constants/imagePath';
 import InputAndLabelX from '../../components/InputAndLabel';
 import { auth } from '../../../credenciales';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useUser } from '../../hooks/UserContext';
+import { useUser } from '../../hooks/AppInitializer';
 
 export default function UserSettings() {
     const { userData, setUserData } = useUser(); // Obtener el contexto del usuario
