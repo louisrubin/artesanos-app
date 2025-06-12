@@ -11,12 +11,11 @@ export default function Index() {
 
     useEffect( () => {
         if( !loading && isLoggedIn && userData){
-            // verifica login desde el Context
             router.replace('/main');  // Usuario logueado, redirige al home o main
         } else if (!loading && !isLoggedIn){
-            // No hay sesión activa
             router.replace('/auth/Login');
-        }        
+        }
+        
     }, [loading, userData, isLoggedIn]); 
 
     return (

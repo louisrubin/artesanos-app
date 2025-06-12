@@ -1,5 +1,5 @@
-import { checkAuthStatus, setUserDataReducer, setLoadingReducer, 
-    setIsLoggedInReducer, setMessageStatusReducer, logoutReducer 
+import { setUserDataReducer, setLoadingReducer, 
+    setIsLoggedInReducer, setMessageStatusReducer, logout 
 } from "../redux/slices/authSlice";
 import { useAppDispatch, useAppSelector } from "./store";
 
@@ -7,10 +7,6 @@ import { useAppDispatch, useAppSelector } from "./store";
 export const useAuthActions = () => {
     const dispatch = useAppDispatch();
 
-    const checkAuth = () => {
-        // funct ejecutada con el dispatch
-        dispatch(checkAuthStatus());
-    }
     const setUserData = (data : any) => {
         dispatch(setUserDataReducer(data));
     }
@@ -24,12 +20,10 @@ export const useAuthActions = () => {
         dispatch(setMessageStatusReducer(value));
     }
     const logOut = () => {
-        dispatch(logoutReducer());
+        dispatch(logout());
     }
 
-    
-
-    return { checkAuth, setUserData, setLoading, setIsLoggedIn, setMessageStatus, logOut };
+    return { setUserData, setLoading, setIsLoggedIn, setMessageStatus, logOut };
 }
 
 // EXPORT LOS ESTADOS DE AUTH-SLICE

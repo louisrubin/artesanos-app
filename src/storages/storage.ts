@@ -23,11 +23,9 @@ export const storage = {
             }
             const stringifiedValue = JSON.stringify(value);
             await AsyncStorage.setItem(key, stringifiedValue);
-            console.log("set: datos guardados");
-
             return true;
         }catch(err){
-            console.error("Error al GUARDAR datos Storage:", err);
+            console.error("Error al GUARDAR Storage:", err);
             return null;
         }
     },
@@ -37,7 +35,7 @@ export const storage = {
         try{
             await AsyncStorage.removeItem(key);
         }catch(err){
-            console.error("Error al BORRAR datos Storage:", err);
+            console.error("Error al BORRAR Storage:", err);
             return null;
         }
     },

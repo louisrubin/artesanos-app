@@ -58,7 +58,6 @@ const ButtonXComponent = ({onPress, icon, children, disabled}) => {
 }
 
 export default function PantallaPrincipal() {
-    // const { userData, isInternetReachable, encuestasEnLocal, sincronizando } = useUser(); // Obtener el contexto del usuario
     const { userData } = useAuthVariables();
     const { isInternetReachable } = useNetInfo(); // Hook para obtener el estado de Internet
     const [funcionesON, setFuncionesON] = useState(false); // Estado para habilitar/deshabilitar botones
