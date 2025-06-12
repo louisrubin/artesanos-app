@@ -4,19 +4,16 @@ import ButtonX from '../../components/ButtonX'
 import { router } from 'expo-router';
 import imagePath from '../../constants/imagePath';
 import InputAndLabelX from '../../components/InputAndLabel';
-import { auth } from '../../../credenciales';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useUser } from '../../hooks/AppInitializer';
+import { useAuthActions } from '../../hooks/authActions';
+import { useAuthVariables } from '../../hooks/authActions';
 
 export default function UserSettings() {
-    const { userData, setUserData } = useUser(); // Obtener el contexto del usuario
+    const { logOut } = useAuthActions();
+    const { userData } = useAuthVariables();
 
     const handleLogOut = async () => {
-        // lógica para cerrar sesión
         try{
-            await AsyncStorage.removeItem('userData'); // Elimina los datos del usuario de AsyncStorage
-            await auth.signOut();
-            setUserData(null); // Limpia el contexto del usuario
+            logOut();   // cierra y limpia estados
             router.replace('/auth/Login');
         } catch (error) {
             console.error("Error al cerrar sesión", error);
