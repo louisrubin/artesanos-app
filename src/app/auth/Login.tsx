@@ -15,6 +15,7 @@ import imagePath from '../../constants/imagePath';
 import { getFirebaseErrorMessage } from '../../hooks/firebaseFunctions';
 import { useAuthActions } from '../../hooks/authActions';
 import { getUserInfoFirebase, saveLocalData } from '../../hooks/asyncStorageFunctions';
+import { storage } from '../../storages/storage';
 
 
 // ESQUEMA DE ZOD PARA RESTRICCIONES DE LOS CAMPOS
@@ -26,7 +27,7 @@ const esquema = z.object({
 type FormData = z.infer<typeof esquema>;    // Definición del tipo de datos del formulario
 
 export default function LoginScreen() {
-  const { setUserData } = useAuthActions();
+  const { checkAuth, setUserData, setLoading } = useAuthActions();
 
   const [isVisibleModal, setIsVisibleModal] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
@@ -72,7 +73,8 @@ export default function LoginScreen() {
             const userData = await getUserInfoFirebase(user.uid) // sus datos de firebase
 
             setModalMessage("Sincronizando datos..."); // mensaje de carga
-            await saveLocalData(userData); // Guardar datos del usuario en AsyncStorage
+            // await saveLocalData(userData); // Guardar datos del usuario en AsyncStorage
+            storage.set("userData", userData);
             setUserData(userData); // Guardar datos del usuario en el contexto global           
 
             setIsVisibleModal(false); // QUITA EL MODAL

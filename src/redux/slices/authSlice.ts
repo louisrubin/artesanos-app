@@ -6,14 +6,23 @@ import { doc, getDoc } from 'firebase/firestore';
 export const checkAuthStatus = createAsyncThunk(
   'auth/checkStatus',
   async (_, { rejectWithValue }) => { // rejectWithValue: "forzar" un error controlado y pasar un mensaje personalizado
-    
     try {      
       const user = auth.currentUser;
+      console.log("user:", user);
+      
 
       if (!user) {
         await storage.remove("userData");
         return null; // Esto lo maneja el reducer fulfilled
       }
+
+      // sin conexión a Internet 
+      // if( !isInternetReachable ) {
+      //    const storedUserData = await storage.get("userData");
+      //    if(storedUserData){
+      //       return storedUserData;
+      //    } else return null;
+      // }
 
       // obteniendo desde firebase
       const docRef = doc(database, "registros", user.uid);
@@ -26,7 +35,6 @@ export const checkAuthStatus = createAsyncThunk(
         return rejectWithValue("No existe el documento del usuario.");
       }
 
-      // suscripción en tiempo real a los cambios en el documento
       const userDataSnap = snapshot.data();
       await storage.set("userData", userDataSnap);  // almacena en asyncStorage
       return userDataSnap;  // guarda en el estado "initialState"
@@ -35,7 +43,7 @@ export const checkAuthStatus = createAsyncThunk(
       console.error("Error al verificar auth:", error);
       return rejectWithValue("Error inesperado");
     }
-  }
+   }
 );
 
 
@@ -54,9 +62,9 @@ export const authSlice = createSlice({
          // cerrar sesión y limpiar datos
          state.userData = null;
          state.isLoggedIn = false;
+         storage.remove("userData");
          auth.signOut();
       },
-
       setUserDataReducer: (state, action: PayloadAction<any>) => {
          state.userData = action.payload;
       },    
@@ -65,6 +73,9 @@ export const authSlice = createSlice({
       },
       setLoadingReducer: (state, action: PayloadAction<boolean>) => {
         state.loading = action.payload;
+      },
+      setIsLoggedInReducer: (state, action: PayloadAction<boolean>) => {
+        state.isLoggedIn = action.payload;
       },
   },
   
@@ -77,7 +88,7 @@ export const authSlice = createSlice({
       .addCase(checkAuthStatus.fulfilled, (state, action) => {
          state.messageStatus = "Sincronizando...";
          state.userData = action.payload;
-         state.isLoggedIn = !!action.payload;    // convierte a boolean
+         state.isLoggedIn = !!action.payload;    // convierte a boolean si existe datos --> true
          state.loading = false;
       })
       .addCase(checkAuthStatus.rejected, (state, action) => {
@@ -91,5 +102,9 @@ export const authSlice = createSlice({
   }
 });
 
-export const { logoutReducer, setUserDataReducer, setMessageStatusReducer, setLoadingReducer } = authSlice.actions;
+export const { 
+   logoutReducer, setUserDataReducer, 
+   setMessageStatusReducer, setLoadingReducer, setIsLoggedInReducer,
+} = authSlice.actions;
+
 export default authSlice.reducer;

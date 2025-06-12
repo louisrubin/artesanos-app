@@ -5,7 +5,8 @@ export const storage = {
     // LEER DATOS STORAGE
     async get(key: string){
         try{
-            return await AsyncStorage.getItem(key);
+            const item = await AsyncStorage.getItem(key);
+            return item ? JSON.parse(item) : null;
         }catch(err){
             console.error("Error al LEER datos Storage:", err);
             return null;
@@ -20,9 +21,11 @@ export const storage = {
                 const fechaFormateada = format(value.fechaRegistro, 'dd-MM-yyyy HH:mm'); // Convierte la fecha a formato dd/MM/yyyy
                 value.fechaRegistro = fechaFormateada; // asigna la fecha a la data
             }
+            const stringifiedValue = JSON.stringify(value);
+            await AsyncStorage.setItem(key, stringifiedValue);
             console.log("set: datos guardados");
-            
-            return await AsyncStorage.setItem(key, value);
+
+            return true;
         }catch(err){
             console.error("Error al GUARDAR datos Storage:", err);
             return null;
@@ -32,7 +35,7 @@ export const storage = {
     // ELIMINAR DATOS STORAGE
     async remove(key: string){
         try{
-            return await AsyncStorage.removeItem(key);
+            await AsyncStorage.removeItem(key);
         }catch(err){
             console.error("Error al BORRAR datos Storage:", err);
             return null;

@@ -1,4 +1,6 @@
-import { checkAuthStatus, setUserDataReducer, setLoadingReducer } from "../redux/slices/authSlice";
+import { checkAuthStatus, setUserDataReducer, setLoadingReducer, 
+    setIsLoggedInReducer, setMessageStatusReducer, logoutReducer 
+} from "../redux/slices/authSlice";
 import { useAppDispatch, useAppSelector } from "./store";
 
 // EXPORTAR LOS IMPORTS DISPATCH Y USE-APP-DISPATCH UNA SOLA VEZ
@@ -15,8 +17,19 @@ export const useAuthActions = () => {
     const setLoading = (value : boolean) => {
         dispatch(setLoadingReducer(value));
     }
+    const setIsLoggedIn = (value : boolean) => {
+        dispatch(setIsLoggedInReducer(value));
+    }
+    const setMessageStatus = (value : string) => {
+        dispatch(setMessageStatusReducer(value));
+    }
+    const logOut = () => {
+        dispatch(logoutReducer());
+    }
 
-    return { checkAuth, setUserData, setLoading };
+    
+
+    return { checkAuth, setUserData, setLoading, setIsLoggedIn, setMessageStatus, logOut };
 }
 
 // EXPORT LOS ESTADOS DE AUTH-SLICE
