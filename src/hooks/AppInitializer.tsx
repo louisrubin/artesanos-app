@@ -13,7 +13,6 @@ interface PropsT {
   children: React.ReactNode;
 }
 
-// UserProviderContext component para proveer el contexto GLOBAL del usuario
 // Este componente envuelve a la aplicación y proporciona el contexto del usuario
 export const AppInitializer = ({ children }: PropsT) => {
    const { setUserData, setLoading, setIsLoggedIn, setMessageStatus, logOut } = useAuthActions();
@@ -92,8 +91,8 @@ export const AppInitializer = ({ children }: PropsT) => {
                   // formatear la fecha de registro 'dd-MM-yyyy HH:mm'
                   data.fechaRegistro = format(data.fechaRegistro, 'dd-MM-yyyy HH:mm'); // asigna la fecha a la data
 
-                  setUserData(data);
-                  await storage.set("userData", data);
+                  setUserData(data); 
+                  await storage.set("userData", data, true);
                   setIsLoggedIn(true);
                   setLoading(false);
                }else{
@@ -111,34 +110,6 @@ export const AppInitializer = ({ children }: PropsT) => {
       });
       return () => unsubscribe(); // limpiador
    }, [isInternetReachable]);
-
-    
-    useEffect( () => {
-        if (!isLoggedIn || !userData) return;   // no hace nada
-
-        setLoading(true);
-        const docRef = doc(database, "registros", userData.uid);
-        const unsubscribe = onSnapshot(docRef, async (snap) => {
-            if (snap.exists()) {
-                const data = snap.data();
-
-                setUserData(data) // actualiza el estado en Redux
-                await storage.set("userData", data);
-                setLoading(false);
-            }else {
-                console.log("User Loggeado: No existe el documento del usuario. Cerrando sesión.");
-                await storage.remove("userData");
-                setUserData(null);
-                setIsLoggedIn(false);
-                setLoading(false);
-            }
-        });
-        
-        return () => {
-            unsubscribe();
-            setLoading(false);  // limpiar todo al desmontar
-        } 
-    }, [isInternetReachable])
 
     return children;
 };

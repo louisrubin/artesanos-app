@@ -16,7 +16,7 @@ export default function Index() {
             router.replace('/auth/Login');
         }
         
-    }, [loading, userData, isLoggedIn]); 
+    }, [loading, ]);  // , userData, isLoggedIn 
 
     return (
       <>

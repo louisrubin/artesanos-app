@@ -6,19 +6,21 @@ import ButtonX from '../../components/ButtonX';
 import InputX from '../../components/InputX';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { collection, addDoc } from "firebase/firestore";
-import { auth, database } from "../../../credenciales";
+import { database } from "../../../credenciales";
 import { moderateVerticalScale } from "react-native-size-matters";
 import imagePath from "../../constants/imagePath";
 import { format } from "date-fns";
 import { router } from "expo-router";
 import ModalX from "../../components/Modal";
-import { useUser } from "../../hooks/AppInitializer";
 import { preguntas } from "../../constants/PreguntasInfo";
 import { getArrayUrlFotosSubidas, getFirebaseErrorMessage } from "../../hooks/firebaseFunctions";
 import CargaFotos from "../fotos";
+import { useNetInfo } from "@react-native-community/netinfo";
+import { storage } from "../../storages/storage";
+
 
 export default function Encuestas() {
-    const { isInternetReachable, saveEncuestaLocal } = useUser();
+    const { isInternetReachable } = useNetInfo();
     const [showDatePicker, setShowDatePicker] = useState<string | null>(null);
     const [pagina, setPagina] = useState(0);   
 
@@ -82,14 +84,20 @@ export default function Encuestas() {
             };
 
             if( !isInternetReachable ){
-                // sin internet --> guardar cuestionario en local
-                saveEncuestaLocal(dataSubmit);
+                try{
+                    // sin internet --> guardar cuestionario en local
+                    // saveEncuestaLocal(dataSubmit);
+                    // storage.set("encuestas");
 
-                setTitleModal("Artesano guardado correctamente");
-                setDescripcionModal("Guardado en dispositivo local hasta volver la conexión.");
-                setIconModal(imagePath.userCheckLogo);
-                setLoading(false);                
-                return;
+                    setTitleModal("Artesano guardado correctamente");
+                    setDescripcionModal("Guardado en dispositivo local hasta volver la conexión.");
+                    setIconModal(imagePath.userCheckLogo);
+                    setLoading(false);                
+                    return;
+                } catch(err){
+                    console.log("Save local Encuesta:", err);
+                    setLoading(false);
+                }                
             }
 
             await addDoc(collection(database, "encuestas"), dataSubmit);

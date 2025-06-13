@@ -14,12 +14,11 @@ export const storage = {
     },
 
     // GUARDAR DATOS STORAGE
-    async set(key: string, value: any){
+    async set(key: string, value: any, formatDate: boolean){
         try{
-            if(key === "userData"){
+            if(formatDate){                
                 // formatear fecha de registro en local
-                const fechaFormateada = format(value.fechaRegistro, 'dd-MM-yyyy HH:mm'); // Convierte la fecha a formato dd/MM/yyyy
-                value.fechaRegistro = fechaFormateada; // asigna la fecha a la data
+                value.fechaRegistro = format(value.fechaRegistro, 'dd-MM-yyyy HH:mm'); // fecha a formato dd/MM/yyyy
             }
             const stringifiedValue = JSON.stringify(value);
             await AsyncStorage.setItem(key, stringifiedValue);
@@ -28,6 +27,22 @@ export const storage = {
             console.error("Error al GUARDAR Storage:", err);
             return null;
         }
+    },
+    // GUARDAR ENCUESTA STORAGE
+    async setEncuesta(key: string, value: any){
+        // try{
+        //     const clave = "encuestas_pendientes";
+        //     // Obtener lista actual (si hay)
+        //     const listaJson = await AsyncStorage.getItem(clave);
+        //     const listaActual = listaJson ? JSON.parse(listaJson) : [];
+
+        //     const stringifiedValue = JSON.stringify(value);
+        //     await AsyncStorage.setItem(key, stringifiedValue);
+        //     return true;
+        // }catch(err){
+        //     console.error("Error al GUARDAR Storage:", err);
+        //     return null;
+        // }
     },
 
     // ELIMINAR DATOS STORAGE
