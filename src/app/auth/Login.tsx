@@ -14,7 +14,7 @@ import ButtonX from '../../components/ButtonX';
 import imagePath from '../../constants/imagePath';
 import { getFirebaseErrorMessage } from '../../hooks/firebaseFunctions';
 import { useAuthActions } from '../../hooks/authActions';
-import { getUserInfoFirebase, saveLocalData } from '../../hooks/asyncStorageFunctions';
+import { getUserInfoFirebase } from '../../hooks/asyncStorageFunctions';
 import { storage } from '../../storages/storage';
 
 
@@ -27,7 +27,7 @@ const esquema = z.object({
 type FormData = z.infer<typeof esquema>;    // Definición del tipo de datos del formulario
 
 export default function LoginScreen() {
-  const { checkAuth, setUserData, setLoading } = useAuthActions();
+  const { setUserData } = useAuthActions();
 
   const [isVisibleModal, setIsVisibleModal] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
