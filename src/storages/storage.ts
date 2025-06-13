@@ -14,7 +14,7 @@ export const storage = {
     },
 
     // GUARDAR DATOS STORAGE
-    async set(key: string, value: any, formatDate: boolean){
+    async set(key: string, value: any, formatDate?: boolean){
         try{
             if(formatDate){                
                 // formatear fecha de registro en local
@@ -27,22 +27,6 @@ export const storage = {
             console.error("Error al GUARDAR Storage:", err);
             return null;
         }
-    },
-    // GUARDAR ENCUESTA STORAGE
-    async setEncuesta(key: string, value: any){
-        // try{
-        //     const clave = "encuestas_pendientes";
-        //     // Obtener lista actual (si hay)
-        //     const listaJson = await AsyncStorage.getItem(clave);
-        //     const listaActual = listaJson ? JSON.parse(listaJson) : [];
-
-        //     const stringifiedValue = JSON.stringify(value);
-        //     await AsyncStorage.setItem(key, stringifiedValue);
-        //     return true;
-        // }catch(err){
-        //     console.error("Error al GUARDAR Storage:", err);
-        //     return null;
-        // }
     },
 
     // ELIMINAR DATOS STORAGE

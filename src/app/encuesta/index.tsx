@@ -16,10 +16,10 @@ import { preguntas } from "../../constants/PreguntasInfo";
 import { getArrayUrlFotosSubidas, getFirebaseErrorMessage } from "../../hooks/firebaseFunctions";
 import CargaFotos from "../fotos";
 import { useNetInfo } from "@react-native-community/netinfo";
-import { storage } from "../../storages/storage";
-
+import { useEncuestaActions } from "../../hooks/encuestaActions"; 
 
 export default function Encuestas() {
+    const { saveEncuesta } = useEncuestaActions();
     const { isInternetReachable } = useNetInfo();
     const [showDatePicker, setShowDatePicker] = useState<string | null>(null);
     const [pagina, setPagina] = useState(0);   
@@ -85,9 +85,7 @@ export default function Encuestas() {
 
             if( !isInternetReachable ){
                 try{
-                    // sin internet --> guardar cuestionario en local
-                    // saveEncuestaLocal(dataSubmit);
-                    // storage.set("encuestas");
+                    saveEncuesta(dataSubmit);
 
                     setTitleModal("Artesano guardado correctamente");
                     setDescripcionModal("Guardado en dispositivo local hasta volver la conexión.");
@@ -95,11 +93,12 @@ export default function Encuestas() {
                     setLoading(false);                
                     return;
                 } catch(err){
-                    console.log("Save local Encuesta:", err);
+                    console.log("Error Save local Encuesta:", err);
                     setLoading(false);
                 }                
             }
 
+            // envia esa sola encuesta a firebase
             await addDoc(collection(database, "encuestas"), dataSubmit);
 
             setTitleModal("Registrado con éxito");

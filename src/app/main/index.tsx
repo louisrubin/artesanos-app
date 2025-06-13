@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import ButtonSettings from '../../components/ButtonSettings';
 import { useAuthVariables } from '../../hooks/authActions';
 import { useNetInfo } from '@react-native-community/netinfo';
+import { useEncuestaVariables } from '../../hooks/encuestaActions';
 
 const redNotifColor = "#D04A4A";
 
@@ -58,6 +59,7 @@ const ButtonXComponent = ({onPress, icon, children, disabled}) => {
 }
 
 export default function PantallaPrincipal() {
+    const {sincronizando, encuestasLocal} = useEncuestaVariables();
     const { userData } = useAuthVariables();
     const { isInternetReachable } = useNetInfo(); // Hook para obtener el estado de Internet
     const [funcionesON, setFuncionesON] = useState(false); // Estado para habilitar/deshabilitar botones
@@ -67,8 +69,6 @@ export default function PantallaPrincipal() {
         else setFuncionesON(false);
         
     }, [userData, isInternetReachable, ]); // , funcionesON , encuestasEnLocal
-    
-    const encuestasEnLocal = [];
 
     return (
         <LinearGradient
@@ -138,17 +138,16 @@ export default function PantallaPrincipal() {
                 </ButtonXComponent>
 
                 {/* MENSAJE DE REGISTROS EN LOCAL Y INDICADOR SINCRONIZANDO */}
-                { (true || encuestasEnLocal.length > 0) && (
+                { (sincronizando || encuestasLocal.length > 0) && (
                     <View style={{ 
                         width: 320,
                         flexDirection: 'row', 
                         alignItems: 'center', 
                         justifyContent: "flex-end",
                         marginTop: 3, 
-                        // backgroundColor: 'tomato', 
                         opacity: 0.6,
                     }}>
-                        {true && (
+                        {sincronizando && (
                             <ActivityIndicator 
                                 size={15}
                                 color="#000" 
@@ -158,7 +157,7 @@ export default function PantallaPrincipal() {
                         <Text>
                             Registros en espera de conexión:{" "}
                             <Text style={{ fontWeight: "bold" }}>
-                                {encuestasEnLocal.length}
+                                {encuestasLocal.length}
                             </Text>
                         </Text>
 

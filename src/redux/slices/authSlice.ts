@@ -41,7 +41,7 @@ export const authSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(logout.fulfilled, (state) => {
          state.userData = null;
-         state.isLoggedIn = false;    // convierte a boolean si existe datos --> true
+         state.isLoggedIn = false;
       });
   }
 });

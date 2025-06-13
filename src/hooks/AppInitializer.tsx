@@ -1,13 +1,12 @@
 import { useEffect } from "react";
-import { auth, database } from "../../credenciales"; // Ajustá según tu ruta
+import { auth, database } from "../../credenciales";
 import { doc, onSnapshot } from "firebase/firestore";
 import { useNetInfo } from "@react-native-community/netinfo";
-// import { getStoredLocalData, sincronizarEncuestasLocal } from "./asyncStorageFunctions";
-import { useAuthActions } from "./authActions";
-import { useAuthVariables } from "./authActions";
 import { storage } from "../storages/storage";
 import { onAuthStateChanged } from "firebase/auth";
 import { format } from "date-fns";
+import { useAuthActions } from "./authActions";
+import { useEncuestaActions } from "./encuestaActions";
 
 interface PropsT {
   children: React.ReactNode;
@@ -16,32 +15,8 @@ interface PropsT {
 // Este componente envuelve a la aplicación y proporciona el contexto del usuario
 export const AppInitializer = ({ children }: PropsT) => {
    const { setUserData, setLoading, setIsLoggedIn, setMessageStatus, logOut } = useAuthActions();
-   const { userData, isLoggedIn } = useAuthVariables();
-
+   const { subirEncuestasFirebase } = useEncuestaActions();
    const { isInternetReachable } = useNetInfo(); // Hook para obtener el estado de Internet
-   // const [encuestasEnLocal, setEncuestasLocal] = useState([]);
-   // const [sincronizando, setSincronizando] = useState(false);
-
-   // función para almacenar en local --> se exporta en el useUser
-   // const saveEncuestaLocal = async (nuevaEncuesta) => {
-   //    try{
-   //       const clave = "encuestas_pendientes";
-   //       // Obtener lista actual (si hay)
-   //       const listaJson = await AsyncStorage.getItem(clave);
-   //       const listaActual = listaJson ? JSON.parse(listaJson) : [];
-
-   //       // Agregar nueva encuesta
-   //       listaActual.push(nuevaEncuesta);
-
-   //       // Guardar de nuevo en AsyncStorage
-   //       setEncuestasLocal(listaActual);       // set Context global
-   //       await AsyncStorage.setItem(clave, JSON.stringify(listaActual));
-
-   //       // console.log('Encuesta guardada offline');
-   //    } catch (error) {
-   //       console.error('Error al guardar encuesta offline:', error);
-   //    }
-   // }
 
    useEffect(() => {
       setMessageStatus("Obteniendo datos..."); // mensaje de carga
@@ -72,14 +47,7 @@ export const AppInitializer = ({ children }: PropsT) => {
                }
             }
 
-//             try {
-//                 if( encuestasEnLocal.length > 0 ){
-//                     setSincronizando(true);
-//                     const ok = await sincronizarEncuestasLocal(encuestasEnLocal);
-//                     if (ok) setEncuestasLocal([]);
-//                     setSincronizando(false);
-//                 }
-//             } catch { setSincronizando(false); }
+            subirEncuestasFirebase();  // sincroniza locales --> firebase
 
             const docRef = doc(database, "registros", auth.currentUser.uid); // Referencia al documento del usuario en Firestore
 
