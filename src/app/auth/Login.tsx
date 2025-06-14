@@ -74,7 +74,7 @@ export default function LoginScreen() {
 
             setModalMessage("Sincronizando datos..."); // mensaje de carga
             // await saveLocalData(userData); // Guardar datos del usuario en AsyncStorage
-            storage.set("userData", userData);
+            storage.set("userData", userData, true);
             setUserData(userData); // Guardar datos del usuario en el contexto global           
 
             setIsVisibleModal(false); // QUITA EL MODAL
