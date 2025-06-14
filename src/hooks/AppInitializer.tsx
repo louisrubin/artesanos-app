@@ -18,6 +18,8 @@ export const AppInitializer = ({ children }: PropsT) => {
    const { subirEncuestasFirebase } = useEncuestaActions();
    const { isInternetReachable } = useNetInfo(); // Hook para obtener el estado de Internet
 
+   let unsubscribeSnapshot: () => void;   // asigna la func que se va a ejecutar para luego cerrar el listening
+
    useEffect(() => {
       setMessageStatus("Obteniendo datos..."); // mensaje de carga
 
@@ -28,6 +30,7 @@ export const AppInitializer = ({ children }: PropsT) => {
             setUserData(null);
             setLoading(false);
             await storage.remove("userData"); // Elimina los datos del AsyncStorage
+            if(unsubscribeSnapshot) unsubscribeSnapshot(); // <<-- Detiene la escucha si ya está activa
             return;
          }
 
@@ -52,7 +55,7 @@ export const AppInitializer = ({ children }: PropsT) => {
             const docRef = doc(database, "registros", auth.currentUser.uid); // Referencia al documento del usuario en Firestore
 
             // suscripción en tiempo real a los cambios en el documento
-            const unsubscribeSnapshot = onSnapshot(docRef, async (docSnapshot) => {
+            unsubscribeSnapshot = onSnapshot(docRef, async (docSnapshot) => {
                if (docSnapshot.exists()) {
                   const data = docSnapshot.data();
 
